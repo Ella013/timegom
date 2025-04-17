@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # TimeGom
 
 시간 관리에 유용한 도구들을 제공하는 웹 애플리케이션입니다.
@@ -29,3 +30,6 @@ npm run dev
 - React
 - TypeScript
 - Tailwind CSS 
+=======
+# timegom
+>>>>>>> 3aa929343cefe8ad9c3390a24b450d57bd196bb1
