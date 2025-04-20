@@ -1,0 +1,50 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --foreground-rgb: 31, 41, 55;
+  --background-rgb: 249, 250, 251;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --foreground-rgb: 249, 250, 251;
+    --background-rgb: 31, 41, 55;
+  }
+}
+
+body {
+  color: rgb(var(--foreground-rgb));
+  background: rgb(var(--background-rgb));
+}
+
+@layer components {
+  .btn {
+    @apply px-4 py-2 rounded-md font-medium transition-colors;
+  }
+  
+  .btn-primary {
+    @apply bg-primary text-white hover:bg-blue-600;
+  }
+  
+  .btn-secondary {
+    @apply bg-secondary text-white hover:bg-green-600;
+  }
+  
+  .container-center {
+    @apply max-w-4xl mx-auto px-4 py-8;
+  }
+  
+  .clock-display {
+    @apply text-6xl md:text-8xl font-bold text-center tracking-tight;
+  }
+  
+  .nav-link {
+    @apply px-4 py-2 rounded-md transition-colors hover:bg-gray-100 dark:hover:bg-gray-800;
+  }
+  
+  .nav-link-active {
+    @apply bg-gray-100 dark:bg-gray-800 font-medium;
+  }
+} 
