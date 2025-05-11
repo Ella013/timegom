@@ -607,5 +607,6 @@ footer {
     color: #555;
     margin-right: 10px;
     position: relative;
-    top: -2.5rem;
+    top: 0;
+    align-self: center;
 } 
