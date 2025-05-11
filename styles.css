@@ -463,8 +463,8 @@ footer {
     background-color: #000;
     left: 50%;
     margin-left: -1.5px;
-    top: 10px;
-    transform-origin: 50% 150px;
+    top: 0;
+    transform-origin: 50% 160px;
 }
 
 /* 분 눈금 (더 얇은 눈금) */
@@ -475,8 +475,8 @@ footer {
     background-color: #999;
     left: 50%;
     margin-left: -0.5px;
-    top: 10px;
-    transform-origin: 50% 150px;
+    top: 0;
+    transform-origin: 50% 160px;
 }
 
 /* 시계 숫자 */
