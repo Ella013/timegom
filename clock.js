@@ -61,7 +61,8 @@ function updateClock() {
     const hours12 = hours24 % 12 || 12; // 0시는 12시로 표시
     const ampm = hours24 < 12 ? '오전' : '오후';
     
-    timeElement.textContent = `${ampm} ${hours12}:${minutes}:${seconds}`;
+    // 시간 형식: 9:31:07 형식
+    timeElement.textContent = `${hours12}:${minutes}:${seconds}`;
     
     // 날짜 및 요일 업데이트
     const dateElement = document.getElementById('date');
