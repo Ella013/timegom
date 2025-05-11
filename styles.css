@@ -498,19 +498,19 @@ footer {
     z-index: 2;
 }
 
-/* 숫자 위치 계산 */
+/* 숫자 위치 계산 - 정확한 원형 배치 */
 .number-12 { top: 10px; left: 50%; transform: translateX(-50%); }
-.number-1 { top: 30px; right: 82px; }
-.number-2 { top: 82px; right: 30px; }
+.number-1 { top: 20px; right: 93px; }
+.number-2 { top: 58px; right: 58px; }
 .number-3 { top: 50%; right: 10px; transform: translateY(-50%); }
-.number-4 { bottom: 82px; right: 30px; }
-.number-5 { bottom: 30px; right: 82px; }
+.number-4 { bottom: 58px; right: 58px; }
+.number-5 { bottom: 20px; right: 93px; }
 .number-6 { bottom: 10px; left: 50%; transform: translateX(-50%); }
-.number-7 { bottom: 30px; left: 82px; }
-.number-8 { bottom: 82px; left: 30px; }
+.number-7 { bottom: 20px; left: 93px; }
+.number-8 { bottom: 58px; left: 58px; }
 .number-9 { top: 50%; left: 10px; transform: translateY(-50%); }
-.number-10 { top: 82px; left: 30px; }
-.number-11 { top: 30px; left: 82px; }
+.number-10 { top: 58px; left: 58px; }
+.number-11 { top: 20px; left: 93px; }
 
 /* 시계 바늘 */
 .hour-hand, .minute-hand, .second-hand {
