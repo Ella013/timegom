@@ -73,7 +73,7 @@ function updateClock() {
     const weekday = weekdays[now.getDay()];
     dateElement.textContent = `${year}년 ${month}월 ${day}일 ${weekday}`;
     
-    // 요일 요소 숨기기
+    // 요일 요소 숨기기 (날짜와 함께 표시하므로 별도의 요일 요소는 필요 없음)
     const dayElement = document.getElementById('day');
     dayElement.style.display = 'none';
 }
@@ -108,7 +108,7 @@ function updateAnalogClock() {
         const weekday = weekdays[now.getDay()];
         analogDateElement.textContent = `${year}년 ${month}월 ${day}일 ${weekday}`;
         
-        // 요일 요소 숨기기
+        // 요일 요소 숨기기 (날짜와 함께 표시하므로 별도의 요일 요소는 필요 없음)
         analogDayElement.style.display = 'none';
     }
 }
