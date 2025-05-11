@@ -433,6 +433,7 @@ footer {
     font-weight: 500;
     cursor: pointer;
     transition: all 0.3s ease;
+    margin: 0 10px;
 }
 
 .toggle-btn:hover {
