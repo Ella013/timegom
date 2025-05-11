@@ -53,4 +53,22 @@ function updateWorldClocks() {
             clockElement.textContent = getTimeInTimeZone(timezone);
         }
     }
+}
+
+// 특정 시간대의 시간을 가져오는 함수
+function getTimeInTimeZone(timezone) {
+    const options = {
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        timeZone: timezone,
+        hour12: false
+    };
+    
+    return new Intl.DateTimeFormat('ko-KR', options).format(new Date());
+}
+
+// 숫자를 두 자리로 포맷팅하는 함수
+function padZero(num) {
+    return num.toString().padStart(2, '0');
 } 
