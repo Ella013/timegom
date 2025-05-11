@@ -502,19 +502,19 @@ footer {
     margin-top: -13px;
 }
 
-/* 시계 숫자 위치 - 정확한 각도 기반 배치 */
-.number-12 { top: 16px; left: 50%; }
-.number-1 { top: 9.8%; left: 75%; }
-.number-2 { top: 25%; left: 91%; }
-.number-3 { top: 50%; left: 95%; margin-left: -15px; }
-.number-4 { top: 75%; left: 91%; }
-.number-5 { top: 90%; left: 75%; }
-.number-6 { top: 95%; left: 50%; }
-.number-7 { top: 90%; left: 25%; }
-.number-8 { top: 75%; left: 9%; }
-.number-9 { top: 50%; left: 5%; margin-left: -15px; }
-.number-10 { top: 25%; left: 9%; }
-.number-11 { top: 9.8%; left: 25%; }
+/* 시계 숫자 위치 - 눈금선 사이에 위치하도록 조정 */
+.number-12 { top: 7%; left: 50%; }
+.number-1 { top: 15%; left: 69%; }
+.number-2 { top: 31%; left: 84%; }
+.number-3 { top: 50%; left: 91%; margin-left: -15px; }
+.number-4 { top: 69%; left: 84%; }
+.number-5 { top: 85%; left: 69%; }
+.number-6 { top: 91%; left: 50%; }
+.number-7 { top: 85%; left: 31%; }
+.number-8 { top: 69%; left: 16%; }
+.number-9 { top: 50%; left: 9%; margin-left: -15px; }
+.number-10 { top: 31%; left: 16%; }
+.number-11 { top: 15%; left: 31%; }
 
 /* 시계 바늘 */
 .hour-hand, .minute-hand, .second-hand {
