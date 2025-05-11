@@ -79,12 +79,17 @@ function updateAnalogClock() {
     const minutes = now.getMinutes();
     const hours = now.getHours() % 12; // 12시간제 변환
     
-    // 시침, 분침, 초침 각도 계산 (0도가 12시 방향)
-    const secondDegrees = (seconds / 60) * 360;
-    const minuteDegrees = ((minutes + seconds / 60) / 60) * 360;
-    const hourDegrees = ((hours + minutes / 60 + seconds / 3600) / 12) * 360;
+    // 정확한 각도 계산 (기준: 12시 방향이 0도, 시계 방향으로 회전)
+    // 초침: 1초당 6도 회전 (60초에 360도)
+    const secondDegrees = seconds * 6;
     
-    // 시계 바늘 회전 (CSS에서 12시 방향이 0도가 되도록 -90도 조정)
+    // 분침: 1분당 6도 회전 (60분에 360도), 초에 따른 미세 조정
+    const minuteDegrees = minutes * 6 + seconds * 0.1;
+    
+    // 시침: 1시간당 30도 회전 (12시간에 360도), 분과 초에 따른 미세 조정
+    const hourDegrees = hours * 30 + minutes * 0.5 + seconds * (0.5/60);
+    
+    // CSS의 기본 0도는 오른쪽(3시)이므로 -90도 보정
     const secondHand = document.querySelector('.second-hand');
     const minuteHand = document.querySelector('.minute-hand');
     const hourHand = document.querySelector('.hour-hand');
