@@ -30,9 +30,16 @@ header {
 }
 
 .logo {
-    font-size: 1.8rem;
+    font-size: 2.5rem;
     font-weight: 700;
     color: var(--primary-color);
+    display: flex;
+    align-items: center;
+}
+
+.logo img {
+    margin-right: 10px;
+    vertical-align: middle;
 }
 
 nav ul {
@@ -585,7 +592,7 @@ footer {
     --primary-gradient: linear-gradient(135deg, #A67C52, #D4A76A); /* 갈색-베이지 그라데이션 */
     --secondary-color: #FFBB5C; /* 따뜻한 꿀색 */
     --secondary-gradient: linear-gradient(135deg, #FFBB5C, #FFA15C); /* 꿀색-주황색 그라데이션 */
-    --bg-color: #FFF8E9; /* 연한 크림색 배경 */
+    --bg-color: #FFFFFF; /* 흰색 배경 */
     --card-bg: #FFFFFF;
     --text-primary: #604C3C; /* 어두운 갈색 텍스트 */
     --text-secondary: #8E7D6B; /* 중간 갈색 텍스트 */
@@ -609,4 +616,18 @@ footer {
     position: relative;
     top: 0;
     align-self: center;
+}
+
+.clock-info {
+    margin-top: 2rem;
+    line-height: 1.7;
+}
+
+.clock-info p {
+    margin-bottom: 1rem;
+    color: var(--text-secondary);
+}
+
+.clock-info p:last-child {
+    margin-bottom: 0;
 } 
