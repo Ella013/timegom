@@ -75,41 +75,32 @@ function updateClock() {
 // 아날로그 시계 업데이트 함수
 function updateAnalogClock() {
     const now = new Date();
-    const seconds = now.getSeconds();
+    const hours = now.getHours() % 12; // 12시간제로 변환
     const minutes = now.getMinutes();
-    const hours = now.getHours() % 12; // 12시간제 변환
+    const seconds = now.getSeconds();
+
+    // 각도 계산 (12시 방향이 0도, 시계 방향으로 회전)
+    const hourDegrees = 90 + (hours * 30) + (minutes * 0.5); // 시침: 한 시간당 30도, 분당 추가 0.5도
+    const minuteDegrees = 90 + (minutes * 6); // 분침: 분당 6도
+    const secondDegrees = 90 + (seconds * 6); // 초침: 초당 6도
+
+    // 바늘 회전 적용
+    document.querySelector('.hour-hand').style.transform = `rotate(${hourDegrees}deg)`;
+    document.querySelector('.minute-hand').style.transform = `rotate(${minuteDegrees}deg)`;
+    document.querySelector('.second-hand').style.transform = `rotate(${secondDegrees}deg)`;
     
-    // 정확한 각도 계산 (기준: 12시 방향이 0도, 시계 방향으로 회전)
-    // 초침: 1초당 6도 회전 (60초에 360도)
-    const secondDegrees = seconds * 6;
-    
-    // 분침: 1분당 6도 회전 (60분에 360도), 초에 따른 미세 조정
-    const minuteDegrees = minutes * 6 + seconds * 0.1;
-    
-    // 시침: 1시간당 30도 회전 (12시간에 360도), 분과 초에 따른 미세 조정
-    const hourDegrees = hours * 30 + minutes * 0.5 + seconds * (0.5/60);
-    
-    // CSS의 기본 0도는 오른쪽(3시)이므로 -90도 보정
-    const secondHand = document.querySelector('.second-hand');
-    const minuteHand = document.querySelector('.minute-hand');
-    const hourHand = document.querySelector('.hour-hand');
-    
-    secondHand.style.transform = `rotate(${secondDegrees - 90}deg)`;
-    minuteHand.style.transform = `rotate(${minuteDegrees - 90}deg)`;
-    hourHand.style.transform = `rotate(${hourDegrees - 90}deg)`;
-    
-    // 아날로그 시계 날짜 및 요일 업데이트
+    // 아날로그 시계 날짜 표시 업데이트
     const analogDateElement = document.getElementById('analog-date');
     const analogDayElement = document.getElementById('analog-day');
     
-    const year = now.getFullYear();
-    const month = padZero(now.getMonth() + 1);
-    const day = padZero(now.getDate());
-    analogDateElement.textContent = `${year}년 ${month}월 ${day}일`;
-    
-    const weekdays = ['일요일', '월요일', '화요일', '수요일', '목요일', '금요일', '토요일'];
-    const weekday = weekdays[now.getDay()];
-    analogDayElement.textContent = weekday;
+    if (analogDateElement && analogDayElement) {
+        // 날짜 및 요일 포맷팅
+        const year = "0000";
+        const month = "00";
+        const day = "00";
+        analogDateElement.textContent = `${year}년 ${month}월 ${day}일`;
+        analogDayElement.textContent = "요일";
+    }
 }
 
 // URL 파라미터 업데이트 함수
