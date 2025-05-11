@@ -496,21 +496,25 @@ footer {
     font-weight: bold;
     color: #000;
     z-index: 2;
+    text-align: center;
+    width: 30px;
+    margin-left: -15px;
+    margin-top: -13px;
 }
 
-/* 숫자 위치 계산 - 정확한 원형 배치 */
-.number-12 { top: 10px; left: 50%; transform: translateX(-50%); }
-.number-1 { top: 20px; right: 93px; }
-.number-2 { top: 58px; right: 58px; }
-.number-3 { top: 50%; right: 10px; transform: translateY(-50%); }
-.number-4 { bottom: 58px; right: 58px; }
-.number-5 { bottom: 20px; right: 93px; }
-.number-6 { bottom: 10px; left: 50%; transform: translateX(-50%); }
-.number-7 { bottom: 20px; left: 93px; }
-.number-8 { bottom: 58px; left: 58px; }
-.number-9 { top: 50%; left: 10px; transform: translateY(-50%); }
-.number-10 { top: 58px; left: 58px; }
-.number-11 { top: 20px; left: 93px; }
+/* 시계 숫자 위치 - 정확한 각도 기반 배치 */
+.number-12 { top: 16px; left: 50%; }
+.number-1 { top: 9.8%; left: 75%; }
+.number-2 { top: 25%; left: 91%; }
+.number-3 { top: 50%; left: 95%; margin-left: -15px; }
+.number-4 { top: 75%; left: 91%; }
+.number-5 { top: 90%; left: 75%; }
+.number-6 { top: 95%; left: 50%; }
+.number-7 { top: 90%; left: 25%; }
+.number-8 { top: 75%; left: 9%; }
+.number-9 { top: 50%; left: 5%; margin-left: -15px; }
+.number-10 { top: 25%; left: 9%; }
+.number-11 { top: 9.8%; left: 25%; }
 
 /* 시계 바늘 */
 .hour-hand, .minute-hand, .second-hand {
