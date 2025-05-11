@@ -80,9 +80,9 @@ function updateAnalogClock() {
     const seconds = now.getSeconds();
 
     // 각도 계산 (12시 방향이 0도, 시계 방향으로 회전)
-    const hourDegrees = 90 + (hours * 30) + (minutes * 0.5); // 시침: 한 시간당 30도, 분당 추가 0.5도
-    const minuteDegrees = 90 + (minutes * 6); // 분침: 분당 6도
-    const secondDegrees = 90 + (seconds * 6); // 초침: 초당 6도
+    const hourDegrees = (hours * 30) + (minutes * 0.5); // 시침: 한 시간당 30도, 분당 추가 0.5도
+    const minuteDegrees = minutes * 6; // 분침: 분당 6도
+    const secondDegrees = seconds * 6; // 초침: 초당 6도
 
     // 바늘 회전 적용
     document.querySelector('.hour-hand').style.transform = `rotate(${hourDegrees}deg)`;

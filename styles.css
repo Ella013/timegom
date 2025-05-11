@@ -517,16 +517,16 @@ footer {
     position: absolute;
     top: 50%;
     left: 50%;
-    transform-origin: 50% 50%;
+    transform-origin: 0% 50%;
     z-index: 3;
     background-color: #000;
-    margin-top: -2px;
 }
 
 .hour-hand {
     width: 70px;
     height: 4px;
     border-radius: 4px;
+    margin-top: -2px;
 }
 
 .minute-hand {
