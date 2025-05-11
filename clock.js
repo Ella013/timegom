@@ -95,11 +95,14 @@ function updateAnalogClock() {
     
     if (analogDateElement && analogDayElement) {
         // 날짜 및 요일 포맷팅
-        const year = "0000";
-        const month = "00";
-        const day = "00";
+        const year = now.getFullYear();
+        const month = padZero(now.getMonth() + 1);
+        const day = padZero(now.getDate());
         analogDateElement.textContent = `${year}년 ${month}월 ${day}일`;
-        analogDayElement.textContent = "요일";
+        
+        const weekdays = ['일요일', '월요일', '화요일', '수요일', '목요일', '금요일', '토요일'];
+        const weekday = weekdays[now.getDay()];
+        analogDayElement.textContent = weekday;
     }
 }
 
