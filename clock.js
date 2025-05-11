@@ -61,20 +61,20 @@ function updateClock() {
     const hours12 = hours24 % 12 || 12; // 0시는 12시로 표시
     const ampm = hours24 < 12 ? '오전' : '오후';
     
-    timeElement.textContent = `${hours12}:${minutes}:${seconds} ${ampm}`;
+    timeElement.textContent = `${ampm} ${hours12}:${minutes}:${seconds}`;
     
-    // 날짜 업데이트
+    // 날짜 및 요일 업데이트
     const dateElement = document.getElementById('date');
     const year = now.getFullYear();
     const month = padZero(now.getMonth() + 1);
     const day = padZero(now.getDate());
-    dateElement.textContent = `${year}년 ${month}월 ${day}일`;
-    
-    // 요일 업데이트
-    const dayElement = document.getElementById('day');
     const weekdays = ['일요일', '월요일', '화요일', '수요일', '목요일', '금요일', '토요일'];
     const weekday = weekdays[now.getDay()];
-    dayElement.textContent = weekday;
+    dateElement.textContent = `${year}년 ${month}월 ${day}일 ${weekday}`;
+    
+    // 요일 요소 숨기기
+    const dayElement = document.getElementById('day');
+    dayElement.style.display = 'none';
 }
 
 // 아날로그 시계 업데이트 함수
@@ -103,11 +103,12 @@ function updateAnalogClock() {
         const year = now.getFullYear();
         const month = padZero(now.getMonth() + 1);
         const day = padZero(now.getDate());
-        analogDateElement.textContent = `${year}년 ${month}월 ${day}일`;
-        
         const weekdays = ['일요일', '월요일', '화요일', '수요일', '목요일', '금요일', '토요일'];
         const weekday = weekdays[now.getDay()];
-        analogDayElement.textContent = weekday;
+        analogDateElement.textContent = `${year}년 ${month}월 ${day}일 ${weekday}`;
+        
+        // 요일 요소 숨기기
+        analogDayElement.style.display = 'none';
     }
 }
 

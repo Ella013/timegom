@@ -142,21 +142,22 @@ h3 {
 
 #time {
     font-size: 4rem;
-    font-weight: 700;
+    font-weight: 600;
     color: var(--primary-color);
     margin-bottom: 0.5rem;
-    letter-spacing: 2px;
-    font-family: 'Roboto Mono', monospace;
+    letter-spacing: 1px;
+    font-family: 'Noto Sans KR', sans-serif;
     width: 100%;
     display: block;
     text-align: center;
 }
 
-#date, #day {
+#date {
     font-size: 1.4rem;
     margin-top: 0.5rem;
     font-weight: 400;
     color: #777;
+    font-family: 'Noto Sans KR', sans-serif;
 }
 
 /* 세계 시계 */
@@ -355,7 +356,7 @@ footer {
         font-size: 3rem;
     }
     
-    #date, #day {
+    #date {
         font-size: 1.2rem;
     }
     
@@ -562,9 +563,10 @@ footer {
     margin-top: 1rem;
     font-size: 1.2rem;
     color: #555;
+    font-family: 'Noto Sans KR', sans-serif;
 }
 
-#analog-date, #analog-day {
+#analog-date {
     margin: 0.2rem 0;
 }
 
