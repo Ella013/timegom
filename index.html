@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>시계 - TimeGom</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1 class="logo">TimeGom</h1>
+            <nav>
+                <ul>
+                    <li><a href="index.html" class="active">시계</a></li>
+                    <li><a href="timer.html">타이머</a></li>
+                    <li><a href="stopwatch.html">스톱워치</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container">
+        <section class="clock-section">
+            <h2>현재 시간</h2>
+            
+            <div class="clock-display" id="clock">
+                <div id="time">00:00:00</div>
+                <div id="date">0000년 00월 00일</div>
+                <div id="day">요일</div>
+            </div>
+            
+            <div class="world-clocks">
+                <h3>세계 시간</h3>
+                <div class="world-clock-grid">
+                    <div class="world-clock-item" id="newyork">
+                        <h4>뉴욕</h4>
+                        <div class="world-time">00:00:00</div>
+                    </div>
+                    <div class="world-clock-item" id="london">
+                        <h4>런던</h4>
+                        <div class="world-time">00:00:00</div>
+                    </div>
+                    <div class="world-clock-item" id="paris">
+                        <h4>파리</h4>
+                        <div class="world-time">00:00:00</div>
+                    </div>
+                    <div class="world-clock-item" id="tokyo">
+                        <h4>도쿄</h4>
+                        <div class="world-time">00:00:00</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="links-section">
+            <a href="timer.html" class="button primary-button">타이머 시작하기</a>
+            <a href="stopwatch.html" class="button secondary-button">스톱워치 시작하기</a>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2023 TimeGom. 모든 권리 보유.</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+    <script src="clock.js"></script>
+</body>
+</html> 

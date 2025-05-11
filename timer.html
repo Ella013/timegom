@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>타이머 - TimeGom</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1 class="logo">TimeGom</h1>
+            <nav>
+                <ul>
+                    <li><a href="index.html">시계</a></li>
+                    <li><a href="timer.html" class="active">타이머</a></li>
+                    <li><a href="stopwatch.html">스톱워치</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container">
+        <section class="timer-section">
+            <h2>타이머</h2>
+            
+            <div class="clock-display" id="timer">00:00</div>
+            
+            <div class="timer-input" id="timerInput">
+                <div class="input-group">
+                    <label for="minutes">분</label>
+                    <input type="number" id="minutes" min="0" max="60" value="0">
+                </div>
+                <div class="input-group">
+                    <label for="seconds">초</label>
+                    <input type="number" id="seconds" min="0" max="59" value="0">
+                </div>
+            </div>
+            
+            <div class="control-buttons">
+                <button id="startBtn" class="button primary-button">시작</button>
+                <button id="pauseBtn" class="button primary-button" disabled>일시정지</button>
+                <button id="resetBtn" class="button secondary-button" disabled>초기화</button>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2023 TimeGom. 모든 권리 보유.</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+    <script src="timer.js"></script>
+</body>
+</html> 
