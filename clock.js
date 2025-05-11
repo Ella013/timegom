@@ -91,9 +91,15 @@ function updateAnalogClock() {
     const secondDegrees = seconds * 6; // 초침: 초당 6도
 
     // 바늘 회전 적용
-    document.querySelector('.hour-hand').style.transform = `rotate(${hourDegrees}deg)`;
-    document.querySelector('.minute-hand').style.transform = `rotate(${minuteDegrees}deg)`;
-    document.querySelector('.second-hand').style.transform = `rotate(${secondDegrees}deg)`;
+    const hourHand = document.querySelector('.hour-hand');
+    const minuteHand = document.querySelector('.minute-hand');
+    const secondHand = document.querySelector('.second-hand');
+    
+    if (hourHand && minuteHand && secondHand) {
+        hourHand.style.transform = `rotate(${hourDegrees}deg)`;
+        minuteHand.style.transform = `rotate(${minuteDegrees}deg)`;
+        secondHand.style.transform = `rotate(${secondDegrees}deg)`;
+    }
     
     // 아날로그 시계 날짜 표시 업데이트
     const analogDateElement = document.getElementById('analog-date');
