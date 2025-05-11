@@ -148,8 +148,10 @@ h3 {
     letter-spacing: 0;
     font-family: 'digital-7', monospace;
     width: 100%;
-    display: block;
-    text-align: center;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
 }
 
 #date {
@@ -599,11 +601,11 @@ footer {
 }
 
 .ampm {
-    font-size: 3rem;
+    font-size: 2rem;
     font-weight: 400;
     font-family: 'Noto Sans KR', sans-serif;
-    color: #777;
-    display: inline;
-    vertical-align: middle;
+    color: #555;
     margin-right: 10px;
+    position: relative;
+    top: -2.5rem;
 } 
