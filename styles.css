@@ -534,32 +534,31 @@ footer {
 /* 시계 바늘 */
 .hour-hand, .minute-hand, .second-hand {
     position: absolute;
-    transform-origin: 50% 100%;
-    bottom: 50%;
+    top: 50%;
     left: 50%;
+    transform-origin: 0% 50%;
     z-index: 2;
-    margin-left: 0;
 }
 
 .hour-hand {
-    width: 8px;
-    height: 60px;
+    width: 60px;
+    height: 6px;
     background-color: #333;
     border-radius: 4px;
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
 }
 
 .minute-hand {
-    width: 4px;
-    height: 90px;
+    width: 85px;
+    height: 4px;
     background-color: #555;
     border-radius: 2px;
     box-shadow: 0 0 3px rgba(0, 0, 0, 0.2);
 }
 
 .second-hand {
-    width: 2px;
-    height: 110px;
+    width: 100px;
+    height: 2px;
     background-color: var(--secondary-color);
     border-radius: 1px;
 }

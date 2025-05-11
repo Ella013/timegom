@@ -79,20 +79,19 @@ function updateAnalogClock() {
     const minutes = now.getMinutes();
     const hours = now.getHours() % 12; // 12시간제 변환
     
-    // 시침, 분침, 초침 각도 계산 (시침은 분에 따라 더 정확히 이동)
+    // 시침, 분침, 초침 각도 계산 (0도가 12시 방향)
     const secondDegrees = (seconds / 60) * 360;
     const minuteDegrees = ((minutes + seconds / 60) / 60) * 360;
     const hourDegrees = ((hours + minutes / 60 + seconds / 3600) / 12) * 360;
     
-    // 시계 바늘 회전
+    // 시계 바늘 회전 (CSS에서 12시 방향이 0도가 되도록 -90도 조정)
     const secondHand = document.querySelector('.second-hand');
     const minuteHand = document.querySelector('.minute-hand');
     const hourHand = document.querySelector('.hour-hand');
     
-    // 바늘 회전 - CSS transform-origin 속성이 50% 100%로 설정되어 있음
-    secondHand.style.transform = `translateX(-50%) rotate(${secondDegrees}deg)`;
-    minuteHand.style.transform = `translateX(-50%) rotate(${minuteDegrees}deg)`;
-    hourHand.style.transform = `translateX(-50%) rotate(${hourDegrees}deg)`;
+    secondHand.style.transform = `rotate(${secondDegrees - 90}deg)`;
+    minuteHand.style.transform = `rotate(${minuteDegrees - 90}deg)`;
+    hourHand.style.transform = `rotate(${hourDegrees - 90}deg)`;
     
     // 아날로그 시계 날짜 및 요일 업데이트
     const analogDateElement = document.getElementById('analog-date');
