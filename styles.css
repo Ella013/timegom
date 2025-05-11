@@ -161,7 +161,7 @@ h3 {
     justify-content: center;
 }
 
-#date {
+#date, .analog-date, #analog-date {
     font-size: 2rem;
     margin-top: 0.5rem;
     font-weight: 400;
@@ -583,11 +583,9 @@ footer {
     z-index: 4;
 }
 
+/* 아날로그 시계 날짜 관련 추가 스타일 */
 .analog-date {
     margin-top: 1rem;
-    font-size: 1.8rem;
-    color: #555;
-    font-family: 'Noto Sans KR', sans-serif;
 }
 
 #analog-date {
