@@ -89,10 +89,10 @@ function updateAnalogClock() {
     const minuteHand = document.querySelector('.minute-hand');
     const hourHand = document.querySelector('.hour-hand');
     
-    // 바늘 회전 - 90도 오프셋 추가 (12시 방향이 0도가 되도록)
-    secondHand.style.transform = `translateX(-50%) rotate(${secondDegrees + 90}deg)`;
-    minuteHand.style.transform = `translateX(-50%) rotate(${minuteDegrees + 90}deg)`;
-    hourHand.style.transform = `translateX(-50%) rotate(${hourDegrees + 90}deg)`;
+    // 바늘 회전 - CSS transform-origin 속성이 50% 100%로 설정되어 있음
+    secondHand.style.transform = `translateX(-50%) rotate(${secondDegrees}deg)`;
+    minuteHand.style.transform = `translateX(-50%) rotate(${minuteDegrees}deg)`;
+    hourHand.style.transform = `translateX(-50%) rotate(${hourDegrees}deg)`;
     
     // 아날로그 시계 날짜 및 요일 업데이트
     const analogDateElement = document.getElementById('analog-date');
