@@ -184,7 +184,7 @@ h3 {
     text-align: center;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
-    border: 1px solid rgba(139, 92, 246, 0.2);
+    border: 1px solid rgba(166, 124, 82, 0.3);
 }
 
 .world-clock-item:hover {
@@ -581,15 +581,15 @@ footer {
 
 /* 색상 변수 */
 :root {
-    --primary-color: #8B5CF6; /* 보라색 계열 */
-    --primary-gradient: linear-gradient(135deg, #8B5CF6, #EC4899); /* 보라색-핑크색 그라데이션 */
-    --secondary-color: #F59E0B; /* 따뜻한 노란색/주황색 */
-    --secondary-gradient: linear-gradient(135deg, #F59E0B, #EF4444); /* 주황색-빨강색 그라데이션 */
-    --bg-color: #F9FAFB;
+    --primary-color: #8B6D3F; /* 곰돌이 갈색 */
+    --primary-gradient: linear-gradient(135deg, #A67C52, #D4A76A); /* 갈색-베이지 그라데이션 */
+    --secondary-color: #FFBB5C; /* 따뜻한 꿀색 */
+    --secondary-gradient: linear-gradient(135deg, #FFBB5C, #FFA15C); /* 꿀색-주황색 그라데이션 */
+    --bg-color: #FFF8E9; /* 연한 크림색 배경 */
     --card-bg: #FFFFFF;
-    --text-primary: #374151;
-    --text-secondary: #6B7280;
-    --accent-light: #C4B5FD; /* 연한 보라색 */
+    --text-primary: #604C3C; /* 어두운 갈색 텍스트 */
+    --text-secondary: #8E7D6B; /* 중간 갈색 텍스트 */
+    --accent-light: #E0C097; /* 연한 베이지색 */
 }
 
 .world-clocks {
