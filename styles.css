@@ -94,6 +94,10 @@ section {
     margin-bottom: 2rem;
 }
 
+.clock-section {
+    min-height: 860px;
+}
+
 h2 {
     font-size: 1.6rem;
     margin-bottom: 1.5rem;
