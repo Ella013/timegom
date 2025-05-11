@@ -445,56 +445,66 @@ footer {
     overflow: hidden;
 }
 
+/* 시계 눈금 점으로 변경 */
 .marking {
     position: absolute;
-    width: 2px;
+    width: 100%;
     height: 100%;
-    background: transparent;
-    left: 50%;
-    margin-left: -1px;
-    transform-origin: 50% 50%;
+    left: 0;
+    top: 0;
+    transform-origin: center;
 }
 
 .marking:before, .marking:after {
     content: '';
     position: absolute;
-    width: 2px;
-    height: 12px;
+    width: 5px;
+    height: 5px;
     background-color: var(--primary-color);
-    left: 0;
+    border-radius: 50%;
+    left: 50%;
+    transform: translateX(-50%);
 }
 
 .marking:before {
-    top: 10px;
+    top: 12px;
 }
 
 .marking:after {
-    bottom: 10px;
+    bottom: 12px;
 }
 
-.marking-one {
-    transform: rotateZ(0deg);
+/* 추가 눈금점 - 모든 5분 단위 */
+.marking-dots {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    left: 0;
+    top: 0;
 }
 
-.marking-two {
-    transform: rotateZ(30deg);
+.dot {
+    position: absolute;
+    width: 3px;
+    height: 3px;
+    background-color: var(--accent-light);
+    border-radius: 50%;
+    transform-origin: center;
 }
 
-.marking-three {
-    transform: rotateZ(60deg);
-}
-
-.marking-four {
-    transform: rotateZ(90deg);
-}
-
-.marking-five {
-    transform: rotateZ(120deg);
-}
-
-.marking-six {
-    transform: rotateZ(150deg);
-}
+/* 모든 5분 단위에 점 배치 (12개 추가적인 점) */
+.dot-1 { top: 30px; left: 50%; transform: translateX(-50%); }
+.dot-2 { top: 50px; right: 95px; }
+.dot-3 { top: 95px; right: 50px; }
+.dot-4 { right: 30px; top: 50%; transform: translateY(-50%); }
+.dot-5 { bottom: 95px; right: 50px; }
+.dot-6 { bottom: 50px; right: 95px; }
+.dot-7 { bottom: 30px; left: 50%; transform: translateX(-50%); }
+.dot-8 { bottom: 50px; left: 95px; }
+.dot-9 { bottom: 95px; left: 50px; }
+.dot-10 { left: 30px; top: 50%; transform: translateY(-50%); }
+.dot-11 { top: 95px; left: 50px; }
+.dot-12 { top: 50px; left: 95px; }
 
 /* 시계 숫자 */
 .clock-face::before {
