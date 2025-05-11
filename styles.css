@@ -162,8 +162,15 @@ h3 {
 }
 
 #date {
-    font-size: 1.4rem;
+    font-size: 2rem;
     margin-top: 0.5rem;
+    font-weight: 400;
+    color: #777;
+    font-family: 'Noto Sans KR', sans-serif;
+}
+
+#day {
+    font-size: 1.8rem;
     font-weight: 400;
     color: #777;
     font-family: 'Noto Sans KR', sans-serif;
@@ -577,13 +584,17 @@ footer {
 
 .analog-date {
     margin-top: 1rem;
-    font-size: 1.2rem;
+    font-size: 1.8rem;
     color: #555;
     font-family: 'Noto Sans KR', sans-serif;
 }
 
 #analog-date {
     margin: 0.2rem 0;
+}
+
+#analog-day {
+    font-size: 1.8rem;
 }
 
 /* 색상 변수 */
