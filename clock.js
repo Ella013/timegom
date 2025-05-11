@@ -53,10 +53,15 @@ function updateClock() {
     
     // 시간 업데이트
     const timeElement = document.getElementById('time');
-    const hours = padZero(now.getHours());
+    const hours24 = now.getHours();
     const minutes = padZero(now.getMinutes());
     const seconds = padZero(now.getSeconds());
-    timeElement.textContent = `${hours}:${minutes}:${seconds}`;
+    
+    // 12시간제로 변경
+    const hours12 = hours24 % 12 || 12; // 0시는 12시로 표시
+    const ampm = hours24 < 12 ? '오전' : '오후';
+    
+    timeElement.textContent = `${ampm} ${hours12}:${minutes}:${seconds}`;
     
     // 날짜 업데이트
     const dateElement = document.getElementById('date');
@@ -139,7 +144,7 @@ function getTimeInTimeZone(timezone) {
         minute: '2-digit',
         second: '2-digit',
         timeZone: timezone,
-        hour12: false
+        hour12: true
     };
     
     return new Intl.DateTimeFormat('ko-KR', options).format(new Date());
