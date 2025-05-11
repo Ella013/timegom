@@ -96,6 +96,7 @@ section {
 
 .clock-section {
     min-height: 860px;
+    position: relative;
 }
 
 h2 {
@@ -582,5 +583,9 @@ footer {
 }
 
 .world-clocks {
-    margin-top: 2.5rem;
+    margin-top: 0;
+    position: absolute;
+    bottom: 150px;
+    left: 2.5rem;
+    right: 2.5rem;
 } 
