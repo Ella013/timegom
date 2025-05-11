@@ -1,9 +1,32 @@
 // 시계 기능
 document.addEventListener('DOMContentLoaded', function() {
     if (document.getElementById('clock')) {
+        // 디지털/아날로그 토글 버튼
+        const digitalToggle = document.getElementById('digitalToggle');
+        const analogToggle = document.getElementById('analogToggle');
+        const digitalClock = document.getElementById('clock');
+        const analogClock = document.getElementById('analogClock');
+        
+        // 토글 버튼 이벤트 리스너
+        digitalToggle.addEventListener('click', function() {
+            digitalToggle.classList.add('active');
+            analogToggle.classList.remove('active');
+            digitalClock.style.display = 'block';
+            analogClock.style.display = 'none';
+        });
+        
+        analogToggle.addEventListener('click', function() {
+            analogToggle.classList.add('active');
+            digitalToggle.classList.remove('active');
+            analogClock.style.display = 'block';
+            digitalClock.style.display = 'none';
+        });
+        
         // 시계 초기화 및 업데이트
         updateClock();
+        updateAnalogClock();
         setInterval(updateClock, 1000);
+        setInterval(updateAnalogClock, 1000);
         
         // 세계 시계 초기화 및 업데이트
         updateWorldClocks();
@@ -11,7 +34,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
-// 시계 업데이트 함수
+// 디지털 시계 업데이트 함수
 function updateClock() {
     const now = new Date();
     
@@ -34,6 +57,41 @@ function updateClock() {
     const weekdays = ['일요일', '월요일', '화요일', '수요일', '목요일', '금요일', '토요일'];
     const weekday = weekdays[now.getDay()];
     dayElement.textContent = weekday;
+}
+
+// 아날로그 시계 업데이트 함수
+function updateAnalogClock() {
+    const now = new Date();
+    const seconds = now.getSeconds();
+    const minutes = now.getMinutes();
+    const hours = now.getHours() % 12; // 12시간제 변환
+    
+    // 시침, 분침, 초침 각도 계산
+    const secondDegrees = (seconds / 60) * 360;
+    const minuteDegrees = ((minutes + seconds / 60) / 60) * 360;
+    const hourDegrees = ((hours + minutes / 60) / 12) * 360;
+    
+    // 시계 바늘 회전
+    const secondHand = document.querySelector('.second-hand');
+    const minuteHand = document.querySelector('.minute-hand');
+    const hourHand = document.querySelector('.hour-hand');
+    
+    secondHand.style.transform = `translateX(-50%) rotate(${secondDegrees}deg)`;
+    minuteHand.style.transform = `translateX(-50%) rotate(${minuteDegrees}deg)`;
+    hourHand.style.transform = `translateX(-50%) rotate(${hourDegrees}deg)`;
+    
+    // 아날로그 시계 날짜 및 요일 업데이트
+    const analogDateElement = document.getElementById('analog-date');
+    const analogDayElement = document.getElementById('analog-day');
+    
+    const year = now.getFullYear();
+    const month = padZero(now.getMonth() + 1);
+    const day = padZero(now.getDate());
+    analogDateElement.textContent = `${year}년 ${month}월 ${day}일`;
+    
+    const weekdays = ['일요일', '월요일', '화요일', '수요일', '목요일', '금요일', '토요일'];
+    const weekday = weekdays[now.getDay()];
+    analogDayElement.textContent = weekday;
 }
 
 // 세계 시계 업데이트 함수
