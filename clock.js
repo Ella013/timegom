@@ -80,32 +80,40 @@ function updateClock() {
 
 // 아날로그 시계 업데이트 함수
 function updateAnalogClock() {
-    const now = new Date();
-    const hours = now.getHours() % 12; // 12시간제로 변환
-    const minutes = now.getMinutes();
-    const seconds = now.getSeconds();
+    try {
+        const now = new Date();
+        const hours = now.getHours() % 12; // 12시간제로 변환
+        const minutes = now.getMinutes();
+        const seconds = now.getSeconds();
 
-    // 각도 계산 (12시 방향이 0도, 시계 방향으로 회전)
-    const hourDegrees = (hours * 30) + (minutes * 0.5); // 시침: 한 시간당 30도, 분당 추가 0.5도
-    const minuteDegrees = minutes * 6; // 분침: 분당 6도
-    const secondDegrees = seconds * 6; // 초침: 초당 6도
+        // 각도 계산 (12시 방향이 0도, 시계 방향으로 회전)
+        const hourDegrees = (hours * 30) + (minutes * 0.5); // 시침: 한 시간당 30도, 분당 추가 0.5도
+        const minuteDegrees = minutes * 6; // 분침: 분당 6도
+        const secondDegrees = seconds * 6; // 초침: 초당 6도
 
-    // 바늘 회전 적용 (직접 선택자로 접근)
-    document.querySelector('.hour-hand').style.transform = `rotate(${hourDegrees}deg)`;
-    document.querySelector('.minute-hand').style.transform = `rotate(${minuteDegrees}deg)`;
-    document.querySelector('.second-hand').style.transform = `rotate(${secondDegrees}deg)`;
-    
-    // 아날로그 시계 날짜 표시 업데이트
-    const analogDateElement = document.getElementById('analog-date');
-    
-    if (analogDateElement) {
-        // 날짜 및 요일 포맷팅
-        const year = now.getFullYear();
-        const month = padZero(now.getMonth() + 1);
-        const day = padZero(now.getDate());
-        const weekdays = ['일요일', '월요일', '화요일', '수요일', '목요일', '금요일', '토요일'];
-        const weekday = weekdays[now.getDay()];
-        analogDateElement.textContent = `${year}년 ${month}월 ${day}일 ${weekday}`;
+        // 바늘 회전 적용 (각 요소 존재 확인 후 적용)
+        const hourHand = document.querySelector('.hour-hand');
+        const minuteHand = document.querySelector('.minute-hand');
+        const secondHand = document.querySelector('.second-hand');
+        
+        if (hourHand) hourHand.style.transform = `rotate(${hourDegrees}deg)`;
+        if (minuteHand) minuteHand.style.transform = `rotate(${minuteDegrees}deg)`;
+        if (secondHand) secondHand.style.transform = `rotate(${secondDegrees}deg)`;
+        
+        // 아날로그 시계 날짜 표시 업데이트
+        const analogDateElement = document.getElementById('analog-date');
+        
+        if (analogDateElement) {
+            // 날짜 및 요일 포맷팅
+            const year = now.getFullYear();
+            const month = padZero(now.getMonth() + 1);
+            const day = padZero(now.getDate());
+            const weekdays = ['일요일', '월요일', '화요일', '수요일', '목요일', '금요일', '토요일'];
+            const weekday = weekdays[now.getDay()];
+            analogDateElement.textContent = `${year}년 ${month}월 ${day}일 ${weekday}`;
+        }
+    } catch (error) {
+        console.error('아날로그 시계 업데이트 오류:', error);
     }
 }
 

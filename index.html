@@ -177,5 +177,13 @@
 
     <script src="utils.js"></script>
     <script src="clock.js"></script>
+    <script>
+        // 페이지 로드 후 시계 작동 확인
+        window.onload = function() {
+            // 시계 강제 업데이트
+            if(typeof updateClock === 'function') updateClock();
+            if(typeof updateAnalogClock === 'function') updateAnalogClock();
+        };
+    </script>
 </body>
 </html> 
