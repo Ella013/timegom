@@ -105,8 +105,6 @@ function updateAnalogClock() {
     try {
         // 현재 시간 가져오기 (로컬 시간 강제 적용)
         const now = new Date();
-        // 현재 시간 디버깅
-        console.log('업데이트 시간:', now.toString());
         
         // 시간, 분, 초 구하기
         const hours = now.getHours() % 12; // 12시간제로 변환 (0-11)
@@ -120,21 +118,21 @@ function updateAnalogClock() {
         const minuteDegrees = minutes * 6; // 분침: 분당 6도
         const secondDegrees = seconds * 6; // 초침: 초당 6도
         
-        // 강제로 현재 시간 적용 (고정값으로 테스트)
-        document.querySelectorAll('.hour-hand').forEach(hand => {
-            hand.style.transform = `rotate(${hourDegrees}deg)`;
-            hand.style.transformOrigin = 'left center';
-        });
+        // 시계 바늘 회전 적용 (중요: transform-origin을 CSS와 일치시킴)
+        const hourHand = document.querySelector('.clock-face .hour-hand');
+        if (hourHand) {
+            hourHand.style.transform = `rotate(${hourDegrees}deg)`;
+        }
         
-        document.querySelectorAll('.minute-hand').forEach(hand => {
-            hand.style.transform = `rotate(${minuteDegrees}deg)`;
-            hand.style.transformOrigin = 'left center';
-        });
+        const minuteHand = document.querySelector('.clock-face .minute-hand');
+        if (minuteHand) {
+            minuteHand.style.transform = `rotate(${minuteDegrees}deg)`;
+        }
         
-        document.querySelectorAll('.second-hand').forEach(hand => {
-            hand.style.transform = `rotate(${secondDegrees}deg)`;
-            hand.style.transformOrigin = 'left center';
-        });
+        const secondHand = document.querySelector('.clock-face .second-hand');
+        if (secondHand) {
+            secondHand.style.transform = `rotate(${secondDegrees}deg)`;
+        }
         
         // 아날로그 시계 날짜 표시 업데이트
         const analogDateElement = document.getElementById('analog-date');
