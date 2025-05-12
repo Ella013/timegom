@@ -90,22 +90,15 @@ function updateAnalogClock() {
     const minuteDegrees = minutes * 6; // 분침: 분당 6도
     const secondDegrees = seconds * 6; // 초침: 초당 6도
 
-    // 바늘 회전 적용
-    const hourHand = document.querySelector('.hour-hand');
-    const minuteHand = document.querySelector('.minute-hand');
-    const secondHand = document.querySelector('.second-hand');
-    
-    if (hourHand && minuteHand && secondHand) {
-        hourHand.style.transform = `rotate(${hourDegrees}deg)`;
-        minuteHand.style.transform = `rotate(${minuteDegrees}deg)`;
-        secondHand.style.transform = `rotate(${secondDegrees}deg)`;
-    }
+    // 바늘 회전 적용 (직접 선택자로 접근)
+    document.querySelector('.hour-hand').style.transform = `rotate(${hourDegrees}deg)`;
+    document.querySelector('.minute-hand').style.transform = `rotate(${minuteDegrees}deg)`;
+    document.querySelector('.second-hand').style.transform = `rotate(${secondDegrees}deg)`;
     
     // 아날로그 시계 날짜 표시 업데이트
     const analogDateElement = document.getElementById('analog-date');
-    const analogDayElement = document.getElementById('analog-day');
     
-    if (analogDateElement && analogDayElement) {
+    if (analogDateElement) {
         // 날짜 및 요일 포맷팅
         const year = now.getFullYear();
         const month = padZero(now.getMonth() + 1);
@@ -113,9 +106,6 @@ function updateAnalogClock() {
         const weekdays = ['일요일', '월요일', '화요일', '수요일', '목요일', '금요일', '토요일'];
         const weekday = weekdays[now.getDay()];
         analogDateElement.textContent = `${year}년 ${month}월 ${day}일 ${weekday}`;
-        
-        // 요일 요소 숨기기 (날짜와 함께 표시하므로 별도의 요일 요소는 필요 없음)
-        analogDayElement.style.display = 'none';
     }
 }
 
