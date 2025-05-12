@@ -37,6 +37,12 @@ document.addEventListener('DOMContentLoaded', function() {
             digitalClock.style.display = 'none';
             // 상태 URL에 반영
             updateUrlParam('type', 'analog');
+            
+            // 아날로그 시계 즉시 업데이트 (보이는 시점에 강제 실행)
+            setTimeout(function() {
+                updateAnalogClock();
+                console.log('아날로그 시계 토글 후 강제 업데이트');
+            }, 10);
         });
         
         // 기존 인터벌 초기화
@@ -103,7 +109,7 @@ function updateClock() {
 // 아날로그 시계 업데이트 함수
 function updateAnalogClock() {
     try {
-        // 현재 시간 가져오기 (로컬 시간 강제 적용)
+        // 현재 시간 가져오기
         const now = new Date();
         
         // 시간, 분, 초 구하기
@@ -113,35 +119,37 @@ function updateAnalogClock() {
         
         console.log(`현재 시간: ${hours}시 ${minutes}분 ${seconds}초`);
         
-        // 각도 계산
+        // 시계 바늘 회전 각도 계산 (시계 방향)
         const hourDegrees = (hours * 30) + (minutes * 0.5); // 시침: 시간당 30도, 분당 0.5도 추가
         const minuteDegrees = minutes * 6; // 분침: 분당 6도
         const secondDegrees = seconds * 6; // 초침: 초당 6도
         
-        console.log(`계산된 각도 - 시침: ${hourDegrees}°, 분침: ${minuteDegrees}°, 초침: ${secondDegrees}°`);
+        // 시계 바늘 선택 (아날로그 시계 컨테이너 내부 요소 선택)
+        const analogClock = document.getElementById('analogClock');
         
-        // 시계 바늘 요소 직접 선택 (더 단순한 선택자 사용)
-        const hourHand = document.querySelector('.hour-hand');
-        const minuteHand = document.querySelector('.minute-hand');
-        const secondHand = document.querySelector('.second-hand');
-        
-        // 바늘 존재 확인 및 디버깅
-        console.log('시침 요소 존재:', !!hourHand);
-        console.log('분침 요소 존재:', !!minuteHand);
-        console.log('초침 요소 존재:', !!secondHand);
-        
-        // 시계 바늘 회전 적용
-        if (hourHand) {
-            // transform-origin은 CSS에 맡기고 transform만 적용
-            hourHand.style.transform = `rotate(${hourDegrees}deg)`;
-        }
-        
-        if (minuteHand) {
-            minuteHand.style.transform = `rotate(${minuteDegrees}deg)`;
-        }
-        
-        if (secondHand) {
-            secondHand.style.transform = `rotate(${secondDegrees}deg)`;
+        if (analogClock) {
+            // 각 바늘 요소 선택
+            const hourHand = analogClock.querySelector('.hour-hand');
+            const minuteHand = analogClock.querySelector('.minute-hand');
+            const secondHand = analogClock.querySelector('.second-hand');
+            
+            // 시간 바늘 회전
+            if (hourHand) {
+                hourHand.style.transform = `rotate(${hourDegrees}deg)`;
+                console.log('시침 회전 적용됨:', hourDegrees);
+            }
+            
+            // 분 바늘 회전
+            if (minuteHand) {
+                minuteHand.style.transform = `rotate(${minuteDegrees}deg)`;
+                console.log('분침 회전 적용됨:', minuteDegrees);
+            }
+            
+            // 초 바늘 회전
+            if (secondHand) {
+                secondHand.style.transform = `rotate(${secondDegrees}deg)`;
+                console.log('초침 회전 적용됨:', secondDegrees);
+            }
         }
         
         // 아날로그 시계 날짜 표시 업데이트
