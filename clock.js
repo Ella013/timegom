@@ -1,3 +1,7 @@
+// 전역 변수로 interval 저장
+let clockInterval;
+let analogClockInterval;
+
 // 시계 기능
 document.addEventListener('DOMContentLoaded', function() {
     if (document.getElementById('clock')) {
@@ -35,47 +39,65 @@ document.addEventListener('DOMContentLoaded', function() {
             updateUrlParam('type', 'analog');
         });
         
+        // 기존 인터벌 초기화
+        clearInterval(clockInterval);
+        clearInterval(analogClockInterval);
+        
         // 시계 초기화 및 업데이트
         updateClock();
         updateAnalogClock();
-        setInterval(updateClock, 1000);
-        setInterval(updateAnalogClock, 1000);
+        
+        // 1초마다 업데이트 (인터벌 저장)
+        clockInterval = setInterval(updateClock, 1000);
+        analogClockInterval = setInterval(updateAnalogClock, 1000);
         
         // 세계 시계 초기화 및 업데이트
         updateWorldClocks();
         setInterval(updateWorldClocks, 1000);
+        
+        console.log('시계 초기화 완료');
     }
 });
 
 // 디지털 시계 업데이트 함수
 function updateClock() {
-    const now = new Date();
-    
-    // 시간 업데이트
-    const timeElement = document.getElementById('time');
-    const hours24 = now.getHours();
-    const minutes = padZero(now.getMinutes());
-    const seconds = padZero(now.getSeconds());
-    
-    // 12시간제로 변경
-    const hours12 = hours24 % 12 || 12; // 0시는 12시로 표시
-    const ampm = hours24 < 12 ? '오전' : '오후';
-    
-    // 시간 형식: 오전/오후를 시간 앞에 표시
-    timeElement.innerHTML = `<span class="ampm">${ampm}</span> ${hours12}:${minutes}:${seconds}`;
-    
-    // 날짜 및 요일 업데이트
-    const dateElement = document.getElementById('date');
-    const year = now.getFullYear();
-    const month = padZero(now.getMonth() + 1);
-    const day = padZero(now.getDate());
-    const weekdays = ['일요일', '월요일', '화요일', '수요일', '목요일', '금요일', '토요일'];
-    const weekday = weekdays[now.getDay()];
-    dateElement.textContent = `${year}년 ${month}월 ${day}일 ${weekday}`;
-    
-    // 요일 요소 숨기기 (날짜와 함께 표시하므로 별도의 요일 요소는 필요 없음)
-    const dayElement = document.getElementById('day');
-    dayElement.style.display = 'none';
+    try {
+        const now = new Date();
+        
+        // 시간 업데이트
+        const timeElement = document.getElementById('time');
+        if (!timeElement) return;
+        
+        const hours24 = now.getHours();
+        const minutes = padZero(now.getMinutes());
+        const seconds = padZero(now.getSeconds());
+        
+        // 12시간제로 변경
+        const hours12 = hours24 % 12 || 12; // 0시는 12시로 표시
+        const ampm = hours24 < 12 ? '오전' : '오후';
+        
+        // 시간 형식: 오전/오후를 시간 앞에 표시
+        timeElement.innerHTML = `<span class="ampm">${ampm}</span> ${hours12}:${minutes}:${seconds}`;
+        
+        // 날짜 및 요일 업데이트
+        const dateElement = document.getElementById('date');
+        if (dateElement) {
+            const year = now.getFullYear();
+            const month = padZero(now.getMonth() + 1);
+            const day = padZero(now.getDate());
+            const weekdays = ['일요일', '월요일', '화요일', '수요일', '목요일', '금요일', '토요일'];
+            const weekday = weekdays[now.getDay()];
+            dateElement.textContent = `${year}년 ${month}월 ${day}일 ${weekday}`;
+        }
+        
+        // 요일 요소 숨기기 (날짜와 함께 표시하므로 별도의 요일 요소는 필요 없음)
+        const dayElement = document.getElementById('day');
+        if (dayElement) {
+            dayElement.style.display = 'none';
+        }
+    } catch (error) {
+        console.error('디지털 시계 업데이트 오류:', error);
+    }
 }
 
 // 아날로그 시계 업데이트 함수
@@ -93,11 +115,12 @@ function updateAnalogClock() {
 
         // 바늘 회전 적용 (각 요소 존재 확인 후 적용)
         const hourHand = document.querySelector('.hour-hand');
-        const minuteHand = document.querySelector('.minute-hand');
-        const secondHand = document.querySelector('.second-hand');
-        
         if (hourHand) hourHand.style.transform = `rotate(${hourDegrees}deg)`;
+        
+        const minuteHand = document.querySelector('.minute-hand');
         if (minuteHand) minuteHand.style.transform = `rotate(${minuteDegrees}deg)`;
+        
+        const secondHand = document.querySelector('.second-hand');
         if (secondHand) secondHand.style.transform = `rotate(${secondDegrees}deg)`;
         
         // 아날로그 시계 날짜 표시 업데이트
@@ -112,6 +135,9 @@ function updateAnalogClock() {
             const weekday = weekdays[now.getDay()];
             analogDateElement.textContent = `${year}년 ${month}월 ${day}일 ${weekday}`;
         }
+        
+        // 디버깅용 로그
+        console.log(`아날로그 시계 업데이트: ${hours}시 ${minutes}분 ${seconds}초`);
     } catch (error) {
         console.error('아날로그 시계 업데이트 오류:', error);
     }

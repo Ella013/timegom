@@ -178,11 +178,26 @@
     <script src="utils.js"></script>
     <script src="clock.js"></script>
     <script>
-        // 페이지 로드 후 시계 작동 확인
+        // 페이지 로드 후 시계 작동 확인 (추가 안전 장치)
         window.onload = function() {
-            // 시계 강제 업데이트
-            if(typeof updateClock === 'function') updateClock();
-            if(typeof updateAnalogClock === 'function') updateAnalogClock();
+            console.log('페이지 완전 로드됨');
+            
+            // 시계 인터벌이 없는 경우를 대비한 추가 안전장치
+            if (typeof updateClock === 'function') {
+                updateClock();
+                if (typeof clockInterval === 'undefined' || clockInterval === null) {
+                    console.log('디지털 시계 인터벌 재설정');
+                    clockInterval = setInterval(updateClock, 1000);
+                }
+            }
+            
+            if (typeof updateAnalogClock === 'function') {
+                updateAnalogClock();
+                if (typeof analogClockInterval === 'undefined' || analogClockInterval === null) {
+                    console.log('아날로그 시계 인터벌 재설정');
+                    analogClockInterval = setInterval(updateAnalogClock, 1000);
+                }
+            }
         };
     </script>
 </body>
