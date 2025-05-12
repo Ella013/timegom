@@ -118,18 +118,28 @@ function updateAnalogClock() {
         const minuteDegrees = minutes * 6; // 분침: 분당 6도
         const secondDegrees = seconds * 6; // 초침: 초당 6도
         
-        // 시계 바늘 회전 적용 (중요: transform-origin을 CSS와 일치시킴)
-        const hourHand = document.querySelector('.clock-face .hour-hand');
+        console.log(`계산된 각도 - 시침: ${hourDegrees}°, 분침: ${minuteDegrees}°, 초침: ${secondDegrees}°`);
+        
+        // 시계 바늘 요소 직접 선택 (더 단순한 선택자 사용)
+        const hourHand = document.querySelector('.hour-hand');
+        const minuteHand = document.querySelector('.minute-hand');
+        const secondHand = document.querySelector('.second-hand');
+        
+        // 바늘 존재 확인 및 디버깅
+        console.log('시침 요소 존재:', !!hourHand);
+        console.log('분침 요소 존재:', !!minuteHand);
+        console.log('초침 요소 존재:', !!secondHand);
+        
+        // 시계 바늘 회전 적용
         if (hourHand) {
+            // transform-origin은 CSS에 맡기고 transform만 적용
             hourHand.style.transform = `rotate(${hourDegrees}deg)`;
         }
         
-        const minuteHand = document.querySelector('.clock-face .minute-hand');
         if (minuteHand) {
             minuteHand.style.transform = `rotate(${minuteDegrees}deg)`;
         }
         
-        const secondHand = document.querySelector('.clock-face .second-hand');
         if (secondHand) {
             secondHand.style.transform = `rotate(${secondDegrees}deg)`;
         }
