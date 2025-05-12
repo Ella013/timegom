@@ -108,7 +108,7 @@ function updateAnalogClock() {
         const minutes = now.getMinutes();
         const seconds = now.getSeconds();
 
-        console.log(`현재 시간: ${hours}시 ${minutes}분 ${seconds}초`);
+        console.log(`실제 현재 시간: ${hours}시 ${minutes}분 ${seconds}초`);
 
         // 각도 계산 (12시 방향이 0도, 시계 방향으로 회전)
         // 시침: 한 시간당 30도, 분당 추가 0.5도
@@ -120,13 +120,14 @@ function updateAnalogClock() {
 
         console.log(`각도 - 시침: ${hourDegrees}°, 분침: ${minuteDegrees}°, 초침: ${secondDegrees}°`);
 
-        // 시계 바늘 요소 직접 가져오기 - getElementById 사용
-        const hourHand = document.querySelector('.analog-clock .hour-hand');
-        const minuteHand = document.querySelector('.analog-clock .minute-hand');
-        const secondHand = document.querySelector('.analog-clock .second-hand');
+        // 시계 바늘 요소 직접 가져오기
+        const hourHand = document.querySelector('.clock-face .hour-hand');
+        const minuteHand = document.querySelector('.clock-face .minute-hand');
+        const secondHand = document.querySelector('.clock-face .second-hand');
 
-        // 바늘 회전 적용 - 직접 style 적용
+        // 바늘의 transform-origin 설정 (회전 기준점)
         if (hourHand) {
+            hourHand.style.transformOrigin = 'left center';
             hourHand.style.transform = `rotate(${hourDegrees}deg)`;
             console.log('시침 회전 적용됨:', hourDegrees);
         } else {
@@ -134,6 +135,7 @@ function updateAnalogClock() {
         }
         
         if (minuteHand) {
+            minuteHand.style.transformOrigin = 'left center';
             minuteHand.style.transform = `rotate(${minuteDegrees}deg)`;
             console.log('분침 회전 적용됨:', minuteDegrees);
         } else {
@@ -141,6 +143,7 @@ function updateAnalogClock() {
         }
         
         if (secondHand) {
+            secondHand.style.transformOrigin = 'left center';
             secondHand.style.transform = `rotate(${secondDegrees}deg)`;
             console.log('초침 회전 적용됨:', secondDegrees);
         } else {
