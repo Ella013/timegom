@@ -182,6 +182,20 @@
         document.addEventListener('DOMContentLoaded', function() {
             console.log('DOM이 로드됨');
             
+            // 아날로그 모드 전환 시 즉시 업데이트 되도록 함
+            const analogToggle = document.getElementById('analogToggle');
+            if (analogToggle) {
+                analogToggle.addEventListener('click', function() {
+                    // 0.5초 후에 아날로그 시계 강제 업데이트 (화면 전환 후)
+                    setTimeout(function() {
+                        if (typeof updateAnalogClock === 'function') {
+                            updateAnalogClock();
+                            console.log('아날로그 시계 강제 업데이트');
+                        }
+                    }, 500);
+                });
+            }
+            
             // 페이지가 로드되자마자 시계 시작
             if (typeof updateClock === 'function') {
                 updateClock();
@@ -212,19 +226,13 @@
         window.onload = function() {
             console.log('페이지 완전 로드됨 (window.onload)');
             
-            // 아날로그 시계 토글 버튼 클릭 시 즉시 시계 업데이트
-            const analogToggle = document.getElementById('analogToggle');
-            if (analogToggle) {
-                analogToggle.addEventListener('click', function() {
-                    if (typeof updateAnalogClock === 'function') {
-                        setTimeout(updateAnalogClock, 100);
-                        console.log('아날로그 모드 전환 - 시계 강제 업데이트');
-                    }
-                });
-            }
-            
             // 시계 인터벌 확인 및 재설정
             setTimeout(function() {
+                if (typeof updateAnalogClock === 'function') {
+                    updateAnalogClock();
+                    console.log('아날로그 시계 최종 강제 업데이트');
+                }
+                
                 if (typeof updateAnalogClock === 'function' && (typeof analogClockInterval === 'undefined' || analogClockInterval === null)) {
                     console.log('아날로그 시계 인터벌 재설정 (안전장치)');
                     analogClockInterval = setInterval(updateAnalogClock, 1000);
@@ -234,7 +242,7 @@
                     console.log('디지털 시계 인터벌 재설정 (안전장치)');
                     clockInterval = setInterval(updateClock, 1000);
                 }
-            }, 500);
+            }, 1000);
         };
     </script>
 </body>

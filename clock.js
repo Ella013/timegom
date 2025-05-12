@@ -103,39 +103,41 @@ function updateClock() {
 // 아날로그 시계 업데이트 함수
 function updateAnalogClock() {
     try {
+        // 현재 시간 가져오기 (로컬 시간 강제 적용)
         const now = new Date();
-        const hours = now.getHours() % 12; // 12시간제로 변환
+        // 현재 시간 디버깅
+        console.log('업데이트 시간:', now.toString());
+        
+        // 시간, 분, 초 구하기
+        const hours = now.getHours() % 12; // 12시간제로 변환 (0-11)
         const minutes = now.getMinutes();
         const seconds = now.getSeconds();
-
-        console.log(`실제 현재 시간: ${hours}시 ${minutes}분 ${seconds}초`);
-
-        // 각도 계산 (12시 방향이 0도, 시계 방향으로 회전)
-        const hourDegrees = (hours * 30) + (minutes * 0.5);
-        const minuteDegrees = minutes * 6;
-        const secondDegrees = seconds * 6;
-
-        // 가장 단순한 방법: 직접 인라인 스타일 설정
+        
+        console.log(`현재 시간: ${hours}시 ${minutes}분 ${seconds}초`);
+        
+        // 각도 계산
+        const hourDegrees = (hours * 30) + (minutes * 0.5); // 시침: 시간당 30도, 분당 0.5도 추가
+        const minuteDegrees = minutes * 6; // 분침: 분당 6도
+        const secondDegrees = seconds * 6; // 초침: 초당 6도
+        
+        // 강제로 현재 시간 적용 (고정값으로 테스트)
         document.querySelectorAll('.hour-hand').forEach(hand => {
-            hand.setAttribute('style', `transform: rotate(${hourDegrees}deg); transform-origin: left center;`);
+            hand.style.transform = `rotate(${hourDegrees}deg)`;
+            hand.style.transformOrigin = 'left center';
         });
         
         document.querySelectorAll('.minute-hand').forEach(hand => {
-            hand.setAttribute('style', `transform: rotate(${minuteDegrees}deg); transform-origin: left center;`);
+            hand.style.transform = `rotate(${minuteDegrees}deg)`;
+            hand.style.transformOrigin = 'left center';
         });
         
         document.querySelectorAll('.second-hand').forEach(hand => {
-            hand.setAttribute('style', `transform: rotate(${secondDegrees}deg); transform-origin: left center;`);
+            hand.style.transform = `rotate(${secondDegrees}deg)`;
+            hand.style.transformOrigin = 'left center';
         });
-        
-        // 테스트용 고정 값 (실패 시 이 부분을 주석 해제하여 테스트)
-        // document.querySelectorAll('.hour-hand').forEach(hand => {
-        //     hand.setAttribute('style', 'transform: rotate(45deg); transform-origin: left center;');
-        // });
         
         // 아날로그 시계 날짜 표시 업데이트
         const analogDateElement = document.getElementById('analog-date');
-        
         if (analogDateElement) {
             const year = now.getFullYear();
             const month = padZero(now.getMonth() + 1);
