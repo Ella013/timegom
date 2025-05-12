@@ -108,20 +108,44 @@ function updateAnalogClock() {
         const minutes = now.getMinutes();
         const seconds = now.getSeconds();
 
-        // 각도 계산 (12시 방향이 0도, 시계 방향으로 회전)
-        const hourDegrees = (hours * 30) + (minutes * 0.5); // 시침: 한 시간당 30도, 분당 추가 0.5도
-        const minuteDegrees = minutes * 6; // 분침: 분당 6도
-        const secondDegrees = seconds * 6; // 초침: 초당 6도
+        console.log(`현재 시간: ${hours}시 ${minutes}분 ${seconds}초`);
 
-        // 바늘 회전 적용 (각 요소 존재 확인 후 적용)
-        const hourHand = document.querySelector('.hour-hand');
-        if (hourHand) hourHand.style.transform = `rotate(${hourDegrees}deg)`;
+        // 각도 계산 (12시 방향이 0도, 시계 방향으로 회전)
+        // 시침: 한 시간당 30도, 분당 추가 0.5도
+        const hourDegrees = (hours * 30) + (minutes * 0.5);
+        // 분침: 분당 6도
+        const minuteDegrees = minutes * 6;
+        // 초침: 초당 6도
+        const secondDegrees = seconds * 6;
+
+        console.log(`각도 - 시침: ${hourDegrees}°, 분침: ${minuteDegrees}°, 초침: ${secondDegrees}°`);
+
+        // 시계 바늘 요소 직접 가져오기 - getElementById 사용
+        const hourHand = document.querySelector('.analog-clock .hour-hand');
+        const minuteHand = document.querySelector('.analog-clock .minute-hand');
+        const secondHand = document.querySelector('.analog-clock .second-hand');
+
+        // 바늘 회전 적용 - 직접 style 적용
+        if (hourHand) {
+            hourHand.style.transform = `rotate(${hourDegrees}deg)`;
+            console.log('시침 회전 적용됨:', hourDegrees);
+        } else {
+            console.error('시침 요소를 찾을 수 없음');
+        }
         
-        const minuteHand = document.querySelector('.minute-hand');
-        if (minuteHand) minuteHand.style.transform = `rotate(${minuteDegrees}deg)`;
+        if (minuteHand) {
+            minuteHand.style.transform = `rotate(${minuteDegrees}deg)`;
+            console.log('분침 회전 적용됨:', minuteDegrees);
+        } else {
+            console.error('분침 요소를 찾을 수 없음');
+        }
         
-        const secondHand = document.querySelector('.second-hand');
-        if (secondHand) secondHand.style.transform = `rotate(${secondDegrees}deg)`;
+        if (secondHand) {
+            secondHand.style.transform = `rotate(${secondDegrees}deg)`;
+            console.log('초침 회전 적용됨:', secondDegrees);
+        } else {
+            console.error('초침 요소를 찾을 수 없음');
+        }
         
         // 아날로그 시계 날짜 표시 업데이트
         const analogDateElement = document.getElementById('analog-date');
@@ -135,9 +159,6 @@ function updateAnalogClock() {
             const weekday = weekdays[now.getDay()];
             analogDateElement.textContent = `${year}년 ${month}월 ${day}일 ${weekday}`;
         }
-        
-        // 디버깅용 로그
-        console.log(`아날로그 시계 업데이트: ${hours}시 ${minutes}분 ${seconds}초`);
     } catch (error) {
         console.error('아날로그 시계 업데이트 오류:', error);
     }

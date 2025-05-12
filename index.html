@@ -178,26 +178,63 @@
     <script src="utils.js"></script>
     <script src="clock.js"></script>
     <script>
-        // 페이지 로드 후 시계 작동 확인 (추가 안전 장치)
-        window.onload = function() {
-            console.log('페이지 완전 로드됨');
+        // 시계 작동 강제 시작
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOM이 로드됨');
             
-            // 시계 인터벌이 없는 경우를 대비한 추가 안전장치
+            // 페이지가 로드되자마자 시계 시작
             if (typeof updateClock === 'function') {
                 updateClock();
-                if (typeof clockInterval === 'undefined' || clockInterval === null) {
-                    console.log('디지털 시계 인터벌 재설정');
-                    clockInterval = setInterval(updateClock, 1000);
+                console.log('디지털 시계 첫 실행');
+                
+                // 인터벌 설정 (이전 인터벌 제거 후 새로 설정)
+                if (typeof clockInterval !== 'undefined') {
+                    clearInterval(clockInterval);
                 }
+                clockInterval = setInterval(updateClock, 1000);
+                console.log('디지털 시계 인터벌 설정됨');
             }
             
             if (typeof updateAnalogClock === 'function') {
                 updateAnalogClock();
-                if (typeof analogClockInterval === 'undefined' || analogClockInterval === null) {
-                    console.log('아날로그 시계 인터벌 재설정');
+                console.log('아날로그 시계 첫 실행');
+                
+                // 인터벌 설정 (이전 인터벌 제거 후 새로 설정)
+                if (typeof analogClockInterval !== 'undefined') {
+                    clearInterval(analogClockInterval);
+                }
+                analogClockInterval = setInterval(updateAnalogClock, 1000);
+                console.log('아날로그 시계 인터벌 설정됨');
+            }
+        });
+        
+        // 추가 안전 장치 - 페이지 완전 로드 후에도 실행
+        window.onload = function() {
+            console.log('페이지 완전 로드됨 (window.onload)');
+            
+            // 아날로그 시계 토글 버튼 클릭 시 즉시 시계 업데이트
+            const analogToggle = document.getElementById('analogToggle');
+            if (analogToggle) {
+                analogToggle.addEventListener('click', function() {
+                    if (typeof updateAnalogClock === 'function') {
+                        setTimeout(updateAnalogClock, 100);
+                        console.log('아날로그 모드 전환 - 시계 강제 업데이트');
+                    }
+                });
+            }
+            
+            // 시계 인터벌 확인 및 재설정
+            setTimeout(function() {
+                if (typeof updateAnalogClock === 'function' && (typeof analogClockInterval === 'undefined' || analogClockInterval === null)) {
+                    console.log('아날로그 시계 인터벌 재설정 (안전장치)');
                     analogClockInterval = setInterval(updateAnalogClock, 1000);
                 }
-            }
+                
+                if (typeof updateClock === 'function' && (typeof clockInterval === 'undefined' || clockInterval === null)) {
+                    console.log('디지털 시계 인터벌 재설정 (안전장치)');
+                    clockInterval = setInterval(updateClock, 1000);
+                }
+            }, 500);
         };
     </script>
 </body>
