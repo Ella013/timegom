@@ -38,11 +38,14 @@ document.addEventListener('DOMContentLoaded', function() {
             // 상태 URL에 반영
             updateUrlParam('type', 'analog');
             
-            // 아날로그 시계 즉시 업데이트 (보이는 시점에 강제 실행)
-            setTimeout(function() {
+            // requestAnimationFrame을 사용하여 다음 프레임에서 업데이트
+            requestAnimationFrame(() => {
                 updateAnalogClock();
-                console.log('아날로그 시계 토글 후 강제 업데이트');
-            }, 10);
+                // 인터벌이 없을 때만 새로 설정
+                if (!analogClockInterval) {
+                    analogClockInterval = setInterval(updateAnalogClock, 1000);
+                }
+            });
         });
         
         // 기존 인터벌 초기화
@@ -65,10 +68,17 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
+// 한국 표준시(KST)로 Date 객체 반환
+function getKSTDate() {
+    const now = new Date();
+    const utc = now.getTime() + (now.getTimezoneOffset() * 60000);
+    return new Date(utc + (9 * 60 * 60 * 1000));
+}
+
 // 디지털 시계 업데이트 함수
 function updateClock() {
     try {
-        const now = new Date();
+        const now = getKSTDate();
         
         // 시간 업데이트
         const timeElement = document.getElementById('time');
@@ -109,50 +119,26 @@ function updateClock() {
 // 아날로그 시계 업데이트 함수
 function updateAnalogClock() {
     try {
-        // 현재 시간 가져오기
-        const now = new Date();
-        
-        // 시간, 분, 초 구하기
-        const hours = now.getHours() % 12; // 12시간제로 변환 (0-11)
+        const now = getKSTDate();
+        const hours = now.getHours();
         const minutes = now.getMinutes();
         const seconds = now.getSeconds();
-        
-        console.log(`현재 시간: ${hours}시 ${minutes}분 ${seconds}초`);
-        
-        // 시계 바늘 회전 각도 계산 (시계 방향)
-        const hourDegrees = (hours * 30) + (minutes * 0.5); // 시침: 시간당 30도, 분당 0.5도 추가
-        const minuteDegrees = minutes * 6; // 분침: 분당 6도
-        const secondDegrees = seconds * 6; // 초침: 초당 6도
-        
-        // 시계 바늘 선택 (아날로그 시계 컨테이너 내부 요소 선택)
+
+        // 각도 계산 (정확하게)
+        const hourDegrees = ((hours % 12) + minutes / 60 + seconds / 3600) * 30;
+        const minuteDegrees = (minutes + seconds / 60) * 6;
+        const secondDegrees = seconds * 6;
+
         const analogClock = document.getElementById('analogClock');
-        
         if (analogClock) {
-            // 각 바늘 요소 선택
             const hourHand = analogClock.querySelector('.hour-hand');
             const minuteHand = analogClock.querySelector('.minute-hand');
             const secondHand = analogClock.querySelector('.second-hand');
-            
-            // 시간 바늘 회전
-            if (hourHand) {
-                hourHand.style.transform = `rotate(${hourDegrees}deg)`;
-                console.log('시침 회전 적용됨:', hourDegrees);
-            }
-            
-            // 분 바늘 회전
-            if (minuteHand) {
-                minuteHand.style.transform = `rotate(${minuteDegrees}deg)`;
-                console.log('분침 회전 적용됨:', minuteDegrees);
-            }
-            
-            // 초 바늘 회전
-            if (secondHand) {
-                secondHand.style.transform = `rotate(${secondDegrees}deg)`;
-                console.log('초침 회전 적용됨:', secondDegrees);
-            }
+            if (hourHand) hourHand.style.transform = `rotate(${hourDegrees}deg)`;
+            if (minuteHand) minuteHand.style.transform = `rotate(${minuteDegrees}deg)`;
+            if (secondHand) secondHand.style.transform = `rotate(${secondDegrees}deg)`;
         }
-        
-        // 아날로그 시계 날짜 표시 업데이트
+
         const analogDateElement = document.getElementById('analog-date');
         if (analogDateElement) {
             const year = now.getFullYear();
