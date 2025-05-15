@@ -17,6 +17,17 @@ function formatTime(ms) {
     return `${padZero(hours)}:${padZero(minutes)}:${padZero(seconds)}`;
 }
 
+// 밀리초를 시:분:초:밀리초 형식으로 변환
+function formatTimeWithMs(ms) {
+    const totalSeconds = Math.floor(ms / 1000);
+    const hours = Math.floor(totalSeconds / 3600);
+    const minutes = Math.floor((totalSeconds % 3600) / 60);
+    const seconds = totalSeconds % 60;
+    const milliseconds = Math.floor((ms % 1000) / 10); // 밀리초의 앞 두 자리
+    
+    return `${padZero(hours)}:${padZero(minutes)}:${padZero(seconds)}.${padZero(milliseconds)}`;
+}
+
 // 밀리초를 분:초 형식으로 변환
 function formatTimeMinSec(ms) {
     const totalSeconds = Math.floor(ms / 1000);

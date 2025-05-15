@@ -16,11 +16,14 @@ document.addEventListener('DOMContentLoaded', function() {
         let isRunning = false;
         let lastLapTime = 0;
         
+        // 초기 표시
+        stopwatchDisplay.innerHTML = formatTimeWithMs(0);
+        
         // 시작 버튼 이벤트 리스너
         startBtn.addEventListener('click', function() {
             if (!isRunning) {
                 startTime = Date.now() - elapsedTime;
-                stopwatchInterval = setInterval(updateStopwatch, 10);
+                stopwatchInterval = setInterval(updateStopwatch, 10); // 10ms마다 업데이트
                 isRunning = true;
                 
                 // 버튼 상태 변경
@@ -60,7 +63,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // 초기화 버튼 이벤트 리스너
         resetBtn.addEventListener('click', function() {
             clearInterval(stopwatchInterval);
-            stopwatchDisplay.textContent = '00:00:00';
+            stopwatchDisplay.innerHTML = formatTimeWithMs(0);
             lapsList.innerHTML = '';
             
             // 변수 초기화
@@ -81,7 +84,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const currentTime = Date.now();
             elapsedTime = currentTime - startTime;
             
-            stopwatchDisplay.textContent = formatTime(elapsedTime);
+            stopwatchDisplay.innerHTML = formatTimeWithMs(elapsedTime);
         }
         
         // 기록 추가 함수
@@ -90,9 +93,9 @@ document.addEventListener('DOMContentLoaded', function() {
             
             const li = document.createElement('li');
             li.innerHTML = `
-                <span>랩 ${lapCount}</span>
-                <span>랩 시간: ${formatTime(lapTime)}</span>
-                <span>총 시간: ${formatTime(totalTime)}</span>
+                <span class="lap-number">랩 ${lapCount}</span>
+                <span class="lap-time">랩 시간: ${formatTimeWithMs(lapTime)}</span>
+                <span class="total-time">총 시간: ${formatTimeWithMs(totalTime)}</span>
             `;
             
             // 맨 앞에 추가

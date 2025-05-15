@@ -22,6 +22,7 @@
                 <ul>
                     <li><a href="index.html"><i class="fas fa-clock"></i> 시계</a></li>
                     <li><a href="timer.html"><i class="fas fa-hourglass-half"></i> 타이머</a></li>
+                    <li><a href="pomodoro.html"><i class="fas fa-brain"></i> 집중 타이머</a></li>
                     <li><a href="stopwatch.html" class="active"><i class="fas fa-stopwatch"></i> 스톱워치</a></li>
                 </ul>
             </nav>
@@ -34,18 +35,18 @@
             
             <div class="clock-display" id="stopwatch">00:00:00</div>
             
-            <div class="lap-times" id="lapTimes">
-                <h3>기록</h3>
-                <ul id="lapsList">
-                    <!-- 여기에 기록들이 추가됩니다 -->
-                </ul>
-            </div>
-            
             <div class="control-buttons">
                 <button id="startBtn" class="button primary-button">시작</button>
                 <button id="pauseBtn" class="button primary-button" disabled>일시정지</button>
                 <button id="lapBtn" class="button primary-button" disabled>기록</button>
                 <button id="resetBtn" class="button secondary-button" disabled>초기화</button>
+            </div>
+            
+            <div class="lap-times" id="lapTimes">
+                <h3>기록</h3>
+                <ul id="lapsList">
+                    <!-- 여기에 기록들이 추가됩니다 -->
+                </ul>
             </div>
         </section>
 
@@ -68,6 +69,7 @@
         </div>
     </footer>
 
+    <script src="utils.js"></script>
     <script src="script.js"></script>
     <script src="stopwatch.js"></script>
 </body>

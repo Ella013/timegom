@@ -280,41 +280,11 @@ h3 {
 }
 
 /* 스톱워치 */
-.lap-times {
-    max-height: 300px;
-    overflow-y: auto;
-    margin: 1.5rem 0;
-    background-color: #f8f9fa;
-    border-radius: 12px;
-    padding: 1rem;
-}
-
-#lapsList {
-    list-style: none;
-}
-
-#lapsList li {
-    padding: 1rem;
-    border-bottom: 1px solid #eee;
-    display: flex;
-    justify-content: space-between;
-    transition: background-color 0.2s ease;
-}
-
-#lapsList li:hover {
-    background-color: #f1f3f5;
-}
-
-#lapsList li:last-child {
-    border-bottom: none;
-}
-
-/* 버튼 */
 .control-buttons {
     display: flex;
     justify-content: center;
     gap: 1rem;
-    margin-top: 2rem;
+    margin: 1.5rem 0;
 }
 
 .button {
@@ -982,13 +952,16 @@ footer {
 }
 
 #stopwatch {
-    font-size: 9rem;
-    font-weight: 600;
-    color: #555;
-    font-family: 'digital-7', monospace;
+    font-family: 'Roboto Mono', monospace;
+    font-size: 8rem;
+    font-weight: 700;
     text-align: center;
-    margin: 2rem auto;
-    letter-spacing: 0;
+    margin: 30px auto;
+    color: var(--primary-color);
+    letter-spacing: 2px;
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.1);
+    width: 100%;
+    display: block;
 }
 
 /* 일시정지 버튼 기본 상태에서 숨기기 */
@@ -1180,4 +1153,215 @@ footer {
 
 .test-sound-btn:hover {
     background-color: #e0e0e0;
+}
+
+/* 스톱워치 밀리초 스타일 */
+.ms {
+    font-size: 0.6em;
+    opacity: 0.9;
+    color: var(--secondary-color);
+    display: inline-block;
+    min-width: 70px;
+    margin-left: 5px;
+    font-weight: 600;
+}
+
+/* 랩타임 스타일 개선 */
+#lapsList li {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px;
+    border-bottom: 1px solid #eee;
+    font-family: 'Roboto Mono', monospace;
+}
+
+#lapsList li:nth-child(odd) {
+    background-color: rgba(0, 0, 0, 0.02);
+}
+
+.lap-number {
+    font-weight: 600;
+    color: var(--primary-color);
+    min-width: 60px;
+}
+
+.lap-time {
+    flex-grow: 1;
+    text-align: center;
+}
+
+.total-time {
+    color: #555;
+}
+
+.lap-times {
+    max-height: 300px;
+    overflow-y: auto;
+    margin-top: 2rem;
+    background-color: #f8f9fa;
+    border-radius: 12px;
+    padding: 1rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+/* 집중 타이머(Pomodoro) 스타일 */
+.pomodoro-info {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.status-display {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: #f8f9fa;
+    border-radius: 10px;
+    padding: 10px 25px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.status-badge {
+    font-size: 1.4rem;
+    font-weight: 600;
+    color: var(--primary-color);
+    margin-bottom: 5px;
+}
+
+.cycle-count {
+    font-size: 1rem;
+    color: #777;
+}
+
+/* 집중 타이머 컨테이너 레이아웃 수정 */
+.pomodoro-section .circle-timer-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 30px;
+}
+
+.pomodoro-timer {
+    position: relative;
+    display: flex !important; /* 항상 표시되도록 */
+    margin-bottom: 20px;
+}
+
+.timer-mode {
+    font-size: 1.2rem;
+    font-weight: 500;
+    color: var(--primary-color);
+    margin-bottom: 10px;
+}
+
+.pomodoro-display {
+    font-size: 5rem !important;
+    margin: 10px 0;
+}
+
+.pomodoro-settings {
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: center;
+    gap: 20px;
+    margin: 20px 0;
+    width: 100%;
+    max-width: 100%;
+    padding: 25px;
+    background-color: #f8f9fa;
+    border-radius: 12px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+    overflow-x: auto;
+}
+
+.setting-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: white;
+    padding: 15px;
+    border-radius: 8px;
+    min-width: 140px;
+    flex: 0 0 auto;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.setting-item label {
+    font-size: 0.9rem;
+    color: #666;
+    margin-bottom: 10px;
+    width: 100%;
+    text-align: center;
+}
+
+.setting-control {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #333;
+    width: 100%;
+    justify-content: space-between;
+}
+
+.setting-btn {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    font-size: 1.1rem;
+    font-weight: bold;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.2s;
+    flex-shrink: 0;
+}
+
+.setting-btn:hover {
+    background-color: var(--secondary-color);
+}
+
+.skip-btn {
+    background-color: #7a7a7a;
+    color: white;
+}
+
+/* 집중/휴식 모드별 색상 */
+.focus-mode .progress-ring-circle {
+    stroke: var(--primary-color);
+}
+
+.break-mode .progress-ring-circle {
+    stroke: var(--secondary-color);
+}
+
+.break-mode .status-badge {
+    color: var(--secondary-color);
+}
+
+.long-break-mode .progress-ring-circle {
+    stroke: #3f9277;
+}
+
+.long-break-mode .status-badge {
+    color: #3f9277;
+}
+
+.pomodoro-section .control-buttons-container {
+    position: static;
+    width: 100%;
+    margin-top: 20px;
+    z-index: 15;
+}
+
+.pomodoro-section .control-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin: 0;
 } 
