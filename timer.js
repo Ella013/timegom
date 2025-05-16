@@ -1,5 +1,8 @@
 // 타이머 기능
 document.addEventListener('DOMContentLoaded', function() {
+    // 오디오 컨텍스트 초기화 (페이지 로드 시 미리 생성)
+    initializeAudioContext();
+
     if (document.getElementById('timer')) {
         // 타이머 요소 선택
         const timerContainer = document.querySelector('.circle-timer-container');
@@ -11,6 +14,16 @@ document.addEventListener('DOMContentLoaded', function() {
         const resetBtn = document.getElementById('resetBtn');
         const timerAlarm = document.getElementById('timerAlarm');
         const alarmCloseBtn = document.getElementById('alarmCloseBtn');
+        
+        // 페이지 가시성 변경 감지
+        document.addEventListener('visibilitychange', handleVisibilityChange);
+        
+        // 사용자의 첫 인터랙션으로 오디오 컨텍스트 활성화
+        document.body.addEventListener('click', function() {
+            if (audioContext && audioContext.state === 'suspended') {
+                audioContext.resume();
+            }
+        }, { once: true });
         
         // 원형 프로그레스 요소
         const progressRing = document.querySelector('.progress-ring-circle');
@@ -175,17 +188,57 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // 타이머 완료 함수
         function timerComplete() {
-            // 알람 소리 재생
-            playSound('timer');
+            // 오디오 요소를 직접 페이지에 추가
+            const audio = document.createElement('audio');
+            audio.src = window.customAlarmSound || './audio/ringtone-wow.mp3';
+            audio.loop = true;
+            document.body.appendChild(audio);
+            
+            // 소리 재생 시도
+            audio.play().catch(e => console.error('알람 재생 실패:', e));
+            
+            // 알람 전역 변수에 저장
+            alarmAudio = audio;
             
             // 알람 메시지 표시
             timerAlarm.classList.add('show');
+            
+            // 웹 알림 표시 시도
+            try {
+                // 알림 권한 즉시 요청
+                if (Notification.permission !== "granted") {
+                    Notification.requestPermission();
+                }
+                
+                // 알림 표시
+                if (Notification.permission === "granted") {
+                    const notification = new Notification('타이머 완료!', {
+                        body: '설정한 시간이 끝났습니다.',
+                        icon: './timegom Logo.png',
+                        sound: './audio/ringtone-wow.mp3', // 알림음 지정
+                        vibrate: [200, 100, 200],          // 진동 패턴
+                        silent: false                      // 알림음 활성화
+                    });
+                    
+                    // 알림 클릭시 창 포커스
+                    notification.onclick = function() {
+                        window.focus();
+                        this.close();
+                    };
+                }
+            } catch (e) {
+                console.error('알림 표시 실패:', e);
+            }
             
             // 알람창 닫기 버튼 이벤트
             if (alarmCloseBtn) {
                 alarmCloseBtn.addEventListener('click', function() {
                     // 알람음 중지
-                    stopSound();
+                    if (alarmAudio) {
+                        alarmAudio.pause();
+                        alarmAudio.remove(); // DOM에서 제거
+                        alarmAudio = null;
+                    }
                     timerAlarm.classList.remove('show');
                     resetTimer();
                 });
@@ -377,45 +430,206 @@ function padZero(num) {
 
 // 글로벌 오디오 객체 추가
 let alarmAudio = null;
+let audioContext = null;
+let audioBuffer = null;
+let isAudioInitialized = false;
+
+// 오디오 컨텍스트 초기화 함수
+function initializeAudioContext() {
+    // AudioContext 생성
+    try {
+        window.AudioContext = window.AudioContext || window.webkitAudioContext;
+        audioContext = new AudioContext();
+        
+        // 기본 알람 사운드 미리 로드
+        fetch('./audio/ringtone-wow.mp3')
+            .then(response => response.arrayBuffer())
+            .then(arrayBuffer => audioContext.decodeAudioData(arrayBuffer))
+            .then(decodedData => {
+                audioBuffer = decodedData;
+                isAudioInitialized = true;
+                console.log('오디오 초기화 완료');
+            })
+            .catch(error => console.error('오디오 초기화 실패:', error));
+    } catch (e) {
+        console.error('Web Audio API를 지원하지 않는 브라우저입니다:', e);
+    }
+}
+
+// 페이지 가시성 변경 시 처리
+function handleVisibilityChange() {
+    if (!document.hidden && audioContext && audioContext.state === 'suspended') {
+        // 페이지가 다시 보이게 되면 오디오 컨텍스트 재개
+        audioContext.resume().then(() => {
+            console.log('AudioContext resumed');
+        });
+    }
+}
 
 // 알림음 재생 함수
 function playSound(type) {
+    // 웹 알림 먼저 표시 (권한이 있는 경우)
+    if (document.hidden) {
+        showWebNotification('타이머 완료!', '설정한 시간이 끝났습니다.');
+    }
+    
     try {
         // 기존 재생 중인 알람이 있다면 중지
-        if (alarmAudio) {
-            alarmAudio.pause();
-            alarmAudio = null;
-        }
+        stopSound();
         
+        // Web Audio API를 사용한 소리 재생 (브라우저 제한을 우회하는 방법)
+        if (audioContext && isAudioInitialized) {
+            // AudioContext가 suspended 상태라면 resume 시도
+            if (audioContext.state === 'suspended') {
+                audioContext.resume();
+            }
+            
+            // 사용자 지정 알람이 있는지 확인
+            if (window.customAlarmSound) {
+                // 사용자 지정 알람음 사용
+                const audioElement = new Audio(window.customAlarmSound);
+                audioElement.loop = true; // 반복 재생 설정
+                
+                // MediaElementAudioSourceNode 생성
+                const source = audioContext.createMediaElementSource(audioElement);
+                source.connect(audioContext.destination);
+                
+                // 재생 시작
+                audioElement.play().catch(error => {
+                    console.error('사용자 지정 알람음 재생 실패:', error);
+                    // 실패 시 기본 알람음으로 대체
+                    playDefaultSound();
+                });
+                
+                // 나중에 중지할 수 있도록 참조 저장
+                alarmAudio = audioElement;
+            } else {
+                // 기본 알람음 재생
+                playDefaultSound();
+            }
+        } else {
+            // Web Audio API를 사용할 수 없는 경우 기존 방식으로 시도
+            fallbackPlaySound();
+        }
+    } catch(e) {
+        console.error('알림음 재생 실패:', e);
+        // 오류 발생 시 기존 방식으로 시도
+        fallbackPlaySound();
+        
+        // 웹 알림 표시 (소리가 재생되지 않을 경우)
+        if (document.hidden) {
+            showWebNotification('타이머 완료!', '설정한 시간이 끝났습니다.');
+        }
+    }
+    
+    // 기본 알람음 재생 함수 (Web Audio API 사용)
+    function playDefaultSound() {
+        if (!audioBuffer) return;
+        
+        // AudioBufferSourceNode 생성
+        const source = audioContext.createBufferSource();
+        source.buffer = audioBuffer;
+        source.loop = true; // 반복 재생 설정
+        
+        // 볼륨 조절 노드 추가
+        const gainNode = audioContext.createGain();
+        gainNode.gain.value = 1; // 최대 볼륨
+        
+        // 오디오 그래프 연결
+        source.connect(gainNode);
+        gainNode.connect(audioContext.destination);
+        
+        // 재생 시작
+        source.start(0);
+        
+        // 나중에 중지할 수 있도록 참조 저장
+        alarmAudio = {
+            source: source,
+            gainNode: gainNode,
+            stop: function() {
+                try {
+                    source.stop(0);
+                } catch(e) {
+                    console.log('이미 중지된 소스:', e);
+                }
+            }
+        };
+    }
+    
+    // 기존 방식의 소리 재생 (폴백)
+    function fallbackPlaySound() {
         let audioSrc = './audio/ringtone-wow.mp3';
         
-        // 사용자가 업로드한 음원 파일이 있으면 사용
         if (window.customAlarmSound) {
             audioSrc = window.customAlarmSound;
         }
         
-        alarmAudio = new Audio(audioSrc);
+        const audio = new Audio(audioSrc);
+        audio.loop = true; // 반복 재생 설정
         
-        // 음원 재생이 끝났을 때 테스트 버튼 상태 초기화
-        alarmAudio.onended = function() {
-            const testSoundBtn = document.getElementById('testSoundBtn');
-            if (testSoundBtn && testSoundBtn.textContent === '중지') {
-                testSoundBtn.textContent = '소리 테스트';
-                // isPlaying 변수 상태를 위해 커스텀 이벤트 발생
-                testSoundBtn.dispatchEvent(new CustomEvent('sound-ended'));
-            }
-        };
+        // 재생 시도
+        const playPromise = audio.play();
         
-        alarmAudio.play();
-    } catch(e) {
-        console.error('알림음 재생 실패:', e);
+        if (playPromise !== undefined) {
+            playPromise.catch(error => {
+                console.error('기존 방식 소리 재생 실패:', error);
+            });
+        }
+        
+        alarmAudio = audio;
     }
 }
 
 // 알림음 중지 함수
 function stopSound() {
     if (alarmAudio) {
-        alarmAudio.pause();
+        if (alarmAudio.source && alarmAudio.stop) {
+            // Web Audio API 방식으로 생성된 경우
+            alarmAudio.stop();
+        } else if (alarmAudio.pause) {
+            // 기존 Audio 객체인 경우
+            alarmAudio.pause();
+        }
         alarmAudio = null;
+    }
+}
+
+// 웹 알림 표시 함수
+function showWebNotification(title, message) {
+    // 브라우저에서 알림 지원 확인
+    if (!("Notification" in window)) {
+        console.warn("이 브라우저는 알림을 지원하지 않습니다.");
+        return;
+    }
+    
+    // 알림 권한 요청
+    if (Notification.permission === "granted") {
+        createNotification();
+    } else if (Notification.permission !== "denied") {
+        Notification.requestPermission().then(permission => {
+            if (permission === "granted") {
+                createNotification();
+            }
+        });
+    }
+    
+    // 알림 생성 함수
+    function createNotification() {
+        const notification = new Notification(title, {
+            body: message,
+            icon: './timegom Logo.png',
+            vibrate: [200, 100, 200]
+        });
+        
+        // 알림 클릭 시 해당 탭으로 포커스
+        notification.onclick = function() {
+            window.focus();
+            notification.close();
+        };
+        
+        // 4초 후 자동으로 알림 닫기
+        setTimeout(() => {
+            notification.close();
+        }, 4000);
     }
 } 

@@ -359,6 +359,35 @@ footer {
 }
 
 /* 미디어 쿼리 */
+@media (max-width: 992px) {
+    /* 전체 UI 크기 조정 */
+    .container {
+        padding: 0 10px;
+    }
+    
+    /* 타이머와 시계 컨테이너 조정 */
+    .circle-timer-container {
+        transform: scale(0.95);
+        margin: 20px auto;
+    }
+    
+    /* 스톱워치 조정 */
+    #stopwatch {
+        font-size: 4.5rem;
+    }
+    
+    /* 시계 섹션 높이 조정 */
+    .clock-section {
+        min-height: auto;
+        padding-bottom: 330px;
+    }
+    
+    /* 세계 시계 위치 조정 */
+    .world-clocks {
+        bottom: 30px;
+    }
+}
+
 @media (max-width: 768px) {
     .clock-display {
         font-size: 2.5rem;
@@ -376,6 +405,28 @@ footer {
         grid-template-columns: repeat(2, 1fr);
     }
     
+    /* 시계 섹션 레이아웃 개선 */
+    .clock-section {
+        min-height: auto;
+        padding-bottom: 380px;
+    }
+    
+    /* 메인 시계 컨테이너 크기 조정 */
+    #clock {
+        height: auto;
+        margin-bottom: 20px;
+    }
+    
+    /* 세계 시계 위치 조정 - absolute 제거 */
+    .world-clocks {
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 30px;
+        margin: 0 2.5rem;
+        padding-top: 20px;
+    }
+    
     .timer-input {
         flex-direction: column;
         align-items: center;
@@ -390,6 +441,112 @@ footer {
         width: 100%;
         text-align: center;
     }
+    
+    /* 포모도로 타이머 모바일 스타일 개선 */
+    .pomodoro-settings {
+        flex-direction: row;
+        flex-wrap: wrap;
+        padding: 15px 10px;
+        gap: 10px;
+        overflow-x: visible;
+        justify-content: space-around;
+    }
+    
+    .setting-item {
+        min-width: 110px;
+        padding: 10px;
+        flex: 1 1 calc(50% - 10px);
+        max-width: calc(50% - 10px);
+    }
+    
+    .setting-item label {
+        font-size: 0.8rem;
+        margin-bottom: 5px;
+        white-space: nowrap;
+    }
+    
+    .setting-control {
+        gap: 8px;
+    }
+    
+    .setting-btn {
+        width: 25px;
+        height: 25px;
+        font-size: 0.9rem;
+    }
+    
+    .pomodoro-display {
+        font-size: 4rem !important;
+    }
+    
+    .status-badge {
+        font-size: 1.2rem;
+    }
+    
+    .pomodoro-timer {
+        transform: scale(0.9);
+        margin-bottom: 10px;
+    }
+    
+    .pomodoro-section .circle-timer-container {
+        gap: 15px;
+    }
+    
+    .status-display {
+        padding: 8px 15px;
+    }
+    
+    /* 일반 타이머 스타일 개선 */
+    .circle-timer {
+        width: 280px;
+        height: 280px;
+    }
+    
+    .timer-countdown {
+        font-size: 4rem;
+    }
+    
+    /* 스톱워치 개선 */
+    #stopwatch {
+        font-size: 4rem;
+    }
+    
+    .ms {
+        min-width: 60px;
+        font-size: 0.5em;
+    }
+    
+    /* 알람 컨텐츠 크기 조정 */
+    .alarm-content h2 {
+        font-size: 1.7rem;
+        margin: 0 0 20px 0;
+    }
+    
+    .alarm-btn {
+        padding: 10px 25px;
+        font-size: 1.1rem;
+    }
+    
+    /* iOS 기기에서 버튼 스타일 개선 */
+    .circle-btn, .setting-btn {
+        -webkit-appearance: none;
+        -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+    }
+    
+    /* 버튼 터치 영역 확장 */
+    .setting-btn {
+        position: relative;
+    }
+    
+    .setting-btn::after {
+        content: '';
+        position: absolute;
+        top: -5px;
+        left: -5px;
+        right: -5px;
+        bottom: -5px;
+        z-index: -1;
+    }
 }
 
 @media (max-width: 480px) {
@@ -403,6 +560,198 @@ footer {
     
     #time {
         font-size: 2.5rem;
+    }
+    
+    /* 시계 섹션 레이아웃 추가 개선 */
+    .clock-section {
+        padding-bottom: 450px;
+    }
+    
+    /* 세계 시계 여백 조정 */
+    .world-clocks {
+        margin: 0 1rem;
+        bottom: 20px;
+    }
+    
+    /* 포모도로 타이머 모바일 스타일 추가 개선 */
+    .pomodoro-settings {
+        padding: 10px 5px;
+        gap: 6px;
+    }
+    
+    .setting-item {
+        min-width: 90px;
+        padding: 8px;
+        flex: 1 1 calc(50% - 6px);
+        max-width: calc(50% - 6px);
+    }
+    
+    .setting-control {
+        font-size: 0.95rem;
+    }
+    
+    .pomodoro-display {
+        font-size: 3.5rem !important;
+    }
+    
+    .pomodoro-timer {
+        transform: scale(0.85);
+        margin-bottom: 5px;
+    }
+    
+    .circle-timer {
+        width: 240px;
+        height: 240px;
+    }
+    
+    .control-buttons-container {
+        width: 100%;
+    }
+    
+    .pomodoro-section .control-buttons {
+        gap: 10px;
+    }
+    
+    .circle-btn {
+        width: 55px;
+        height: 55px;
+        font-size: 1.3rem;
+    }
+    
+    .timer-mode {
+        font-size: 1rem;
+    }
+    
+    .status-badge {
+        font-size: 1.1rem;
+    }
+    
+    /* 일반 타이머 스타일 추가 개선 */
+    .timer-countdown {
+        font-size: 3.2rem;
+    }
+    
+    .timer-set-time, .timer-end-time {
+        font-size: 0.9rem;
+    }
+    
+    /* 스톱워치 추가 개선 */
+    #stopwatch {
+        font-size: 3.2rem;
+    }
+    
+    .ms {
+        min-width: 50px;
+        font-size: 0.45em;
+    }
+    
+    /* 알람 컨텐츠 추가 조정 */
+    .alarm-content h2 {
+        font-size: 1.5rem;
+        margin: 0 0 15px 0;
+    }
+    
+    .alarm-btn {
+        padding: 8px 20px;
+        font-size: 1rem;
+    }
+    
+    /* 헤더와 로고 크기 조정 */
+    header {
+        padding: 10px 0;
+    }
+    
+    .logo {
+        max-width: 120px;
+    }
+    
+    nav a {
+        padding: 5px 10px;
+        font-size: 0.9rem;
+    }
+}
+
+/* 매우 작은 화면에 대한 추가 대응 */
+@media (max-width: 360px) {
+    .pomodoro-settings {
+        padding: 8px 3px;
+        gap: 4px;
+    }
+    
+    .setting-item {
+        min-width: 80px;
+        padding: 6px;
+        flex: 1 1 calc(50% - 4px);
+        max-width: calc(50% - 4px);
+    }
+    
+    .setting-control {
+        font-size: 0.9rem;
+    }
+    
+    .setting-btn {
+        width: 22px;
+        height: 22px;
+        font-size: 0.8rem;
+    }
+    
+    .circle-timer {
+        width: 220px;
+        height: 220px;
+    }
+    
+    .pomodoro-display, #stopwatch, .timer-countdown {
+        font-size: 2.8rem !important;
+    }
+    
+    .ms {
+        min-width: 40px;
+        font-size: 0.4em;
+    }
+    
+    .circle-btn {
+        width: 50px;
+        height: 50px;
+        font-size: 1.2rem;
+    }
+    
+    nav ul {
+        gap: 0;
+    }
+    
+    nav a {
+        padding: 4px 8px;
+        font-size: 0.8rem;
+    }
+    
+    /* 시계 섹션 추가 수정 */
+    .clock-section {
+        padding-bottom: 520px;
+    }
+    
+    #time {
+        font-size: 2.2rem;
+    }
+    
+    #date {
+        font-size: 1rem;
+    }
+    
+    .world-clocks {
+        margin: 0 0.5rem;
+        bottom: 15px;
+    }
+    
+    .world-clock-item {
+        padding: 1rem;
+    }
+    
+    .world-clock-item h4 {
+        font-size: 1rem;
+    }
+    
+    .world-time {
+        font-size: 1.4rem;
     }
 }
 
@@ -1272,6 +1621,17 @@ footer {
     border-radius: 12px;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
     overflow-x: auto;
+    -webkit-overflow-scrolling: touch; /* iOS 스크롤 부드럽게 */
+}
+
+.pomodoro-section .circle-timer-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 30px;
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
 }
 
 .setting-item {
