@@ -38,14 +38,8 @@ document.addEventListener('DOMContentLoaded', function() {
             // 상태 URL에 반영
             updateUrlParam('type', 'analog');
             
-            // requestAnimationFrame을 사용하여 다음 프레임에서 업데이트
-            requestAnimationFrame(() => {
-                updateAnalogClock();
-                // 인터벌이 없을 때만 새로 설정
-                if (!analogClockInterval) {
-                    analogClockInterval = setInterval(updateAnalogClock, 1000);
-                }
-            });
+            // 즉시 아날로그 시계 업데이트
+            updateAnalogClock();
         });
         
         // 기존 인터벌 초기화
@@ -56,9 +50,11 @@ document.addEventListener('DOMContentLoaded', function() {
         updateClock();
         updateAnalogClock();
         
-        // 1초마다 업데이트 (인터벌 저장)
-        clockInterval = setInterval(updateClock, 1000);
-        analogClockInterval = setInterval(updateAnalogClock, 1000);
+        // 하나의 인터벌로 두 시계 모두 업데이트 (1초마다)
+        clockInterval = setInterval(function() {
+            updateClock();
+            updateAnalogClock();
+        }, 1000);
         
         // 세계 시계 초기화 및 업데이트
         updateWorldClocks();
@@ -70,9 +66,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // 한국 표준시(KST)로 Date 객체 반환
 function getKSTDate() {
-    const now = new Date();
-    const utc = now.getTime() + (now.getTimezoneOffset() * 60000);
-    return new Date(utc + (9 * 60 * 60 * 1000));
+    // 가장 단순한 방법: 현재 시간을 그대로 사용
+    // 브라우저는 이미 사용자의 로컬 시간에 맞춰진 시간을 제공함
+    return new Date();
 }
 
 // 디지털 시계 업데이트 함수
@@ -119,26 +115,58 @@ function updateClock() {
 // 아날로그 시계 업데이트 함수
 function updateAnalogClock() {
     try {
-        const now = getKSTDate();
+        // 현재 시간을 직접 가져옴
+        const now = new Date();
         const hours = now.getHours();
         const minutes = now.getMinutes();
         const seconds = now.getSeconds();
-
-        // 각도 계산 (정확하게)
-        const hourDegrees = ((hours % 12) + minutes / 60 + seconds / 3600) * 30;
-        const minuteDegrees = (minutes + seconds / 60) * 6;
-        const secondDegrees = seconds * 6;
-
+        
+        // 시간 정보 콘솔 출력 (디버깅용)
+        console.log(`현재 시간: ${hours}:${minutes}:${seconds}`);
+        
+        // 12시간제로 변환
+        const hour12 = hours % 12;
+        
+        // 각 바늘의 각도를 명시적으로 재계산
+        const hourAngle = hour12 * 30 + minutes * 0.5;
+        const minuteAngle = minutes * 6;
+        const secondAngle = seconds * 6;
+        
+        console.log(`회전 각도 - 시침: ${hourAngle}도, 분침: ${minuteAngle}도, 초침: ${secondAngle}도`);
+        
+        // DOM 요소 찾기 (아날로그 시계 컨테이너 내부에서만 찾음)
         const analogClock = document.getElementById('analogClock');
         if (analogClock) {
             const hourHand = analogClock.querySelector('.hour-hand');
             const minuteHand = analogClock.querySelector('.minute-hand');
             const secondHand = analogClock.querySelector('.second-hand');
-            if (hourHand) hourHand.style.transform = `rotate(${hourDegrees}deg)`;
-            if (minuteHand) minuteHand.style.transform = `rotate(${minuteDegrees}deg)`;
-            if (secondHand) secondHand.style.transform = `rotate(${secondDegrees}deg)`;
+            
+            // 바늘 회전 적용 (인라인 스타일을 명시적으로 적용)
+            if (hourHand) {
+                hourHand.style.cssText = `transform: rotate(${hourAngle}deg); transform-origin: 0% 50%;`;
+                console.log('시침 스타일 적용:', hourHand.style.cssText);
+            } else {
+                console.error('시침 요소를 찾을 수 없습니다.');
+            }
+            
+            if (minuteHand) {
+                minuteHand.style.cssText = `transform: rotate(${minuteAngle}deg); transform-origin: 0% 50%;`;
+                console.log('분침 스타일 적용:', minuteHand.style.cssText);
+            } else {
+                console.error('분침 요소를 찾을 수 없습니다.');
+            }
+            
+            if (secondHand) {
+                secondHand.style.cssText = `transform: rotate(${secondAngle}deg); transform-origin: 0% 50%;`;
+                console.log('초침 스타일 적용:', secondHand.style.cssText);
+            } else {
+                console.error('초침 요소를 찾을 수 없습니다.');
+            }
+        } else {
+            console.error('아날로그 시계 컨테이너를 찾을 수 없습니다.');
         }
-
+        
+        // 날짜 표시 업데이트
         const analogDateElement = document.getElementById('analog-date');
         if (analogDateElement) {
             const year = now.getFullYear();
@@ -174,13 +202,17 @@ function updateWorldClocks() {
     for (const [city, timezone] of Object.entries(timeZones)) {
         const clockElement = document.querySelector(`#${city} .world-time`);
         if (clockElement) {
-            clockElement.textContent = getTimeInTimeZone(timezone);
+            clockElement.innerHTML = getTimeInTimeZone(timezone);
         }
     }
 }
 
 // 특정 시간대의 시간을 가져오는 함수
 function getTimeInTimeZone(timezone) {
+    // 현재 날짜 객체
+    const now = new Date();
+    
+    // 목표 시간대의 날짜 객체 생성
     const options = {
         hour: '2-digit',
         minute: '2-digit',
@@ -189,7 +221,31 @@ function getTimeInTimeZone(timezone) {
         hour12: true
     };
     
-    return new Intl.DateTimeFormat('ko-KR', options).format(new Date());
+    // 현재 로컬 날짜
+    const localDate = now.getDate();
+    
+    // 해당 시간대의 날짜 정보 가져오기
+    const tzOptions = {
+        day: 'numeric',
+        timeZone: timezone
+    };
+    const tzDate = parseInt(new Intl.DateTimeFormat('ko-KR', tzOptions).format(now).replace(/[^0-9]/g, ''));
+    
+    // 현재 로컬 날짜와 비교하여 오늘/어제 표시
+    let datePrefix = '';
+    if (tzDate < localDate) {
+        datePrefix = '어제 ';
+    } else if (tzDate > localDate) {
+        datePrefix = '내일 ';
+    } else {
+        datePrefix = '오늘 ';
+    }
+    
+    // 시간 정보 가져오기
+    const timeString = new Intl.DateTimeFormat('ko-KR', options).format(now);
+    
+    // 최종 형식: "오늘 오전 10:30:45" 형태로 반환
+    return `<span style="font-weight: 400;">${datePrefix}</span>${timeString}`;
 }
 
 // 숫자를 두 자리로 포맷팅하는 함수

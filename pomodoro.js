@@ -60,6 +60,14 @@ document.addEventListener('DOMContentLoaded', function() {
         // 타이머 초기화
         updateTimerDisplay(settings.focus * 60 * 1000);
         
+        // 초기 상태에서도 모드와 시간 표시
+        const totalMinutes = settings.focus;
+        timerMode.textContent = `${totalMinutes}분`;
+        
+        // 초기 상태에서 일시정지 버튼 활성화 및 보이게 설정
+        pauseBtn.disabled = false;
+        pauseBtn.style.display = 'inline-flex';
+        
         // 설정 버튼 이벤트 리스너
         document.querySelectorAll('.setting-btn').forEach(btn => {
             btn.addEventListener('click', function() {
@@ -198,6 +206,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 
                 // 자동으로 다음 모드로 이동
                 switchMode();
+                
+                // 자동으로 타이머 시작
+                // 약간의 딜레이를 주어 UI 업데이트 후 타이머가 시작되도록 함
+                setTimeout(() => {
+                    startBtn.click();
+                }, 100);
             });
         }
         
@@ -213,6 +227,15 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // 타이머 시작 함수
         function startTimer() {
+            // 타이머 시작 시 프로그레스 링을 완전히 채운 상태로 시작
+            if (progressRing) {
+                progressRing.style.strokeDashoffset = '0';
+            }
+            
+            // 시작 시 timerMode에 남은 시간 표시
+            const totalMinutes = Math.floor(totalDuration / 60000);
+            timerMode.textContent = `${totalMinutes}분`;
+            
             // 매 프레임마다 타이머를 업데이트하기 위한 requestAnimationFrame 사용
             function updateTimer(timestamp) {
                 if (!isRunning || isPaused) return;
@@ -228,7 +251,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 const seconds = currentSecond % 60;
                 timerDisplay.textContent = `${padZero(minutes)}:${padZero(seconds)}`;
                 
-                // 프로그레스 링 업데이트
+                // 프로그레스 링 업데이트 - 시간이 줄어들수록 원형이 줄어드는 효과
                 if (progressRing) {
                     const progress = remainingTime / totalDuration;
                     const dashOffset = circumference * (1 - progress);
@@ -240,7 +263,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     isRunning = false;
                     timerDisplay.textContent = '00:00';
                     
-                    // 타이머가 0에 도달하면 원형 선 완전히 채움
+                    // 타이머가 0에 도달하면 원형 선 완전히 비움
                     if (progressRing) {
                         progressRing.style.strokeDashoffset = circumference;
                     }
@@ -286,35 +309,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 message = '다시 집중할 시간입니다.';
             }
             
-            // 알람 메시지 표시
+            // 알람 메시지 표시 (페이지 내 알림)
             alarmContent.classList.add('show');
             
-            // 웹 알림 표시 시도
-            try {
-                // 알림 권한 즉시 요청
-                if (Notification.permission !== "granted") {
-                    Notification.requestPermission();
-                }
-                
-                // 알림 표시
-                if (Notification.permission === "granted") {
-                    const notification = new Notification(title, {
-                        body: message,
-                        icon: './timegom Logo.png',
-                        sound: './audio/ringtone-wow.mp3', // 알림음 지정
-                        vibrate: [200, 100, 200],          // 진동 패턴
-                        silent: false                      // 알림음 활성화
-                    });
-                    
-                    // 알림 클릭시 창 포커스
-                    notification.onclick = function() {
-                        window.focus();
-                        this.close();
-                    };
-                }
-            } catch (e) {
-                console.error('알림 표시 실패:', e);
-            }
+            // 웹 알림 표시 기능 제거 (브라우저 알림 비활성화)
         }
         
         // 타이머 초기화 함수
@@ -323,73 +321,90 @@ document.addEventListener('DOMContentLoaded', function() {
             isRunning = false;
             isPaused = false;
             
-            // 모드를 집중으로 초기화
-            currentMode = 'focus';
-            setModeUI('focus');
-            
             // 사이클 초기화
             currentCycle = 0;
             cycleCountDisplay.textContent = currentCycle;
+            document.querySelector('.cycle-count').innerHTML = `사이클: <span id="cycleCount">${currentCycle}</span>/${settings.cycles}`;
             
-            // 타이머 표시 초기화
-            updateTimerDisplay(settings.focus * 60 * 1000);
+            // 모드를 항상 focus로 초기화
+            currentMode = 'focus';
+            setModeUI(currentMode);
             
-            // 종료 시간 초기화
-            endTimeDisplay.textContent = '--:--';
+            // 집중 시간으로 설정
+            let minutes = settings.focus;
             
-            // 프로그레스링 초기화
+            // 타이머 표시 업데이트
+            updateTimerDisplay(minutes * 60 * 1000);
+            
+            // 원형 프로그레스 초기화 - 완전히 채워진 상태로 표시
             if (progressRing) {
                 progressRing.style.strokeDashoffset = '0';
             }
             
+            // 종료 시간 초기화
+            endTimeDisplay.textContent = '--:--';
+            
             // 버튼 상태 초기화
             startBtn.disabled = false;
-            pauseBtn.disabled = true;
+            pauseBtn.disabled = false;
             resetBtn.disabled = false;
             skipBtn.disabled = true;
         }
         
         // 모드 전환 함수
         function switchMode() {
-            clearInterval(timerInterval);
+            // 모드 전환 (focus -> break -> focus -> break -> ... -> longBreak)
+            if (currentMode === 'focus') {
+                currentCycle++;
+                // 설정된 사이클 수에 도달하면 긴 휴식으로, 아니면 짧은 휴식으로
+                if (currentCycle >= settings.cycles) {
+                    currentMode = 'longBreak';
+                } else {
+                    currentMode = 'break';
+                }
+            } else {
+                // 휴식 후에는 항상 focus 모드로
+                currentMode = 'focus';
+            }
+            
+            // 사이클 완료 후 카운트 초기화
+            if (currentMode === 'focus' && currentCycle >= settings.cycles) {
+                currentCycle = 0;
+            }
+            
+            // 모드 UI 업데이트
+            setModeUI(currentMode);
+            cycleCountDisplay.textContent = currentCycle;
+            
+            // 타이머 초기화
             isRunning = false;
             isPaused = false;
             
-            // 현재 모드에 따라 다음 모드 결정
-            if (currentMode === 'focus') {
-                // 집중 모드 완료 시 사이클 증가
-                currentCycle++;
-                cycleCountDisplay.textContent = currentCycle;
-                
-                // 설정한 사이클 횟수에 도달하면 긴 휴식, 아니면 짧은 휴식
-                if (currentCycle >= settings.cycles) {
-                    currentMode = 'longBreak';
-                    setModeUI('longBreak');
-                    updateTimerDisplay(settings.longBreak * 60 * 1000);
-                } else {
-                    currentMode = 'break';
-                    setModeUI('break');
-                    updateTimerDisplay(settings.break * 60 * 1000);
-                }
-            } else {
-                // 휴식 모드(짧은/긴) 완료 시 다시 집중 모드로
-                currentMode = 'focus';
-                setModeUI('focus');
-                updateTimerDisplay(settings.focus * 60 * 1000);
-                
-                // 긴 휴식 후에는 사이클 초기화
-                if (currentMode === 'longBreak') {
-                    currentCycle = 0;
-                    cycleCountDisplay.textContent = currentCycle;
-                }
+            // 모드에 따른 시간 설정
+            let minutes = 0;
+            switch(currentMode) {
+                case 'focus':
+                    minutes = settings.focus;
+                    break;
+                case 'break':
+                    minutes = settings.break;
+                    break;
+                case 'longBreak':
+                    minutes = settings.longBreak;
+                    break;
             }
             
-            // 종료 시간 초기화
-            endTimeDisplay.textContent = '--:--';
+            // 타이머 표시 업데이트
+            updateTimerDisplay(minutes * 60 * 1000);
+            
+            // 원형 프로그레스 초기화 - 완전히 채워진 상태로 시작
+            if (progressRing) {
+                progressRing.style.strokeDashoffset = '0';
+            }
             
             // 버튼 상태 초기화
             startBtn.disabled = false;
-            pauseBtn.disabled = true;
+            pauseBtn.disabled = false;
             resetBtn.disabled = false;
             skipBtn.disabled = true;
         }

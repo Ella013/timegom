@@ -2,6 +2,9 @@
 document.addEventListener('DOMContentLoaded', function() {
     // 오디오 컨텍스트 초기화 (페이지 로드 시 미리 생성)
     initializeAudioContext();
+    
+    // 페이지 가시성 변경 감지 이벤트 리스너 등록
+    document.addEventListener('visibilitychange', handleVisibilityChange);
 
     if (document.getElementById('timer')) {
         // 타이머 요소 선택
@@ -14,9 +17,6 @@ document.addEventListener('DOMContentLoaded', function() {
         const resetBtn = document.getElementById('resetBtn');
         const timerAlarm = document.getElementById('timerAlarm');
         const alarmCloseBtn = document.getElementById('alarmCloseBtn');
-        
-        // 페이지 가시성 변경 감지
-        document.addEventListener('visibilitychange', handleVisibilityChange);
         
         // 사용자의 첫 인터랙션으로 오디오 컨텍스트 활성화
         document.body.addEventListener('click', function() {
@@ -188,52 +188,80 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // 타이머 완료 함수
         function timerComplete() {
-            // 오디오 요소를 직접 페이지에 추가
-            const audio = document.createElement('audio');
-            audio.src = window.customAlarmSound || './audio/ringtone-wow.mp3';
-            audio.loop = true;
-            document.body.appendChild(audio);
-            
-            // 소리 재생 시도
-            audio.play().catch(e => console.error('알람 재생 실패:', e));
-            
-            // 알람 전역 변수에 저장
-            alarmAudio = audio;
-            
-            // 알람 메시지 표시
-            timerAlarm.classList.add('show');
-            
-            // 웹 알림 표시 시도
             try {
-                // 알림 권한 즉시 요청
-                if (Notification.permission !== "granted") {
-                    Notification.requestPermission();
+                // 기존 재생 중인 알람이 있다면 중지
+                if (alarmAudio) {
+                    stopSound();
                 }
                 
-                // 알림 표시
-                if (Notification.permission === "granted") {
-                    const notification = new Notification('타이머 완료!', {
-                        body: '설정한 시간이 끝났습니다.',
-                        icon: './timegom Logo.png',
-                        sound: './audio/ringtone-wow.mp3', // 알림음 지정
-                        vibrate: [200, 100, 200],          // 진동 패턴
-                        silent: false                      // 알림음 활성화
-                    });
-                    
-                    // 알림 클릭시 창 포커스
-                    notification.onclick = function() {
-                        window.focus();
-                        this.close();
-                    };
+                // 오디오 컨텍스트 상태 확인 및 재개
+                if (audioContext && audioContext.state === 'suspended') {
+                    audioContext.resume().catch(e => console.error('오디오 컨텍스트 재개 실패:', e));
                 }
-            } catch (e) {
-                console.error('알림 표시 실패:', e);
-            }
-            
-            // 알람창 닫기 버튼 이벤트
-            if (alarmCloseBtn) {
-                alarmCloseBtn.addEventListener('click', function() {
-                    // 알람음 중지
+                
+                // 오디오 요소를 직접 페이지에 추가
+                const audio = new Audio();
+                
+                // 중요: src 설정 전에 이벤트 리스너 추가
+                audio.addEventListener('canplaythrough', function() {
+                    // 소리 재생 시도
+                    const playPromise = audio.play();
+                    if (playPromise !== undefined) {
+                        playPromise.catch(e => {
+                            console.error('알람 재생 실패:', e);
+                            // 두 번째 방법으로 시도
+                            setTimeout(() => {
+                                audio.play().catch(e => console.error('두 번째 재생 시도 실패:', e));
+                            }, 1000);
+                        });
+                    }
+                }, { once: true });
+                
+                // 추가 이벤트 리스너
+                audio.addEventListener('error', function(e) {
+                    console.error('오디오 로딩 오류:', e);
+                    // Web Audio API로 대체 시도
+                    playSound('timer');
+                });
+                
+                // 소스 설정
+                audio.src = window.customAlarmSound || './audio/ringtone-wow.mp3';
+                
+                // 백그라운드 재생 허용 속성 추가
+                audio.loop = true;
+                audio.autoplay = true;
+                audio.muted = false;
+                audio.volume = 1.0;
+                audio.mozAudioChannelType = 'alarm'; // Firefox
+                audio.msAudioCategory = 'alarm';     // IE/Edge
+                audio.setAttribute('webkit-playsinline', 'true'); // iOS
+                audio.setAttribute('playsinline', 'true');       // iOS
+                
+                // DOM에 요소 추가 (필수: 일부 브라우저에서는 이것이 없으면 배경 재생이 안 됨)
+                document.body.appendChild(audio);
+                
+                // 알람 전역 변수에 저장
+                alarmAudio = audio;
+                
+                // 알람 메시지 표시
+                timerAlarm.classList.add('show');
+                
+                // 알람창 닫기 버튼 이벤트
+                if (alarmCloseBtn) {
+                    alarmCloseBtn.addEventListener('click', function() {
+                        // 알람음 중지
+                        if (alarmAudio) {
+                            alarmAudio.pause();
+                            alarmAudio.remove(); // DOM에서 제거
+                            alarmAudio = null;
+                        }
+                        timerAlarm.classList.remove('show');
+                        resetTimer();
+                    });
+                }
+                
+                // 30초 후 자동으로 알람 종료
+                setTimeout(() => {
                     if (alarmAudio) {
                         alarmAudio.pause();
                         alarmAudio.remove(); // DOM에서 제거
@@ -241,7 +269,11 @@ document.addEventListener('DOMContentLoaded', function() {
                     }
                     timerAlarm.classList.remove('show');
                     resetTimer();
-                });
+                }, 30000);
+            } catch (e) {
+                console.error('타이머 완료 처리 중 오류:', e);
+                // 오류 발생 시 대체 방법으로 재생 시도
+                playSound('timer');
             }
         }
         
@@ -250,6 +282,16 @@ document.addEventListener('DOMContentLoaded', function() {
             clearInterval(timerInterval);
             isRunning = false;
             isPaused = false;
+            
+            // 알람 소리 중지 (초기화 버튼 눌렀을 때도 알람 꺼지도록)
+            if (alarmAudio) {
+                alarmAudio.pause();
+                alarmAudio.remove(); // DOM에서 제거
+                alarmAudio = null;
+            }
+            
+            // 알람창 닫기
+            timerAlarm.classList.remove('show');
             
             // 시간 입력 필드 초기화
             document.getElementById('hourInput').value = 0;
@@ -458,7 +500,19 @@ function initializeAudioContext() {
 
 // 페이지 가시성 변경 시 처리
 function handleVisibilityChange() {
-    if (!document.hidden && audioContext && audioContext.state === 'suspended') {
+    // 페이지가 숨겨졌을 때도 오디오 재생을 유지
+    if (document.hidden) {
+        console.log('페이지가 백그라운드로 전환됨');
+        // 만약 알람 오디오가 재생 중이라면 계속 유지
+        if (alarmAudio && alarmAudio.paused) {
+            console.log('백그라운드에서 알람 재생 시도');
+            try {
+                alarmAudio.play().catch(e => console.error('백그라운드 알람 재생 실패:', e));
+            } catch (e) {
+                console.error('백그라운드 알람 재생 중 오류:', e);
+            }
+        }
+    } else if (audioContext && audioContext.state === 'suspended') {
         // 페이지가 다시 보이게 되면 오디오 컨텍스트 재개
         audioContext.resume().then(() => {
             console.log('AudioContext resumed');
@@ -468,14 +522,14 @@ function handleVisibilityChange() {
 
 // 알림음 재생 함수
 function playSound(type) {
-    // 웹 알림 먼저 표시 (권한이 있는 경우)
-    if (document.hidden) {
-        showWebNotification('타이머 완료!', '설정한 시간이 끝났습니다.');
-    }
-    
     try {
         // 기존 재생 중인 알람이 있다면 중지
         stopSound();
+        
+        // 오디오 컨텍스트 초기화 확인
+        if (!audioContext || audioContext.state === 'closed') {
+            initializeAudioContext();
+        }
         
         // Web Audio API를 사용한 소리 재생 (브라우저 제한을 우회하는 방법)
         if (audioContext && isAudioInitialized) {
@@ -489,17 +543,29 @@ function playSound(type) {
                 // 사용자 지정 알람음 사용
                 const audioElement = new Audio(window.customAlarmSound);
                 audioElement.loop = true; // 반복 재생 설정
+                audioElement.autoplay = true;
+                audioElement.muted = false;
+                audioElement.volume = 1.0;
                 
-                // MediaElementAudioSourceNode 생성
-                const source = audioContext.createMediaElementSource(audioElement);
-                source.connect(audioContext.destination);
-                
-                // 재생 시작
-                audioElement.play().catch(error => {
-                    console.error('사용자 지정 알람음 재생 실패:', error);
-                    // 실패 시 기본 알람음으로 대체
-                    playDefaultSound();
-                });
+                try {
+                    // MediaElementAudioSourceNode 생성
+                    const source = audioContext.createMediaElementSource(audioElement);
+                    source.connect(audioContext.destination);
+                    
+                    // 재생 시작
+                    const playPromise = audioElement.play();
+                    if (playPromise !== undefined) {
+                        playPromise.catch(error => {
+                            console.error('사용자 지정 알람음 재생 실패:', error);
+                            // 실패 시 기본 알람음으로 대체
+                            playDefaultSound();
+                        });
+                    }
+                } catch (e) {
+                    console.error('오디오 노드 생성 실패:', e);
+                    // 그냥 기본 방식으로 재생 시도
+                    audioElement.play().catch(e => console.error('기본 재생 시도 실패:', e));
+                }
                 
                 // 나중에 중지할 수 있도록 참조 저장
                 alarmAudio = audioElement;
@@ -515,11 +581,6 @@ function playSound(type) {
         console.error('알림음 재생 실패:', e);
         // 오류 발생 시 기존 방식으로 시도
         fallbackPlaySound();
-        
-        // 웹 알림 표시 (소리가 재생되지 않을 경우)
-        if (document.hidden) {
-            showWebNotification('타이머 완료!', '설정한 시간이 끝났습니다.');
-        }
     }
     
     // 기본 알람음 재생 함수 (Web Audio API 사용)
@@ -566,6 +627,9 @@ function playSound(type) {
         
         const audio = new Audio(audioSrc);
         audio.loop = true; // 반복 재생 설정
+        audio.autoplay = true;
+        audio.muted = false;
+        audio.volume = 1.0;
         
         // 재생 시도
         const playPromise = audio.play();
@@ -596,40 +660,27 @@ function stopSound() {
 
 // 웹 알림 표시 함수
 function showWebNotification(title, message) {
-    // 브라우저에서 알림 지원 확인
-    if (!("Notification" in window)) {
-        console.warn("이 브라우저는 알림을 지원하지 않습니다.");
+    // 브라우저에서 알림 지원 확인 및 이미 권한이 있는 경우에만 알림 표시
+    if (!("Notification" in window) || Notification.permission !== "granted") {
+        console.log("알림을 표시할 수 없습니다: 권한 없음");
         return;
     }
     
-    // 알림 권한 요청
-    if (Notification.permission === "granted") {
-        createNotification();
-    } else if (Notification.permission !== "denied") {
-        Notification.requestPermission().then(permission => {
-            if (permission === "granted") {
-                createNotification();
-            }
-        });
-    }
+    // 알림 생성 함수 (권한이 이미 있는 경우만 실행)
+    const notification = new Notification(title, {
+        body: message,
+        icon: './timegom Logo.png',
+        vibrate: [200, 100, 200]
+    });
     
-    // 알림 생성 함수
-    function createNotification() {
-        const notification = new Notification(title, {
-            body: message,
-            icon: './timegom Logo.png',
-            vibrate: [200, 100, 200]
-        });
-        
-        // 알림 클릭 시 해당 탭으로 포커스
-        notification.onclick = function() {
-            window.focus();
-            notification.close();
-        };
-        
-        // 4초 후 자동으로 알림 닫기
-        setTimeout(() => {
-            notification.close();
-        }, 4000);
-    }
+    // 알림 클릭 시 해당 탭으로 포커스
+    notification.onclick = function() {
+        window.focus();
+        notification.close();
+    };
+    
+    // 4초 후 자동으로 알림 닫기
+    setTimeout(() => {
+        notification.close();
+    }, 4000);
 } 

@@ -105,7 +105,7 @@ section {
     background-color: white;
     border-radius: 12px;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
-    padding: 2.5rem;
+    padding: 2rem;
     margin-bottom: 2rem;
 }
 
@@ -234,9 +234,9 @@ h3 {
 
 .world-time {
     font-size: 1.8rem;
-    font-weight: 600;
+    font-weight: 400;
     color: var(--primary-color);
-    font-family: 'Roboto Mono', monospace;
+    font-family: 'Noto Sans KR', sans-serif;
     width: 8ch;
     display: inline-block;
     text-align: center;
@@ -274,9 +274,9 @@ h3 {
 }
 
 .input-group input:focus {
-    border: 1px solid #3a7bd5;
     outline: none;
-    box-shadow: 0 0 0 3px rgba(58, 123, 213, 0.1);
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(139, 109, 63, 0.1);
 }
 
 /* 스톱워치 */
@@ -401,10 +401,6 @@ footer {
         font-size: 1.2rem;
     }
     
-    .world-clock-grid {
-        grid-template-columns: repeat(2, 1fr);
-    }
-    
     /* 시계 섹션 레이아웃 개선 */
     .clock-section {
         min-height: auto;
@@ -427,6 +423,10 @@ footer {
         padding-top: 20px;
     }
     
+    .world-clock-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
     .timer-input {
         flex-direction: column;
         align-items: center;
@@ -442,110 +442,107 @@ footer {
         text-align: center;
     }
     
-    /* 포모도로 타이머 모바일 스타일 개선 */
-    .pomodoro-settings {
-        flex-direction: row;
-        flex-wrap: wrap;
-        padding: 15px 10px;
-        gap: 10px;
-        overflow-x: visible;
-        justify-content: space-around;
-    }
-    
-    .setting-item {
-        min-width: 110px;
-        padding: 10px;
-        flex: 1 1 calc(50% - 10px);
-        max-width: calc(50% - 10px);
-    }
-    
-    .setting-item label {
-        font-size: 0.8rem;
-        margin-bottom: 5px;
-        white-space: nowrap;
-    }
-    
-    .setting-control {
-        gap: 8px;
-    }
-    
-    .setting-btn {
-        width: 25px;
-        height: 25px;
-        font-size: 0.9rem;
-    }
-    
-    .pomodoro-display {
-        font-size: 4rem !important;
-    }
-    
-    .status-badge {
-        font-size: 1.2rem;
+    /* 모바일에서 포모도로 타이머 최적화 */
+    .pomodoro-section .circle-timer-container {
+        max-width: 280px;
     }
     
     .pomodoro-timer {
-        transform: scale(0.9);
+        display: flex !important;
+        width: 100%;
+        justify-content: center;
+        align-items: center;
+        margin: 0 auto;
+    }
+    
+    .circle-timer {
+        position: relative;
+        width: 220px;
+        height: 220px;
+        margin: 0 auto;
+        border-width: 1px;
+    }
+    
+    .pomodoro-display {
+        font-size: 3.5rem !important;
+    }
+    
+    .timer-content {
+        padding: 0;
+    }
+    
+    .timer-running .circle-timer {
+        display: flex;
+    }
+    
+    .progress-ring {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        transform: rotate(-90deg);
+        overflow: visible;
+    }
+    
+    .progress-ring-circle {
+        cx: 110px;
+        cy: 110px;
+        r: 100px;
+        stroke-width: 8px;
+        stroke-dasharray: 628.3;
+        stroke-dashoffset: 0;
+    }
+    
+    .progress-ring-circle-bg {
+        cx: 110px;
+        cy: 110px;
+        r: 100px;
+        stroke-width: 8px;
+    }
+    
+    .pomodoro-section .control-buttons {
+        flex-wrap: nowrap;
+    }
+    
+    .circle-btn {
+        width: 55px;
+        height: 55px;
+        font-size: 1rem;
+        padding: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .setting-control {
+        gap: 4px;
+    }
+    
+    .setting-btn {
+        width: 22px;
+        height: 22px;
+    }
+    
+    .timer-mode {
+        font-size: 1.2rem;
+        font-weight: 500;
+        color: var(--primary-color);
         margin-bottom: 10px;
     }
     
-    .pomodoro-section .circle-timer-container {
-        gap: 15px;
-    }
-    
-    .status-display {
-        padding: 8px 15px;
-    }
-    
-    /* 일반 타이머 스타일 개선 */
-    .circle-timer {
-        width: 280px;
-        height: 280px;
-    }
-    
-    .timer-countdown {
-        font-size: 4rem;
-    }
-    
-    /* 스톱워치 개선 */
     #stopwatch {
-        font-size: 4rem;
+        font-size: 3rem;
+        margin: 10px auto;
     }
     
     .ms {
-        min-width: 60px;
         font-size: 0.5em;
+        min-width: 45px;
     }
     
-    /* 알람 컨텐츠 크기 조정 */
-    .alarm-content h2 {
-        font-size: 1.7rem;
-        margin: 0 0 20px 0;
-    }
-    
-    .alarm-btn {
-        padding: 10px 25px;
-        font-size: 1.1rem;
-    }
-    
-    /* iOS 기기에서 버튼 스타일 개선 */
-    .circle-btn, .setting-btn {
-        -webkit-appearance: none;
-        -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
-    }
-    
-    /* 버튼 터치 영역 확장 */
-    .setting-btn {
-        position: relative;
-    }
-    
-    .setting-btn::after {
-        content: '';
-        position: absolute;
-        top: -5px;
-        left: -5px;
-        right: -5px;
-        bottom: -5px;
-        z-index: -1;
+    #pomodoroTimer {
+        font-size: 3.5rem;
     }
 }
 
@@ -573,57 +570,37 @@ footer {
         bottom: 20px;
     }
     
-    /* 포모도로 타이머 모바일 스타일 추가 개선 */
-    .pomodoro-settings {
-        padding: 10px 5px;
-        gap: 6px;
+    /* 더 작은 화면에서 포모도로 타이머 최적화 */
+    .pomodoro-section .circle-timer-container {
+        max-width: 220px;
+    }
+    
+    .pomodoro-timer {
+        margin: 0 auto;
+    }
+    
+    .circle-timer {
+        width: 190px;
+        height: 190px;
+    }
+    
+    .pomodoro-display {
+        font-size: 2.8rem !important;
     }
     
     .setting-item {
-        min-width: 90px;
-        padding: 8px;
-        flex: 1 1 calc(50% - 6px);
-        max-width: calc(50% - 6px);
+        padding: 2px 8px;
+        max-width: 240px;
     }
     
     .setting-control {
         font-size: 0.95rem;
     }
     
-    .pomodoro-display {
-        font-size: 3.5rem !important;
-    }
-    
-    .pomodoro-timer {
-        transform: scale(0.85);
-        margin-bottom: 5px;
-    }
-    
-    .circle-timer {
-        width: 240px;
-        height: 240px;
-    }
-    
-    .control-buttons-container {
-        width: 100%;
-    }
-    
-    .pomodoro-section .control-buttons {
-        gap: 10px;
-    }
-    
     .circle-btn {
-        width: 55px;
-        height: 55px;
-        font-size: 1.3rem;
-    }
-    
-    .timer-mode {
-        font-size: 1rem;
-    }
-    
-    .status-badge {
-        font-size: 1.1rem;
+        width: 50px;
+        height: 50px;
+        font-size: 0.9rem;
     }
     
     /* 일반 타이머 스타일 추가 개선 */
@@ -637,12 +614,14 @@ footer {
     
     /* 스톱워치 추가 개선 */
     #stopwatch {
-        font-size: 3.2rem;
+        font-size: 2rem;
+        margin: 8px auto;
+        letter-spacing: 0;
     }
     
     .ms {
-        min-width: 50px;
-        font-size: 0.45em;
+        min-width: 35px;
+        font-size: 0.5em;
     }
     
     /* 알람 컨텐츠 추가 조정 */
@@ -669,50 +648,61 @@ footer {
         padding: 5px 10px;
         font-size: 0.9rem;
     }
+    
+    section {
+        padding: 1rem;
+    }
+    
+    #pomodoroTimer {
+        font-size: 3rem;
+    }
 }
 
-/* 매우 작은 화면에 대한 추가 대응 */
 @media (max-width: 360px) {
     .pomodoro-settings {
-        padding: 8px 3px;
-        gap: 4px;
+        padding: 0;
+        gap: 2px;
+        background-color: transparent;
+        box-shadow: none;
     }
     
     .setting-item {
-        min-width: 80px;
-        padding: 6px;
+        min-width: 75px;
+        padding: 2px;
         flex: 1 1 calc(50% - 4px);
         max-width: calc(50% - 4px);
+        background-color: transparent;
+        box-shadow: none;
     }
     
     .setting-control {
-        font-size: 0.9rem;
+        font-size: 0.85rem;
     }
     
     .setting-btn {
-        width: 22px;
-        height: 22px;
+        width: 20px;
+        height: 20px;
         font-size: 0.8rem;
     }
     
     .circle-timer {
-        width: 220px;
-        height: 220px;
+        width: 160px;
+        height: 160px;
     }
     
     .pomodoro-display, #stopwatch, .timer-countdown {
-        font-size: 2.8rem !important;
+        font-size: 2.3rem !important;
     }
     
     .ms {
-        min-width: 40px;
-        font-size: 0.4em;
+        min-width: 30px;
+        font-size: 0.45em;
     }
     
     .circle-btn {
-        width: 50px;
-        height: 50px;
-        font-size: 1.2rem;
+        width: 45px;
+        height: 45px;
+        font-size: 1.1rem;
     }
     
     nav ul {
@@ -752,6 +742,34 @@ footer {
     
     .world-time {
         font-size: 1.4rem;
+    }
+    
+    /* 매우 작은 화면에서 포모도로 타이머 최적화 */
+    .pomodoro-section .circle-timer-container {
+        max-width: 180px;
+    }
+    
+    .pomodoro-timer {
+        margin: 0 auto;
+    }
+    
+    section {
+        padding: 0.8rem;
+    }
+    
+    #stopwatch {
+        font-size: 1.6rem;
+        margin: 5px auto;
+        letter-spacing: 0;
+    }
+    
+    .ms {
+        min-width: 30px;
+        font-size: 0.45em;
+    }
+    
+    #pomodoroTimer {
+        font-size: 2.5rem;
     }
 }
 
@@ -1063,57 +1081,51 @@ footer {
   margin: 3rem 0 3rem 0;
 }
 .timer-preset-btn {
-  width: 70px;
-  height: 70px;
-  border-radius: 12px;
-  background-color: #f5f5f5;
-  color: #333;
-  font-size: 1.1rem;
-  font-weight: 500;
-  border: 1px solid #e0e0e0;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    background-color: #f8f9fa;
+    border: 1px solid #ddd;
+    border-radius: 20px;
+    padding: 8px 16px;
+    font-size: 0.9rem;
   cursor: pointer;
-  transition: all 0.2s ease;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+    transition: all 0.2s;
 }
-.timer-preset-btn:hover, .timer-preset-btn.active {
-  background-color: #eeeeee;
-  color: var(--primary-color);
-  border-color: #d5d5d5;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+.timer-preset-btn:hover {
+    background-color: #f0f0f0;
+    transform: translateY(-2px);
+}
+.timer-preset-btn.active {
+    background-color: var(--primary-color);
+    color: white;
 }
 
 .timer-input-modern {
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
     margin: 3rem 0;
     background-color: transparent;
     padding: 0;
     border-radius: 0;
     box-shadow: none;
     border: none;
-    gap: 1rem;
+  gap: 1rem;
 }
 
 .time-unit {
   display: flex;
-  flex-direction: column;
+    flex-direction: column;
   align-items: center;
-  gap: 0.5rem;
+    gap: 0.5rem;
 }
 
 .time-unit input[type=number] {
-  width: 80px;
-  height: 80px;
-  font-size: 3rem;
+    width: 80px;
+    height: 80px;
+    font-size: 3rem;
   text-align: center;
   border: none;
   background: transparent;
-  color: #333;
+    color: #333;
   font-family: 'Roboto Mono', monospace;
   font-weight: bold;
   padding: 0;
@@ -1125,10 +1137,10 @@ footer {
 }
 
 .unit-label {
-  font-size: 1.5rem;
-  color: #555;
-  font-weight: 500;
-  margin-top: 0.5rem;
+    font-size: 1.5rem;
+    color: #555;
+    font-weight: 500;
+    margin-top: 0.5rem;
 }
 
 .colon {
@@ -1136,176 +1148,406 @@ footer {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  gap: 12px;
-  height: 80px;
-  margin: 0 0.8rem;
-  padding-bottom: 30px; /* 라벨 높이 보정용 */
+    gap: 12px;
+    height: 80px;
+    margin: 0 0.8rem;
+    padding-bottom: 30px; /* 라벨 높이 보정용 */
 }
 
 .colon::before,
 .colon::after {
   content: "";
-  width: 8px;
-  height: 8px;
-  background-color: #555;
+    width: 8px;
+    height: 8px;
+    background-color: #555;
   border-radius: 50%;
 }
 
-/* 원형 타이머 스타일 */
-.circle-timer-container {
-  position: relative;
+/* 집중 타이머 컨테이너 레이아웃 수정 */
+.pomodoro-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 2rem;
+    margin-top: 0;
+}
+
+.pomodoro-section .circle-timer-container {
+    width: 100%;
+    max-width: 500px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  margin: 1rem 0;
-  min-height: 500px; /* 컨테이너 고정 높이 */
+    margin: 0 auto;
+    min-height: 500px;
+    padding: 20px;
 }
 
-.timer-input-modern {
-  position: absolute;
-  top: 30px;
-  left: 0;
-  right: 0;
-  margin-left: auto;
-  margin-right: auto;
-  z-index: 5;
-}
-
-.timer-preset-blocks {
-  position: absolute;
-  top: 220px;
-  left: 0;
-  right: 0;
-  z-index: 5;
+.pomodoro-timer {
+    display: block;
+    margin: 30px auto;
 }
 
 .circle-timer {
-  position: absolute;
-  top: 30px;
-  left: 0;
-  right: 0;
-  margin-left: auto;
-  margin-right: auto;
-  width: 300px;
-  height: 300px;
+    position: relative;
+    margin: 0 auto;
+    border-radius: 50%;
+    background-color: #f8f9fa;
+    border: 1px solid #ddd;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    z-index: 10;
+    overflow: hidden;
+    width: 300px;
+    height: 300px;
+}
+
+.pomodoro-section .control-buttons-container {
+    width: 100%;
+    max-width: 350px;
+    margin: 20px auto 0;
+    display: flex;
+    justify-content: center;
+}
+
+.pomodoro-section .control-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin: 0;
+    width: 100%;
+}
+
+.status-display {
+    display: flex;
+    margin: 0 auto 20px;
+    padding: 10px 15px;
+    background-color: #f8f9fa;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    flex-direction: row;
+    gap: 15px;
+    justify-content: center;
+    width: 100%;
+    max-width: 350px;
+}
+
+.status-badge {
+    font-weight: 600;
+    color: var(--primary-color);
+    margin-bottom: 0;
+}
+
+.cycle-count {
+    font-weight: 500;
+    color: #777;
+}
+
+/* 포모도로 타이머 설정 스타일 */
+.pomodoro-settings {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+    margin: 20px auto;
+    width: 100%;
+    max-width: 350px;
+}
+
+.setting-item {
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    padding: 10px 15px;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+    min-width: 150px;
+    flex: 1 1 calc(50% - 10px);
+    max-width: calc(50% - 10px);
+}
+
+.setting-item label {
+    font-weight: 500;
+    color: #555;
+    margin-bottom: 5px;
+    font-size: 0.9rem;
+    text-align: center;
+}
+
+.setting-control {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-width: 100px;
+}
+
+.setting-btn {
+    width: 24px;
+    height: 24px;
   border-radius: 50%;
-  background-color: #f8f9fa;
-  border: 1px solid #ddd;
-  display: none; /* 기본적으로 숨김 상태 */
+    border: none;
+    background-color: var(--primary-color);
+    color: white;
+    font-size: 1rem;
+    cursor: pointer;
+  display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-  z-index: 10;
+    transition: all 0.2s;
 }
 
-.control-buttons-container {
-  position: absolute;
-  bottom: 30px;
-  width: 100%;
-  z-index: 15;
+.setting-btn:hover {
+    background-color: var(--secondary-color);
 }
 
-.circle-progress {
+/* 타이머 모드 및 디스플레이 스타일 */
+.timer-mode {
+    font-size: 1.2rem;
+    font-weight: 500;
+    color: var(--primary-color);
+    margin-bottom: 10px;
+}
+
+.pomodoro-display {
+    font-size: 4rem;
+    font-weight: 600;
+    color: #333;
+    text-align: center;
+    margin: 0.5rem 0;
+    font-family: 'digital-7', monospace;
+}
+
+/* 원형 프로그레스 스타일 */
+.progress-ring {
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  border-radius: 50%;
-  border: 8px solid var(--primary-color);
-  box-sizing: border-box;
-  clip-path: circle(50% at center);
+    transform: rotate(-90deg);
+    overflow: visible;
 }
 
-.timer-content {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  color: #333;
-  z-index: 2;
-  text-align: center;
+.progress-ring-circle {
+    cx: 150px;
+    cy: 150px;
+    r: 140px;
+    stroke-width: 10px;
+    stroke-dasharray: 879.6; /* 2*PI*140 */
+    stroke-dashoffset: 0;
+    stroke-linecap: round;
+    transform-origin: center;
+    fill: none;
 }
 
-.timer-set-time {
-  font-size: 1rem;
-  margin-bottom: 1.5rem;
-  color: #555;
-  font-weight: 500;
+.progress-ring-circle-bg {
+    cx: 150px;
+    cy: 150px;
+    r: 140px;
+    stroke-width: 10px;
+    stroke-opacity: 0.3;
+    fill: none;
 }
 
-.timer-countdown {
-  font-size: 4rem;
-  font-weight: 600;
-  color: #333;
-  text-align: center;
-  margin: 1rem 0;
-  font-family: 'digital-7', monospace;
+/* 집중/휴식 모드별 색상 */
+.focus-mode .progress-ring-circle {
+    stroke: var(--primary-color);
 }
 
-.timer-end-time {
-  font-size: 0.9rem;
-  margin-top: 1.5rem;
-  color: #ccc;
-  display: flex;
-  align-items: center;
+.break-mode .progress-ring-circle {
+    stroke: var(--secondary-color);
 }
 
+.break-mode .status-badge {
+    color: var(--secondary-color);
+}
+
+.long-break-mode .progress-ring-circle {
+    stroke: #3f9277;
+}
+
+.long-break-mode .status-badge {
+    color: #3f9277;
+}
+
+/* 버튼 스타일 */
 .circle-btn {
-  border-radius: 30px;
-  font-size: 1rem;
-  font-weight: 500;
-  padding: 0.8rem 2rem;
-  margin: 0 0.5rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-  transition: transform 0.2s, box-shadow 0.2s;
-  border: none;
-  cursor: pointer;
-}
-
-.start-btn {
-  background-color: var(--primary-color);
-  color: white;
-}
-
-.pause-btn {
-  background-color: #e74c3c;
-  color: white;
-}
-
-.reset-btn {
-  background-color: #555;
-  color: white;
+  border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    font-size: 1rem;
+    font-weight: 500;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+    transition: all 0.2s ease;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    line-height: 1;
+    text-align: center;
+    vertical-align: middle;
 }
 
 .circle-btn:hover:not(:disabled) {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+}
+
+.circle-btn:active:not(:disabled) {
+    transform: translateY(0);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
 .circle-btn:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
+    opacity: 0.6;
+    cursor: not-allowed;
 }
 
-/* 타이머 시작 시 인풋 숨기기 */
-.timer-running .timer-input-modern,
-.timer-running .timer-preset-blocks {
-  display: none;
+/* 모바일 최적화 */
+@media (max-width: 768px) {
+    .pomodoro-section .circle-timer-container {
+        max-width: 400px;
+        min-height: 450px;
+        padding: 15px;
+    }
+    
+    .circle-timer {
+        width: 250px;
+        height: 250px;
+    }
+    
+    .progress-ring-circle,
+    .progress-ring-circle-bg {
+        cx: 125px;
+        cy: 125px;
+        r: 115px;
+        stroke-dasharray: 722.5;
+    }
+    
+    .pomodoro-display {
+        font-size: 3.5rem;
+    }
+    
+    .pomodoro-settings {
+        max-width: 300px;
+    }
+    
+    .setting-item {
+        min-width: 140px;
+    }
 }
 
-/* 타이머 시작 시 원형 타이머 보이기 */
-.timer-running .circle-timer {
-  display: flex;
+@media (max-width: 480px) {
+    .pomodoro-section .circle-timer-container {
+        max-width: 320px;
+        min-height: 400px;
+        padding: 10px;
+    }
+    
+    .circle-timer {
+        width: 220px;
+        height: 220px;
+    }
+    
+    .progress-ring-circle,
+    .progress-ring-circle-bg {
+        cx: 110px;
+        cy: 110px;
+        r: 100px;
+        stroke-dasharray: 628.3;
+    }
+    
+    .pomodoro-display {
+        font-size: 3rem;
+    }
+    
+    .pomodoro-settings {
+        max-width: 280px;
+        gap: 8px;
+    }
+    
+    .setting-item {
+        padding: 8px 12px;
+        min-width: 125px;
+    }
+    
+    .circle-btn {
+        width: 55px;
+        height: 55px;
+        font-size: 0.9rem;
+    }
+    
+    .status-display {
+        max-width: 280px;
+        padding: 8px 12px;
+    }
+}
+
+@media (max-width: 360px) {
+    .pomodoro-section .circle-timer-container {
+        max-width: 280px;
+        min-height: 350px;
+        padding: 8px;
+    }
+    
+    .circle-timer {
+        width: 180px;
+        height: 180px;
+    }
+    
+    .progress-ring-circle,
+    .progress-ring-circle-bg {
+        cx: 90px;
+        cy: 90px;
+        r: 80px;
+        stroke-dasharray: 502.4;
+        stroke-width: 8px;
+    }
+    
+    .pomodoro-display {
+        font-size: 2.5rem;
+    }
+    
+    .pomodoro-settings {
+        max-width: 250px;
+        gap: 6px;
+    }
+    
+    .setting-item {
+        padding: 6px 10px;
+        min-width: 115px;
+    }
+    
+    .circle-btn {
+        width: 48px;
+        height: 48px;
+        font-size: 0.85rem;
+    }
+    
+    .status-display {
+        max-width: 250px;
+        padding: 6px 10px;
+        gap: 10px;
+    }
+    
+    .setting-btn {
+        width: 22px;
+        height: 22px;
+        font-size: 0.9rem;
+    }
 }
 
 #stopwatch {
     font-family: 'Roboto Mono', monospace;
-    font-size: 8rem;
+    font-size: 6rem;
     font-weight: 700;
     text-align: center;
-    margin: 30px auto;
+    margin: 20px auto;
     color: var(--primary-color);
     letter-spacing: 2px;
     text-shadow: 1px 1px 3px rgba(0,0,0,0.1);
@@ -1313,133 +1555,59 @@ footer {
     display: block;
 }
 
-/* 일시정지 버튼 기본 상태에서 숨기기 */
-#pauseBtn {
-  display: none;
+.start-btn {
+    background: var(--primary-gradient);
+    color: white;
 }
 
-/* 타이머 실행 중일 때만 일시정지 버튼 표시 */
-.timer-running #pauseBtn {
-  display: inline-block;
+.pause-btn {
+    background: linear-gradient(135deg, #e74c3c, #c0392b);
+    color: white;
 }
 
-/* 타이머 실행 중일 때 초기화 버튼 항상 활성화 */
-#resetBtn {
-  opacity: 1;
-  cursor: pointer;
+.reset-btn {
+    background: linear-gradient(135deg, #7f8c8d, #95a5a6);
+    color: white;
+}
+
+.circle-btn:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+}
+
+.circle-btn:active:not(:disabled) {
+    transform: translateY(0);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.circle-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* 타이머 시작 시 원형 보이기 */
+.timer-running .circle-timer {
+    display: flex;
 }
 
 /* 타이머 시작 시 인풋 숨기기 */
 .timer-running .timer-input-modern,
 .timer-running .timer-preset-blocks {
-  display: none;
+    display: none;
 }
 
-/* 타이머 시작 시 원형 타이머 보이기 */
-.timer-running .circle-timer {
-  display: flex;
-}
-
-.progress-ring {
-  position: absolute;
-  top: 0;
-  left: 0;
-  transform: rotate(-90deg); /* SVG 원형을 12시 방향에서 시작하도록 회전 */
-}
-
-.progress-ring-circle {
-  stroke-dasharray: 880; /* 2*PI*140 (원의 둘레) */
-  stroke-dashoffset: 0; /* 초기 상태에서는 전체가 표시됨 */
-  stroke-linecap: round;
-}
-
-.progress-ring-circle-bg {
-  stroke-opacity: 0.3;
-}
-
-/* 타이머 알람 스타일 */
-.timer-alarm {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: rgba(0, 0, 0, 0.7);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 100;
-    border-radius: 50%;
-    opacity: 0;
-    visibility: hidden;
-    transition: opacity 0.3s, visibility 0.3s;
-}
-
-.timer-alarm.show {
-    opacity: 1;
-    visibility: visible;
-}
-
-.alarm-content {
+/* 타이머 컨텐츠 (숫자 표시 부분) */
+.timer-content {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    width: 100%;
-    height: 100%;
-    border-radius: 50%;
-    background: radial-gradient(circle, rgba(255,255,255,0.9) 0%, rgba(238,238,238,0.8) 100%);
+    color: #333;
+    z-index: 2;
     text-align: center;
-    padding: 20px;
-}
-
-.alarm-icon {
-    color: var(--primary-color);
-    margin-bottom: 15px;
-    animation: pulse 1.5s infinite;
-}
-
-.alarm-content h2 {
-    margin: 0 0 30px 0;
-    color: var(--primary-color);
-    font-size: 2rem;
-    text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
-}
-
-.alarm-btn {
-    background-color: var(--primary-color);
-    color: white;
-    border: none;
-    padding: 12px 35px;
-    border-radius: 30px;
-    cursor: pointer;
-    font-size: 1.2rem;
-    font-weight: 600;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-    transition: all 0.2s;
-}
-
-.alarm-btn:hover {
-    background-color: var(--secondary-color);
-    transform: translateY(-2px);
-    box-shadow: 0 6px 12px rgba(0,0,0,0.3);
-}
-
-.alarm-btn:active {
-    transform: translateY(0);
-    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-}
-
-@keyframes pulse {
-    0% {
-        transform: scale(1);
-    }
-    50% {
-        transform: scale(1.2);
-    }
-    100% {
-        transform: scale(1);
-    }
+    width: 100%;
+    padding: 0;
+    height: 100%;
 }
 
 /* 음원 파일 업로드 스타일 */
@@ -1504,224 +1672,144 @@ footer {
     background-color: #e0e0e0;
 }
 
-/* 스톱워치 밀리초 스타일 */
-.ms {
-    font-size: 0.6em;
-    opacity: 0.9;
-    color: var(--secondary-color);
-    display: inline-block;
-    min-width: 70px;
-    margin-left: 5px;
-    font-weight: 600;
-}
-
-/* 랩타임 스타일 개선 */
-#lapsList li {
-    display: flex;
-    justify-content: space-between;
-    padding: 10px;
-    border-bottom: 1px solid #eee;
-    font-family: 'Roboto Mono', monospace;
-}
-
-#lapsList li:nth-child(odd) {
-    background-color: rgba(0, 0, 0, 0.02);
-}
-
-.lap-number {
-    font-weight: 600;
-    color: var(--primary-color);
-    min-width: 60px;
-}
-
-.lap-time {
-    flex-grow: 1;
-    text-align: center;
-}
-
-.total-time {
+.timer-set-time {
+  font-size: 1rem;
+  margin-bottom: 1.5rem;
     color: #555;
+  font-weight: 500;
 }
 
-.lap-times {
-    max-height: 300px;
-    overflow-y: auto;
-    margin-top: 2rem;
-    background-color: #f8f9fa;
-    border-radius: 12px;
-    padding: 1rem;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-}
-
-/* 집중 타이머(Pomodoro) 스타일 */
-.pomodoro-info {
-    display: flex;
-    justify-content: center;
-    margin-bottom: 20px;
-}
-
-.status-display {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    background-color: #f8f9fa;
-    border-radius: 10px;
-    padding: 10px 25px;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-}
-
-.status-badge {
-    font-size: 1.4rem;
-    font-weight: 600;
-    color: var(--primary-color);
-    margin-bottom: 5px;
-}
-
-.cycle-count {
-    font-size: 1rem;
-    color: #777;
-}
-
-/* 집중 타이머 컨테이너 레이아웃 수정 */
-.pomodoro-section .circle-timer-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 30px;
-}
-
-.pomodoro-timer {
-    position: relative;
-    display: flex !important; /* 항상 표시되도록 */
-    margin-bottom: 20px;
-}
-
-.timer-mode {
-    font-size: 1.2rem;
-    font-weight: 500;
-    color: var(--primary-color);
-    margin-bottom: 10px;
-}
-
-.pomodoro-display {
-    font-size: 5rem !important;
-    margin: 10px 0;
-}
-
-.pomodoro-settings {
-    display: flex;
-    flex-wrap: nowrap;
-    justify-content: center;
-    gap: 20px;
-    margin: 20px 0;
-    width: 100%;
-    max-width: 100%;
-    padding: 25px;
-    background-color: #f8f9fa;
-    border-radius: 12px;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch; /* iOS 스크롤 부드럽게 */
-}
-
-.pomodoro-section .circle-timer-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 30px;
-    width: 100%;
-    max-width: 100%;
-    overflow-x: hidden;
-}
-
-.setting-item {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    background-color: white;
-    padding: 15px;
-    border-radius: 8px;
-    min-width: 140px;
-    flex: 0 0 auto;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-}
-
-.setting-item label {
-    font-size: 0.9rem;
-    color: #666;
-    margin-bottom: 10px;
-    width: 100%;
-    text-align: center;
-}
-
-.setting-control {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    font-size: 1.1rem;
+.timer-countdown {
+    font-size: 4rem;
     font-weight: 600;
     color: #333;
-    width: 100%;
-    justify-content: space-between;
+    text-align: center;
+    margin: 1rem 0;
+    font-family: 'digital-7', monospace;
 }
 
-.setting-btn {
-    width: 30px;
-    height: 30px;
-    border-radius: 50%;
-    background-color: var(--primary-color);
-    color: white;
-    border: none;
-    font-size: 1.1rem;
-    font-weight: bold;
-    cursor: pointer;
+.timer-end-time {
+  font-size: 0.9rem;
+  margin-top: 1.5rem;
+  color: #ccc;
+  display: flex;
+  align-items: center;
+}
+
+/* 타이머 알람 스타일 */
+.timer-alarm {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.7);
     display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 100;
+    border-radius: 50%;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s, visibility 0.3s;
+}
+
+.timer-alarm.show {
+    opacity: 1;
+    visibility: visible;
+}
+
+.alarm-content {
+    display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
-    transition: background-color 0.2s;
-    flex-shrink: 0;
-}
-
-.setting-btn:hover {
-    background-color: var(--secondary-color);
-}
-
-.skip-btn {
-    background-color: #7a7a7a;
-    color: white;
-}
-
-/* 집중/휴식 모드별 색상 */
-.focus-mode .progress-ring-circle {
-    stroke: var(--primary-color);
-}
-
-.break-mode .progress-ring-circle {
-    stroke: var(--secondary-color);
-}
-
-.break-mode .status-badge {
-    color: var(--secondary-color);
-}
-
-.long-break-mode .progress-ring-circle {
-    stroke: #3f9277;
-}
-
-.long-break-mode .status-badge {
-    color: #3f9277;
-}
-
-.pomodoro-section .control-buttons-container {
-    position: static;
     width: 100%;
-    margin-top: 20px;
-    z-index: 15;
+    height: 100%;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255,255,255,0.9) 0%, rgba(238,238,238,0.8) 100%);
+    text-align: center;
+    padding: 20px;
 }
 
-.pomodoro-section .control-buttons {
+.alarm-icon {
+    color: var(--primary-color);
+    margin-bottom: 15px;
+    animation: pulse 1.5s infinite;
+}
+
+.alarm-content h2 {
+    margin: 0 0 30px 0;
+    color: var(--primary-color);
+    font-size: 2rem;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+}
+
+.alarm-btn {
+    background-color: var(--primary-color);
+  color: white;
+    border: none;
+    padding: 12px 35px;
+    border-radius: 30px;
+    cursor: pointer;
+    font-size: 1.2rem;
+    font-weight: 600;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    transition: all 0.2s;
+}
+
+.alarm-btn:hover {
+    background-color: var(--secondary-color);
+  transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0,0,0,0.3);
+}
+
+.alarm-btn:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.2);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+/* 일시정지 버튼 기본 상태에서도 보이게 함 */
+#pauseBtn {
+  display: inline-block;
+  font-size: 0.85rem; /* 일시정지 버튼의 글자 크기 줄임 */
+}
+
+/* 타이머 실행 중일 때만 일시정지 버튼 표시 */
+.timer-running #pauseBtn {
+  display: inline-block;
+}
+
+/* 타이머 실행 중일 때 초기화 버튼 항상 활성화 */
+#resetBtn {
+  opacity: 1;
+  cursor: pointer;
+}
+
+/* 포모도로 타이머에서 일반 타이머와 동일한 디스플레이 사용 */
+#pomodoroTimer {
+    font-family: 'digital-7', monospace;
+    font-size: 4rem;
+    font-weight: 600;
+}
+
+/* 포모도로 타이머의 원형은 처음부터 보이도록 설정 */
+.pomodoro-section .circle-timer {
     display: flex;
-    justify-content: center;
-    gap: 15px;
-    margin: 0;
+}
+
+#skipBtn {
+  font-size: 0.8rem; /* 건너뛰기 버튼의 글자 크기 줄임 */
 } 
