@@ -1167,9 +1167,15 @@ footer {
 .pomodoro-section {
     display: flex;
     flex-direction: column;
-    align-items: center;
+    align-items: flex-start;
     padding-top: 2rem;
     margin-top: 0;
+}
+
+.pomodoro-info {
+    width: 100%;
+    display: flex;
+    justify-content: center;
 }
 
 .pomodoro-section .circle-timer-container {
@@ -1233,6 +1239,7 @@ footer {
     justify-content: center;
     width: 100%;
     max-width: 350px;
+    align-items: center;
 }
 
 .status-badge {
@@ -1617,6 +1624,14 @@ footer {
     background-color: #f8f9fa;
     border-radius: 10px;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    position: absolute;
+    bottom: 30px;
+    left: 0;
+    right: 0;
+    width: 95%;
+    max-width: 95%;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .sound-upload-container h3 {
@@ -1812,4 +1827,63 @@ footer {
 
 #skipBtn {
   font-size: 0.8rem; /* 건너뛰기 버튼의 글자 크기 줄임 */
+}
+
+/* 스톱워치 랩타임 기록 스타일 */
+.lap-times {
+    margin-top: 2rem;
+    text-align: center;
+    width: 100%;
+    max-width: 500px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.lap-times h3 {
+    text-align: center;
+    margin-bottom: 1rem;
+}
+
+#lapsList {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+    align-items: center;
+}
+
+#lapsList li {
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    padding: 12px 18px;
+    width: 100%;
+    max-width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+    border-left: 3px solid var(--primary-color);
+    transition: transform 0.2s;
+}
+
+#lapsList li:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.lap-number {
+    font-weight: 600;
+    color: var(--primary-color);
+    min-width: 60px;
+    text-align: left;
+}
+
+.lap-time {
+    color: #555;
+}
+
+.total-time {
+    color: #888;
+    font-size: 0.9rem;
 } 

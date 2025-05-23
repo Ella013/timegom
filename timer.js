@@ -443,15 +443,88 @@ function updateInput(unit, delta) {
     input.value = val;
 }
 
+// 버튼 연속 증감을 위한 변수
+let buttonIntervals = {};
+let buttonTimeouts = {};
+
 document.querySelectorAll('.plus-btn').forEach(btn => {
-    btn.addEventListener('click', function() {
-        updateInput(this.dataset.unit, 1);
+    // 버튼 누를 때
+    btn.addEventListener('mousedown', function() {
+        const unit = this.dataset.unit;
+        const btnId = unit + 'plus';
+        
+        // 즉시 첫 번째 변경 적용
+        updateInput(unit, 1);
+        
+        // 버튼을 계속 누르고 있을 때 약간의 지연 후 빠르게 증가
+        buttonTimeouts[btnId] = setTimeout(() => {
+            buttonIntervals[btnId] = setInterval(() => {
+                updateInput(unit, 1);
+            }, 100); // 0.1초마다 변경
+        }, 500); // 0.5초 후 연속 증가 시작
     });
+    
+    // 버튼에서 손을 떼거나 마우스가 버튼을 벗어났을 때
+    const stopContinuousChange = function() {
+        const unit = this.dataset.unit;
+        const btnId = unit + 'plus';
+        
+        // 타임아웃 및 인터벌 정리
+        if (buttonTimeouts[btnId]) {
+            clearTimeout(buttonTimeouts[btnId]);
+            buttonTimeouts[btnId] = null;
+        }
+        
+        if (buttonIntervals[btnId]) {
+            clearInterval(buttonIntervals[btnId]);
+            buttonIntervals[btnId] = null;
+        }
+    };
+    
+    btn.addEventListener('mouseup', stopContinuousChange);
+    btn.addEventListener('mouseleave', stopContinuousChange);
+    btn.addEventListener('touchend', stopContinuousChange);
+    btn.addEventListener('touchcancel', stopContinuousChange);
 });
+
 document.querySelectorAll('.minus-btn').forEach(btn => {
-    btn.addEventListener('click', function() {
-        updateInput(this.dataset.unit, -1);
+    // 버튼 누를 때
+    btn.addEventListener('mousedown', function() {
+        const unit = this.dataset.unit;
+        const btnId = unit + 'minus';
+        
+        // 즉시 첫 번째 변경 적용
+        updateInput(unit, -1);
+        
+        // 버튼을 계속 누르고 있을 때 약간의 지연 후 빠르게 감소
+        buttonTimeouts[btnId] = setTimeout(() => {
+            buttonIntervals[btnId] = setInterval(() => {
+                updateInput(unit, -1);
+            }, 100); // 0.1초마다 변경
+        }, 500); // 0.5초 후 연속 감소 시작
     });
+    
+    // 버튼에서 손을 떼거나 마우스가 버튼을 벗어났을 때
+    const stopContinuousChange = function() {
+        const unit = this.dataset.unit;
+        const btnId = unit + 'minus';
+        
+        // 타임아웃 및 인터벌 정리
+        if (buttonTimeouts[btnId]) {
+            clearTimeout(buttonTimeouts[btnId]);
+            buttonTimeouts[btnId] = null;
+        }
+        
+        if (buttonIntervals[btnId]) {
+            clearInterval(buttonIntervals[btnId]);
+            buttonIntervals[btnId] = null;
+        }
+    };
+    
+    btn.addEventListener('mouseup', stopContinuousChange);
+    btn.addEventListener('mouseleave', stopContinuousChange);
+    btn.addEventListener('touchend', stopContinuousChange);
+    btn.addEventListener('touchcancel', stopContinuousChange);
 });
 
 document.querySelectorAll('.time-unit input[type=number]').forEach(input => {
@@ -509,6 +582,9 @@ let alarmAudio = null;
 let audioContext = null;
 let audioBuffer = null;
 let isAudioInitialized = false;
+let titleInterval = null; // 타이틀 변경을 위한 인터벌
+let originalTitle = document.title; // 원래 페이지 타이틀 저장
+let alarmSeconds = 0; // 알람이 울리고 있는 시간 (초)
 
 // 오디오 컨텍스트 초기화 함수
 function initializeAudioContext() {
@@ -553,16 +629,22 @@ function handleVisibilityChange() {
                     console.log('백그라운드 인터벌에서 타이머 종료 감지:', now, endTimeValue);
                     clearInterval(checkInterval);
                     
-                    // 백그라운드에서 알람 재생
-                    if (typeof playSound === 'function') {
-                        playSound('timer');
+                    // 이미 알람이 재생 중인지 확인
+                    const alarmIsPlaying = localStorage.getItem('alarmIsPlaying') === 'true';
+                    
+                    // 알람이 아직 재생되지 않은 경우에만 재생
+                    if (!alarmIsPlaying) {
+                        // 백그라운드에서 알람 재생
+                        if (typeof playSound === 'function') {
+                            playSound('timer');
+                        }
+                        
+                        // 타이머 종료 플래그 설정
+                        localStorage.setItem('timerCompleted', 'true');
+                        
+                        // 알람이 재생 중임을 표시하는 플래그 설정
+                        localStorage.setItem('alarmIsPlaying', 'true');
                     }
-                    
-                    // 타이머 종료 플래그 설정
-                    localStorage.setItem('timerCompleted', 'true');
-                    
-                    // 알람이 재생 중임을 표시하는 플래그 설정
-                    localStorage.setItem('alarmIsPlaying', 'true');
                 }
             }, 1000);
             
@@ -598,39 +680,76 @@ function handleVisibilityChange() {
             });
         }
         
-        // 알람이 이미 재생 중인지 확인
+        // 알람이 이미 재생 중인지 확인 (localStorage와 실제 객체 모두 확인)
         const alarmIsPlaying = localStorage.getItem('alarmIsPlaying') === 'true';
         const isAlarmCurrentlyPlaying = alarmAudio && !alarmAudio.paused;
+        
+        // 알람이 재생 중이지만 현재 페이지에서는 재생되지 않고 있는 경우
+        if (alarmIsPlaying && !isAlarmCurrentlyPlaying) {
+            console.log('알람이 재생 중이지만 현재 페이지에서는 재생되지 않음, 재생 복원 시도');
+            
+            // 타이틀 변경 시작 (이미 알람이 울리고 있으므로)
+            startTitleFlash();
+
+            // 새로운 Audio 객체 생성하고 알람 소리 재생
+            const audio = new Audio();
+            audio.src = window.customAlarmSound || './audio/ringtone-wow.mp3';
+            audio.loop = true;
+            audio.autoplay = true;
+            audio.volume = 1.0;
+            
+            // Audio 객체 이벤트 리스너 등록
+            audio.addEventListener('canplaythrough', function() {
+                audio.play().catch(e => console.error('알람 복원 재생 실패:', e));
+            });
+            
+            // DOM에 요소 추가 (일부 브라우저에서는 이렇게 해야 배경 재생이 가능)
+            document.body.appendChild(audio);
+            
+            // 알람 객체 참조 저장
+            alarmAudio = audio;
+            
+            // 알람창 표시
+            const timerAlarm = document.getElementById('timerAlarm');
+            if (timerAlarm && !timerAlarm.classList.contains('show')) {
+                timerAlarm.classList.add('show');
+            }
+            
+            return; // 나머지 로직은 실행하지 않음
+        }
         
         // 백그라운드에서 타이머가 완료되었는지 확인
         const timerCompleted = localStorage.getItem('timerCompleted') === 'true';
         if (timerCompleted) {
             console.log('포그라운드 전환 시 백그라운드에서 완료된 타이머 감지');
             
-            // 타이머 상태 초기화
+            // 타이머 상태 초기화 (alarmIsPlaying은 초기화하지 않음)
             localStorage.removeItem('timerCompleted');
             localStorage.removeItem('timerEndTime');
             localStorage.removeItem('timerTotal');
             localStorage.removeItem('timerIsRunning');
             
             // 알람창 표시 (알람이 이미 재생 중이 아닌 경우에만)
-            if (!isAlarmCurrentlyPlaying) {
+            if (!isAlarmCurrentlyPlaying && !alarmIsPlaying) {
                 const timerAlarm = document.getElementById('timerAlarm');
                 if (timerAlarm) {
                     timerAlarm.classList.add('show');
                 }
                 
                 // 알람이 재생되고 있지 않은 경우에만 알람 재생
-                if (!alarmIsPlaying) {
-                    playSound('timer');
-                }
+                playSound('timer');
             } else {
                 console.log('알람이 이미 재생 중입니다. 중복 재생을 방지합니다.');
                 
                 // 이미 알람이 재생 중이면 알람창만 표시
                 const timerAlarm = document.getElementById('timerAlarm');
-                if (timerAlarm) {
+                if (timerAlarm && !timerAlarm.classList.contains('show')) {
                     timerAlarm.classList.add('show');
+                }
+                
+                // 타이틀이 변경되지 않았다면 타이틀 변경 시작
+                if (document.title === originalTitle) {
+                    startTitleFlash();
                 }
             }
             
@@ -638,57 +757,84 @@ function handleVisibilityChange() {
             if (typeof isRunning !== 'undefined') {
                 isRunning = false;
             }
+            return; // 타이머가 이미 완료되었으므로 나머지 로직은 실행 안 함
         }
         
         // 기존 코드: 타이머가 실행 중이고 종료 시간이 지났는지 확인
-        // 알람이 이미 재생 중이 아닐 때만 실행
-        if (!isAlarmCurrentlyPlaying && !alarmIsPlaying) {
-            const savedEndTime = localStorage.getItem('timerEndTime');
-            const savedIsRunning = localStorage.getItem('timerIsRunning') === 'true';
-            
-            if (savedIsRunning && savedEndTime && parseInt(savedEndTime) <= Date.now()) {
-                console.log('포그라운드 전환 시 타이머 종료 감지');
-                
-                // 타이머 완료 처리
-                if (typeof timerComplete === 'function') {
-                    // global isRunning이 있으면 false로 설정
-                    if (typeof isRunning !== 'undefined') {
-                        isRunning = false;
-                    }
-                    timerComplete();
-                    
-                    // 알람이 재생 중임을 표시
-                    localStorage.setItem('alarmIsPlaying', 'true');
-                } else {
-                    // timerComplete 함수가 없으면 직접 알람 재생
-                    playSound('timer');
-                    
-                    // 알람이 재생 중임을 표시
-                    localStorage.setItem('alarmIsPlaying', 'true');
-                    
-                    // 타이머 상태 초기화
-                    localStorage.removeItem('timerEndTime');
-                    localStorage.removeItem('timerTotal');
-                    localStorage.removeItem('timerIsRunning');
-                }
-            }
-        } else {
+        // 알람이 이미 재생 중이면 실행하지 않음
+        if (alarmIsPlaying || isAlarmCurrentlyPlaying) {
             console.log('알람이 이미 재생 중이므로 타이머 완료 처리 생략');
+            
+            // 타이머 알람 UI가 표시되어 있는지 확인하고 표시
+            const timerAlarm = document.getElementById('timerAlarm');
+            if (timerAlarm && !timerAlarm.classList.contains('show')) {
+                timerAlarm.classList.add('show');
+            }
+            
+            // 타이틀 변경이 활성화되어 있지 않다면 시작
+            if (!titleInterval) {
+                startTitleFlash();
+            }
+            
+            return; // 알람이 이미 재생 중이므로 나머지 로직은 실행 안 함
+        }
+        
+        // 알람이 재생 중이 아닐 때만 타이머 완료 확인
+        const savedEndTime = localStorage.getItem('timerEndTime');
+        const savedIsRunning = localStorage.getItem('timerIsRunning') === 'true';
+        
+        if (savedIsRunning && savedEndTime && parseInt(savedEndTime) <= Date.now()) {
+            console.log('포그라운드 전환 시 타이머 종료 감지');
+            
+            // 타이머 완료 처리
+            if (typeof timerComplete === 'function') {
+                // global isRunning이 있으면 false로 설정
+                if (typeof isRunning !== 'undefined') {
+                    isRunning = false;
+                }
+                timerComplete();
+            } else {
+                // timerComplete 함수가 없으면 직접 알람 재생
+                playSound('timer');
+                
+                // 알람이 재생 중임을 표시
+                localStorage.setItem('alarmIsPlaying', 'true');
+                
+                // 타이머 상태 초기화
+                localStorage.removeItem('timerEndTime');
+                localStorage.removeItem('timerTotal');
+                localStorage.removeItem('timerIsRunning');
+            }
         }
     }
 }
 
 // 알림음 재생 함수
 function playSound(type) {
-    // 이미 재생 중인 알람이 있으면 새로 시작하지 않음
-    if (alarmAudio && !alarmAudio.paused) {
+    // 이미 재생 중인 알람이 있거나, localStorage에 alarmIsPlaying 플래그가 설정된 경우 새로 시작하지 않음
+    if (alarmAudio && !alarmAudio.paused || localStorage.getItem('alarmIsPlaying') === 'true') {
         console.log('이미 알람이 재생 중입니다.');
+        
+        // 알람창은 표시
+        const timerAlarm = document.getElementById('timerAlarm');
+        if (timerAlarm && !timerAlarm.classList.contains('show')) {
+            timerAlarm.classList.add('show');
+        }
+        
+        // 타이틀 플래시는 시작
+        if (!titleInterval) {
+            startTitleFlash();
+        }
+        
         return;
     }
     
     try {
         // 기존 재생 중인 알람이 있다면 중지
         stopSound();
+        
+        // 타이틀 변경 시작
+        startTitleFlash();
         
         // 백그라운드에서의 알람 우선 재생 - 가장 간단하고 신뢰할 수 있는 방식
         const audio = new Audio();
@@ -701,12 +847,27 @@ function playSound(type) {
         
         // 오디오 종료 시 플래그 초기화
         audio.addEventListener('ended', function() {
-            console.log('알람 재생이 종료되었습니다');
-            localStorage.removeItem('alarmIsPlaying');
+            // loop가 true인 경우에도 이벤트가 발생할 수 있으므로 재생이 완전히 끝났는지 확인
+            if (audio.paused) {
+                console.log('알람 재생이 종료되었습니다');
+                localStorage.removeItem('alarmIsPlaying');
+                
+                // 테스트 버튼 이벤트 발생 (재생 종료 알림)
+                const testSoundBtn = document.getElementById('testSoundBtn');
+                if (testSoundBtn) {
+                    const event = new Event('sound-ended');
+                    testSoundBtn.dispatchEvent(event);
+                }
+            }
         });
         
         // 소스 설정
-        audio.src = window.customAlarmSound || './audio/ringtone-wow.mp3';
+        if (window.customAlarmSound) {
+            console.log('커스텀 알람 소리 사용:', window.customAlarmSound);
+            audio.src = window.customAlarmSound;
+        } else {
+            audio.src = './audio/ringtone-wow.mp3';
+        }
         
         // 백그라운드 재생에 필요한 속성 설정
         audio.loop = true;
@@ -799,7 +960,14 @@ function playSound(type) {
             } else {
                 // 최후의 방법: 기본 Audio API
                 const audioElement = new Audio();
-                audioElement.src = window.customAlarmSound || './audio/ringtone-wow.mp3';
+                
+                // 소스 설정 - 커스텀 알람 소리 사용
+                if (window.customAlarmSound) {
+                    audioElement.src = window.customAlarmSound;
+                } else {
+                    audioElement.src = './audio/ringtone-wow.mp3';
+                }
+                
                 audioElement.loop = true;
                 audioElement.autoplay = true;
                 audioElement.muted = false;
@@ -808,7 +976,10 @@ function playSound(type) {
                 
                 // 종료 이벤트 리스너 추가
                 audioElement.addEventListener('ended', function() {
-                    localStorage.removeItem('alarmIsPlaying');
+                    // loop=true일 때는 실행되지 않아야 함
+                    if (audioElement.paused) {
+                        localStorage.removeItem('alarmIsPlaying');
+                    }
                 });
                 
                 audioElement.play().then(function() {
@@ -840,6 +1011,67 @@ function stopSound() {
         
         alarmAudio = null;
     }
+    
+    // 타이틀 변경 중지
+    stopTitleFlash();
+}
+
+// 타이틀 변경 시작 함수
+function startTitleFlash() {
+    // 이미 실행 중인 인터벌이 있으면 제거
+    if (titleInterval) {
+        clearInterval(titleInterval);
+    }
+    
+    // 원래 타이틀 저장
+    originalTitle = document.title;
+    
+    // 타이머 설정 시간 가져오기
+    let timerMinutes = 0;
+    let timerSeconds = 0;
+    
+    // 타이머 설정 시간 가져오기
+    const hourInput = document.getElementById('hourInput');
+    const minuteInput = document.getElementById('minuteInput');
+    const secondInput = document.getElementById('secondInput');
+    
+    if (hourInput && minuteInput && secondInput) {
+        const hours = parseInt(hourInput.value) || 0;
+        const minutes = parseInt(minuteInput.value) || 0;
+        const seconds = parseInt(secondInput.value) || 0;
+        
+        timerMinutes = hours * 60 + minutes;
+        timerSeconds = seconds;
+    }
+    
+    // 시간 형식 생성
+    const formattedHours = padZero(Math.floor(timerMinutes / 60));
+    const formattedMinutes = padZero(timerMinutes % 60);
+    const formattedSeconds = padZero(timerSeconds);
+    const timerDisplay = `${formattedHours}:${formattedMinutes}:${formattedSeconds}`;
+    
+    // 1초마다 타이틀 변경 (설정 시간과 원래 타이틀 번갈아 표시)
+    titleInterval = setInterval(function() {
+        // 타이틀 표시 형식 (원래 타이틀과 타이머 시간 번갈아 표시)
+        if (document.title === originalTitle) {
+            document.title = `< ${timerDisplay} >`;
+        } else {
+            document.title = originalTitle;
+        }
+    }, 1000);
+}
+
+// 타이틀 변경 중지 함수
+function stopTitleFlash() {
+    if (titleInterval) {
+        clearInterval(titleInterval);
+        titleInterval = null;
+    }
+    
+    // 타이틀 원래대로 복원
+    if (document.title !== originalTitle) {
+        document.title = originalTitle;
+    }
 }
 
 // 웹 알림 표시 함수
@@ -849,6 +1081,9 @@ function showWebNotification(title, message) {
         console.log('이미 알람이 재생 중입니다.');
         return;
     }
+    
+    // 타이틀 변경 시작
+    startTitleFlash();
     
     // 알림 권한 요청 대신 오디오 재생으로 대체
     // 백그라운드에서도 소리가 들리도록 오디오 요소 직접 추가

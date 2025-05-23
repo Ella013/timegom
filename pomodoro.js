@@ -68,59 +68,102 @@ document.addEventListener('DOMContentLoaded', function() {
         pauseBtn.disabled = false;
         pauseBtn.style.display = 'inline-flex';
         
+        // 버튼 연속 증가/감소를 위한 변수
+        let buttonIntervals = {};
+        let buttonTimeouts = {};
+        
         // 설정 버튼 이벤트 리스너
         document.querySelectorAll('.setting-btn').forEach(btn => {
-            btn.addEventListener('click', function() {
+            // 버튼 누를 때
+            btn.addEventListener('mousedown', function() {
                 if (isRunning) return; // 타이머 실행 중에는 설정 변경 불가
                 
                 const action = this.classList.contains('plus-btn') ? 1 : -1;
                 const setting = this.dataset.setting;
                 
-                // 설정 값 변경
-                let value = settings[setting] + action;
+                // 버튼 식별자
+                const btnId = setting + (action > 0 ? 'plus' : 'minus');
                 
-                // 범위 제한
-                switch(setting) {
-                    case 'focus':
-                        value = Math.max(1, Math.min(60, value)); // 1-60분
-                        break;
-                    case 'break':
-                        value = Math.max(1, Math.min(30, value)); // 1-30분
-                        break;
-                    case 'longBreak':
-                        value = Math.max(1, Math.min(60, value)); // 1-60분
-                        break;
-                    case 'cycles':
-                        value = Math.max(1, Math.min(10, value)); // 1-10회
-                        break;
-                }
+                // 즉시 첫 번째 변경 적용
+                updateSettingValue(setting, action);
                 
-                settings[setting] = value;
-                
-                // 화면 업데이트
-                if (setting === 'focus' && currentMode === 'focus') {
-                    updateTimerDisplay(settings.focus * 60 * 1000);
-                    focusTimeDisplay.textContent = settings.focus;
-                } else if (setting === 'break' && currentMode === 'break') {
-                    updateTimerDisplay(settings.break * 60 * 1000);
-                    breakTimeDisplay.textContent = settings.break;
-                } else if (setting === 'longBreak' && currentMode === 'longBreak') {
-                    updateTimerDisplay(settings.longBreak * 60 * 1000);
-                    longBreakTimeDisplay.textContent = settings.longBreak;
-                } else {
-                    // 현재 모드가 아닌 설정만 변경
-                    if (setting === 'focus') focusTimeDisplay.textContent = settings.focus;
-                    if (setting === 'break') breakTimeDisplay.textContent = settings.break;
-                    if (setting === 'longBreak') longBreakTimeDisplay.textContent = settings.longBreak;
-                }
-                
-                if (setting === 'cycles') {
-                    cyclesCountDisplay.textContent = settings.cycles;
-                    cycleCountDisplay.textContent = currentCycle;
-                    document.querySelector('.cycle-count').innerHTML = `사이클: <span id="cycleCount">${currentCycle}</span>/${settings.cycles}`;
-                }
+                // 버튼을 계속 누르고 있을 때 약간의 지연 후 빠르게 증가/감소
+                buttonTimeouts[btnId] = setTimeout(() => {
+                    buttonIntervals[btnId] = setInterval(() => {
+                        updateSettingValue(setting, action);
+                    }, 100); // 0.1초마다 변경
+                }, 500); // 0.5초 후 연속 증가/감소 시작
             });
+            
+            // 버튼에서 손을 떼거나 마우스가 버튼을 벗어났을 때
+            const stopContinuousChange = function() {
+                const action = this.classList.contains('plus-btn') ? 1 : -1;
+                const setting = this.dataset.setting;
+                const btnId = setting + (action > 0 ? 'plus' : 'minus');
+                
+                // 타임아웃 및 인터벌 정리
+                if (buttonTimeouts[btnId]) {
+                    clearTimeout(buttonTimeouts[btnId]);
+                    buttonTimeouts[btnId] = null;
+                }
+                
+                if (buttonIntervals[btnId]) {
+                    clearInterval(buttonIntervals[btnId]);
+                    buttonIntervals[btnId] = null;
+                }
+            };
+            
+            btn.addEventListener('mouseup', stopContinuousChange);
+            btn.addEventListener('mouseleave', stopContinuousChange);
+            btn.addEventListener('touchend', stopContinuousChange);
+            btn.addEventListener('touchcancel', stopContinuousChange);
         });
+        
+        // 설정 값 업데이트 함수
+        function updateSettingValue(setting, action) {
+            let value = settings[setting] + action;
+            
+            // 범위 제한
+            switch(setting) {
+                case 'focus':
+                    value = Math.max(1, Math.min(60, value)); // 1-60분
+                    break;
+                case 'break':
+                    value = Math.max(1, Math.min(30, value)); // 1-30분
+                    break;
+                case 'longBreak':
+                    value = Math.max(1, Math.min(60, value)); // 1-60분
+                    break;
+                case 'cycles':
+                    value = Math.max(1, Math.min(10, value)); // 1-10회
+                    break;
+            }
+            
+            settings[setting] = value;
+            
+            // 화면 업데이트
+            if (setting === 'focus' && currentMode === 'focus') {
+                updateTimerDisplay(settings.focus * 60 * 1000);
+                focusTimeDisplay.textContent = settings.focus;
+            } else if (setting === 'break' && currentMode === 'break') {
+                updateTimerDisplay(settings.break * 60 * 1000);
+                breakTimeDisplay.textContent = settings.break;
+            } else if (setting === 'longBreak' && currentMode === 'longBreak') {
+                updateTimerDisplay(settings.longBreak * 60 * 1000);
+                longBreakTimeDisplay.textContent = settings.longBreak;
+            } else {
+                // 현재 모드가 아닌 설정만 변경
+                if (setting === 'focus') focusTimeDisplay.textContent = settings.focus;
+                if (setting === 'break') breakTimeDisplay.textContent = settings.break;
+                if (setting === 'longBreak') longBreakTimeDisplay.textContent = settings.longBreak;
+            }
+            
+            if (setting === 'cycles') {
+                cyclesCountDisplay.textContent = settings.cycles;
+                cycleCountDisplay.textContent = currentCycle;
+                document.querySelector('.cycle-count').innerHTML = `사이클: <span id="cycleCount">${currentCycle}</span>/${settings.cycles}`;
+            }
+        }
         
         // 타이머 시작 버튼 이벤트 리스너
         startBtn.addEventListener('click', function() {
