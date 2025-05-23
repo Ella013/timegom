@@ -124,7 +124,10 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // 초기화 버튼 이벤트 리스너
         resetBtn.addEventListener('click', function() {
+            console.log('리셋 버튼 클릭됨');
             clearInterval(timerInterval);
+            // 강제로 모든 알람 중지
+            stopSound();
             resetTimer();
         });
         
@@ -198,6 +201,30 @@ document.addEventListener('DOMContentLoaded', function() {
         // 타이머 완료 함수
         function timerComplete() {
             try {
+                // 이미 알람이 재생 중인지 먼저 확인
+                const alarmIsPlaying = localStorage.getItem('alarmIsPlaying') === 'true';
+                if (alarmIsPlaying) {
+                    console.log('타이머 컴플리트: 알람이 이미 재생 중임, 중복 알람 방지');
+                    
+                    // 알람창은 표시
+                    const timerAlarm = document.getElementById('timerAlarm');
+                    if (timerAlarm && !timerAlarm.classList.contains('show')) {
+                        timerAlarm.classList.add('show');
+                    }
+                    
+                    // 타이틀 플래시는 시작
+                    if (!titleInterval) {
+                        startTitleFlash();
+                    }
+                    
+                    // localStorage에서 타이머 데이터 삭제
+                    localStorage.removeItem('timerEndTime');
+                    localStorage.removeItem('timerTotal');
+                    localStorage.removeItem('timerIsRunning');
+                    
+                    return; // 이미 알람이 재생 중이면 여기서 함수 종료
+                }
+                
                 // localStorage에서 타이머 데이터 삭제
                 localStorage.removeItem('timerEndTime');
                 localStorage.removeItem('timerTotal');
@@ -213,6 +240,9 @@ document.addEventListener('DOMContentLoaded', function() {
                     audioContext.resume().catch(e => console.error('오디오 컨텍스트 재개 실패:', e));
                 }
                 
+                // 알람 재생 중 플래그 미리 설정 (중복 방지)
+                localStorage.setItem('alarmIsPlaying', 'true');
+                
                 // 오디오 요소를 직접 페이지에 추가
                 const audio = new Audio();
                 
@@ -223,8 +253,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     if (playPromise !== undefined) {
                         playPromise.then(() => {
                             console.log('알람 재생 성공');
-                            // 알람 재생 중 플래그 설정
-                            localStorage.setItem('alarmIsPlaying', 'true');
                             
                             // 알람 계속 재생 확인을 위한 인터벌 설정
                             const checkAlarmInterval = setInterval(() => {
@@ -272,26 +300,20 @@ document.addEventListener('DOMContentLoaded', function() {
                 // 알람 전역 변수에 저장
                 alarmAudio = audio;
                 
-                // 알람 재생 중 플래그 설정
-                localStorage.setItem('alarmIsPlaying', 'true');
-                
                 // 알람 메시지 표시
                 timerAlarm.classList.add('show');
                 
-                // 알람창 닫기 버튼 이벤트
+                // 알람창 닫기 버튼 이벤트 (이전 리스너 제거 후 새로 등록)
                 if (alarmCloseBtn) {
-                    alarmCloseBtn.addEventListener('click', function() {
+                    // 모든 이전 이벤트 리스너 제거
+                    const newAlarmCloseBtn = alarmCloseBtn.cloneNode(true);
+                    alarmCloseBtn.parentNode.replaceChild(newAlarmCloseBtn, alarmCloseBtn);
+                    
+                    // 새 이벤트 리스너 등록
+                    newAlarmCloseBtn.addEventListener('click', function() {
+                        console.log('알람 종료 버튼 클릭됨');
                         // 알람음 중지
-                        if (alarmAudio) {
-                            alarmAudio.pause();
-                            if (alarmAudio.checkInterval) {
-                                clearInterval(alarmAudio.checkInterval);
-                            }
-                            alarmAudio.remove(); // DOM에서 제거
-                            alarmAudio = null;
-                            // 알람 재생 중 플래그 초기화
-                            localStorage.removeItem('alarmIsPlaying');
-                        }
+                        stopSound();
                         timerAlarm.classList.remove('show');
                         resetTimer();
                     });
@@ -305,6 +327,7 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // 타이머 초기화 함수
         function resetTimer() {
+            console.log('타이머 초기화 함수 호출됨');
             clearInterval(timerInterval);
             isRunning = false;
             isPaused = false;
@@ -317,14 +340,13 @@ document.addEventListener('DOMContentLoaded', function() {
             localStorage.removeItem('alarmIsPlaying');
             
             // 알람 소리 중지 (초기화 버튼 눌렀을 때도 알람 꺼지도록)
-            if (alarmAudio) {
-                alarmAudio.pause();
-                alarmAudio.remove(); // DOM에서 제거
-                alarmAudio = null;
-            }
+            stopSound();
             
             // 알람창 닫기
-            timerAlarm.classList.remove('show');
+            const timerAlarm = document.getElementById('timerAlarm');
+            if (timerAlarm) {
+                timerAlarm.classList.remove('show');
+            }
             
             // 시간 입력 필드 초기화
             document.getElementById('hourInput').value = 0;
@@ -337,23 +359,37 @@ document.addEventListener('DOMContentLoaded', function() {
             });
             
             // 타이머 디스플레이 초기화
-            timerDisplay.textContent = '00:00';
-            endTimeDisplay.textContent = '--:--';
-            setMinutesDisplay.textContent = '0';
+            const timerDisplay = document.getElementById('timer');
+            const endTimeDisplay = document.getElementById('endTime');
+            const setMinutesDisplay = document.getElementById('setMinutes');
+            
+            if (timerDisplay) timerDisplay.textContent = '00:00';
+            if (endTimeDisplay) endTimeDisplay.textContent = '--:--';
+            if (setMinutesDisplay) setMinutesDisplay.textContent = '0';
             
             // 프로그레스링 초기화
+            const progressRing = document.querySelector('.progress-ring-circle');
             if (progressRing) {
                 progressRing.style.strokeDashoffset = '0';
                 progressRing.style.opacity = '1';
             }
             
             // 입력창 다시 표시
-            timerContainer.classList.remove('timer-running');
+            const timerContainer = document.querySelector('.circle-timer-container');
+            if (timerContainer) {
+                timerContainer.classList.remove('timer-running');
+            }
             
             // 버튼 상태 초기화
-            startBtn.disabled = false;
-            pauseBtn.disabled = true;
-            resetBtn.disabled = false;
+            const startBtn = document.getElementById('startBtn');
+            const pauseBtn = document.getElementById('pauseBtn');
+            const resetBtn = document.getElementById('resetBtn');
+            
+            if (startBtn) startBtn.disabled = false;
+            if (pauseBtn) pauseBtn.disabled = true;
+            if (resetBtn) resetBtn.disabled = false;
+            
+            console.log('타이머 초기화 완료');
         }
     }
     
@@ -669,6 +705,27 @@ function handleVisibilityChange() {
     } else {
         console.log('페이지가 포그라운드로 전환됨');
         
+        // 먼저 알람이 이미 재생 중인지 확인
+        const alarmIsPlaying = localStorage.getItem('alarmIsPlaying') === 'true';
+        
+        // 1. 알람이 이미 재생 중이면 UI만 업데이트하고 다른 작업은 수행하지 않음
+        if (alarmIsPlaying) {
+            console.log('알람이 이미 재생 중 - 시각적 업데이트만 수행');
+            
+            // 알람창 표시
+            const timerAlarm = document.getElementById('timerAlarm');
+            if (timerAlarm && !timerAlarm.classList.contains('show')) {
+                timerAlarm.classList.add('show');
+            }
+            
+            // 타이틀 플래시 시작
+            if (!titleInterval) {
+                startTitleFlash();
+            }
+            
+            return; // 중요: 알람이 재생 중이면 여기서 함수 종료
+        }
+        
         // 인터벌 정리
         const intervalId = localStorage.getItem('timerCheckInterval');
         if (intervalId) {
@@ -683,106 +740,37 @@ function handleVisibilityChange() {
             });
         }
         
-        // 알람이 이미 재생 중인지 확인 (localStorage와 실제 객체 모두 확인)
-        const alarmIsPlaying = localStorage.getItem('alarmIsPlaying') === 'true';
-        const isAlarmCurrentlyPlaying = alarmAudio && !alarmAudio.paused;
-        
-        // 알람이 재생 중이지만 현재 페이지에서는 재생되지 않고 있는 경우
-        if (alarmIsPlaying && !isAlarmCurrentlyPlaying) {
-            console.log('알람이 재생 중이지만 현재 페이지에서는 재생되지 않음, 재생 복원 시도');
-            
-            // 타이틀 변경 시작 (이미 알람이 울리고 있으므로)
-            startTitleFlash();
-
-            // 새로운 Audio 객체 생성하고 알람 소리 재생
-            const audio = new Audio();
-            audio.src = window.customAlarmSound || './audio/ringtone-wow.mp3';
-            audio.loop = true;
-            audio.autoplay = true;
-            audio.volume = 1.0;
-            
-            // Audio 객체 이벤트 리스너 등록
-            audio.addEventListener('canplaythrough', function() {
-                audio.play().catch(e => console.error('알람 복원 재생 실패:', e));
-            });
-            
-            // DOM에 요소 추가 (일부 브라우저에서는 이렇게 해야 배경 재생이 가능)
-            document.body.appendChild(audio);
-            
-            // 알람 객체 참조 저장
-            alarmAudio = audio;
-            
-            // 알람창 표시
-            const timerAlarm = document.getElementById('timerAlarm');
-            if (timerAlarm && !timerAlarm.classList.contains('show')) {
-                timerAlarm.classList.add('show');
-            }
-            
-            return; // 나머지 로직은 실행하지 않음
-        }
-        
-        // 백그라운드에서 타이머가 완료되었는지 확인
+        // 2. 백그라운드에서 타이머가 완료되었는지 확인
         const timerCompleted = localStorage.getItem('timerCompleted') === 'true';
         if (timerCompleted) {
             console.log('포그라운드 전환 시 백그라운드에서 완료된 타이머 감지');
             
-            // 타이머 상태 초기화 (alarmIsPlaying은 초기화하지 않음)
+            // 타이머 상태 초기화 (alarmIsPlaying은 건드리지 않음)
             localStorage.removeItem('timerCompleted');
             localStorage.removeItem('timerEndTime');
             localStorage.removeItem('timerTotal');
             localStorage.removeItem('timerIsRunning');
             
-            // 알람창 표시 (알람이 이미 재생 중이 아닌 경우에만)
-            if (!isAlarmCurrentlyPlaying && !alarmIsPlaying) {
+            // 알람이 아직 재생 중이 아닌 경우에만 알람 재생
+            if (!alarmIsPlaying) {
                 const timerAlarm = document.getElementById('timerAlarm');
                 if (timerAlarm) {
                     timerAlarm.classList.add('show');
                 }
                 
-                // 알람이 재생되고 있지 않은 경우에만 알람 재생
+                // 알람 재생
                 playSound('timer');
-            } else {
-                console.log('알람이 이미 재생 중입니다. 중복 재생을 방지합니다.');
-                
-                // 이미 알람이 재생 중이면 알람창만 표시
-                const timerAlarm = document.getElementById('timerAlarm');
-                if (timerAlarm && !timerAlarm.classList.contains('show')) {
-                    timerAlarm.classList.add('show');
-                }
-                
-                // 타이틀이 변경되지 않았다면 타이틀 변경 시작
-                if (document.title === originalTitle) {
-                    startTitleFlash();
-                }
             }
             
             // global isRunning이 있으면 false로 설정
             if (typeof isRunning !== 'undefined') {
                 isRunning = false;
             }
-            return; // 타이머가 이미 완료되었으므로 나머지 로직은 실행 안 함
+            return;
         }
         
-        // 기존 코드: 타이머가 실행 중이고 종료 시간이 지났는지 확인
-        // 알람이 이미 재생 중이면 실행하지 않음
-        if (alarmIsPlaying || isAlarmCurrentlyPlaying) {
-            console.log('알람이 이미 재생 중이므로 타이머 완료 처리 생략');
-            
-            // 타이머 알람 UI가 표시되어 있는지 확인하고 표시
-            const timerAlarm = document.getElementById('timerAlarm');
-            if (timerAlarm && !timerAlarm.classList.contains('show')) {
-                timerAlarm.classList.add('show');
-            }
-            
-            // 타이틀 변경이 활성화되어 있지 않다면 시작
-            if (!titleInterval) {
-                startTitleFlash();
-            }
-            
-            return; // 알람이 이미 재생 중이므로 나머지 로직은 실행 안 함
-        }
-        
-        // 알람이 재생 중이 아닐 때만 타이머 완료 확인
+        // 3. 타이머가 실행 중이고 종료 시간이 지났는지 확인
+        // 중요: 알람이 이미 재생 중이면 이 부분이 실행되지 않음 (위에서 return했으므로)
         const savedEndTime = localStorage.getItem('timerEndTime');
         const savedIsRunning = localStorage.getItem('timerIsRunning') === 'true';
         
@@ -800,9 +788,6 @@ function handleVisibilityChange() {
                 // timerComplete 함수가 없으면 직접 알람 재생
                 playSound('timer');
                 
-                // 알람이 재생 중임을 표시
-                localStorage.setItem('alarmIsPlaying', 'true');
-                
                 // 타이머 상태 초기화
                 localStorage.removeItem('timerEndTime');
                 localStorage.removeItem('timerTotal');
@@ -816,7 +801,7 @@ function handleVisibilityChange() {
 function playSound(type) {
     // 이미 재생 중인 알람이 있거나, localStorage에 alarmIsPlaying 플래그가 설정된 경우 새로 시작하지 않음
     if (alarmAudio && !alarmAudio.paused || localStorage.getItem('alarmIsPlaying') === 'true') {
-        console.log('이미 알람이 재생 중입니다.');
+        console.log('이미 알람이 재생 중입니다. 중복 재생 방지');
         
         // 알람창은 표시
         const timerAlarm = document.getElementById('timerAlarm');
@@ -829,8 +814,11 @@ function playSound(type) {
             startTitleFlash();
         }
         
-        return;
+        return; // 이미 알람이 재생 중이면 여기서 끝내기
     }
+    
+    // 여기에 도달하면 새 알람 생성 시작
+    console.log('새 알람 생성 시작');
     
     try {
         // 기존 재생 중인 알람이 있다면 중지
@@ -839,19 +827,11 @@ function playSound(type) {
         // 타이틀 변경 시작
         startTitleFlash();
         
+        // 알람 재생 중 플래그 미리 설정 (중복 방지)
+        localStorage.setItem('alarmIsPlaying', 'true');
+        
         // 백그라운드에서의 알람 우선 재생 - 가장 간단하고 신뢰할 수 있는 방식
         const audio = new Audio();
-        
-        // 오류 발생 시 대체 메서드로 시도하기 위한 이벤트 리스너
-        audio.addEventListener('error', function(e) {
-            console.error('오디오 로드 오류:', e);
-            fallbackPlaySound();
-        });
-        
-        // 'ended' 이벤트 리스너 제거 - 알람이 계속 재생되도록 함
-        // audio.addEventListener('ended', function() {
-        //     console.log('알람 사운드 재생 종료, 반복 시작');
-        // });
         
         // 소스 설정
         audio.src = window.customAlarmSound || './audio/ringtone-wow.mp3';
@@ -875,12 +855,20 @@ function playSound(type) {
         // DOM에 추가 (일부 브라우저에서는 이렇게 해야 백그라운드 재생이 가능)
         document.body.appendChild(audio);
         
+        // 레퍼런스 미리 저장 (중복 방지)
+        alarmAudio = audio;
+        
+        // 오류 발생 시 대체 메서드로 시도하기 위한 이벤트 리스너
+        audio.addEventListener('error', function(e) {
+            console.error('오디오 로드 오류:', e);
+            fallbackPlaySound();
+        });
+        
         // 재생 시도 (비동기 처리)
         const playPromise = audio.play();
         if (playPromise !== undefined) {
             playPromise.then(function() {
-                // 알람 재생 중 플래그 설정
-                localStorage.setItem('alarmIsPlaying', 'true');
+                console.log('알람 재생 성공');
                 
                 // 알람 계속 재생 확인을 위한 인터벌 설정
                 const checkAlarmInterval = setInterval(() => {
@@ -897,19 +885,13 @@ function playSound(type) {
                 console.error('기본 오디오 재생 실패:', error);
                 // 다른 방법 시도
                 setTimeout(function() {
-                    audio.play().then(function() {
-                        // 알람 재생 중 플래그 설정
-                        localStorage.setItem('alarmIsPlaying', 'true');
-                    }).catch(function(e) {
+                    audio.play().catch(function(e) {
                         console.error('두 번째 재생 시도 실패:', e);
                         fallbackPlaySound();
                     });
                 }, 500);
             });
         }
-        
-        // 레퍼런스 저장
-        alarmAudio = audio;
         
     } catch(e) {
         console.error('알림음 재생 실패:', e);
@@ -920,6 +902,12 @@ function playSound(type) {
     // 기존 방식의 소리 재생 (폴백)
     function fallbackPlaySound() {
         try {
+            // 이미 재생 중인 알람이 있으면 중복 시도 방지
+            if (localStorage.getItem('alarmIsPlaying') === 'true' && alarmAudio) {
+                console.log('fallback: 이미 알람이 재생 중입니다');
+                return;
+            }
+            
             // Web Audio API 시도
             if (audioContext && isAudioInitialized && audioBuffer) {
                 // AudioBufferSourceNode 생성
@@ -938,9 +926,6 @@ function playSound(type) {
                 // 재생 시작
                 source.start(0);
                 
-                // 알람 재생 중 플래그 설정
-                localStorage.setItem('alarmIsPlaying', 'true');
-                
                 // 레퍼런스 저장
                 alarmAudio = {
                     source: source,
@@ -957,6 +942,12 @@ function playSound(type) {
                     paused: false
                 };
             } else {
+                // 이미 재생 중인 알람이 있는지 한 번 더 확인
+                if (localStorage.getItem('alarmIsPlaying') === 'true' && alarmAudio) {
+                    console.log('fallback final: 이미 알람이 재생 중입니다');
+                    return;
+                }
+                
                 // 최후의 방법: 기본 Audio API
                 const audioElement = new Audio();
                 
@@ -973,11 +964,12 @@ function playSound(type) {
                 audioElement.volume = 1.0;
                 document.body.appendChild(audioElement);
                 
-                // 종료 이벤트 리스너 제거 - 알람이 계속 재생되도록 함
+                // 레퍼런스 미리 저장 (중복 방지)
+                alarmAudio = audioElement;
                 
+                // 재생 시도
                 audioElement.play().then(function() {
-                    // 알람 재생 중 플래그 설정
-                    localStorage.setItem('alarmIsPlaying', 'true');
+                    console.log('최종 방법으로 알람 재생 성공');
                     
                     // 알람 계속 재생 확인을 위한 인터벌 설정
                     const checkAlarmInterval = setInterval(() => {
@@ -991,8 +983,6 @@ function playSound(type) {
                     audioElement.checkInterval = checkAlarmInterval;
                     
                 }).catch(e => console.error('최종 재생 시도 실패:', e));
-                
-                alarmAudio = audioElement;
             }
         } catch (e) {
             console.error('모든 오디오 재생 시도 실패:', e);
@@ -1002,19 +992,27 @@ function playSound(type) {
 
 // 알림음 중지 함수
 function stopSound() {
-    if (alarmAudio) {
+    console.log('알람 정지 함수 호출됨');
+    
+    try {
         // 인터벌 정리
-        if (alarmAudio.checkInterval) {
+        if (alarmAudio && alarmAudio.checkInterval) {
+            console.log('알람 인터벌 정리');
             clearInterval(alarmAudio.checkInterval);
             alarmAudio.checkInterval = null;
         }
         
-        if (alarmAudio.source && alarmAudio.stop) {
-            // Web Audio API 방식으로 생성된 경우
+        // Web Audio API 방식으로 생성된 경우
+        if (alarmAudio && alarmAudio.source && alarmAudio.stop) {
+            console.log('Web Audio API 알람 정지');
             alarmAudio.stop();
-        } else if (alarmAudio.pause) {
-            // 기존 Audio 객체인 경우
+        } 
+        // 기존 Audio 객체인 경우
+        else if (alarmAudio && alarmAudio.pause) {
+            console.log('표준 Audio 객체 알람 정지');
             alarmAudio.pause();
+            alarmAudio.loop = false; // 루프 비활성화
+            
             // DOM에서 제거
             if (alarmAudio.remove) {
                 alarmAudio.remove();
@@ -1023,14 +1021,39 @@ function stopSound() {
             }
         }
         
+        // 추가 안전 장치: 문서에 있는 모든 오디오 요소 검사 및 정지
+        const audioElements = document.querySelectorAll('audio');
+        if (audioElements.length > 0) {
+            console.log(`문서에서 ${audioElements.length}개의 추가 오디오 요소 발견, 모두 정지`);
+            audioElements.forEach(audio => {
+                try {
+                    audio.pause();
+                    audio.loop = false;
+                    if (audio.parentNode) {
+                        audio.parentNode.removeChild(audio);
+                    }
+                } catch (e) {
+                    console.error('오디오 요소 정지 중 오류:', e);
+                }
+            });
+        }
+        
         // 알람 재생 중 플래그 초기화
         localStorage.removeItem('alarmIsPlaying');
         
+        // 알람 오디오 객체 초기화
+        alarmAudio = null;
+        
+        // 타이틀 변경 중지
+        stopTitleFlash();
+        
+        console.log('알람 정지 완료');
+    } catch (e) {
+        console.error('알람 정지 중 오류 발생:', e);
+        // 오류 발생 시에도 플래그는 초기화
+        localStorage.removeItem('alarmIsPlaying');
         alarmAudio = null;
     }
-    
-    // 타이틀 변경 중지
-    stopTitleFlash();
 }
 
 // 타이틀 변경 시작 함수
@@ -1143,6 +1166,26 @@ function showWebNotification(title, message) {
 
 // 페이지 로드 시 저장된 타이머 확인
 function checkSavedTimer() {
+    // 알람이 이미 재생 중인지 먼저 확인
+    const alarmIsPlaying = localStorage.getItem('alarmIsPlaying') === 'true';
+    
+    // 알람이 이미 재생 중이면 UI만 업데이트하고 새 알람은 시작하지 않음
+    if (alarmIsPlaying) {
+        console.log('체크 세이브드 타이머: 알람이 이미 재생 중임');
+        
+        // 알람창 표시
+        const timerAlarm = document.getElementById('timerAlarm');
+        if (timerAlarm) {
+            timerAlarm.classList.add('show');
+        }
+        
+        // 타이틀 플래시 시작
+        startTitleFlash();
+        
+        return; // 알람이 이미 재생 중이면 여기서 함수 종료
+    }
+    
+    // 알람이 재생 중이 아닌 경우에만 저장된 타이머 확인
     const savedEndTime = localStorage.getItem('timerEndTime');
     const savedTotal = localStorage.getItem('timerTotal');
     const isRunning = localStorage.getItem('timerIsRunning') === 'true';
