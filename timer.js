@@ -221,7 +221,22 @@ document.addEventListener('DOMContentLoaded', function() {
                     // 소리 재생 시도
                     const playPromise = audio.play();
                     if (playPromise !== undefined) {
-                        playPromise.catch(e => {
+                        playPromise.then(() => {
+                            console.log('알람 재생 성공');
+                            // 알람 재생 중 플래그 설정
+                            localStorage.setItem('alarmIsPlaying', 'true');
+                            
+                            // 알람 계속 재생 확인을 위한 인터벌 설정
+                            const checkAlarmInterval = setInterval(() => {
+                                if (audio.paused) {
+                                    console.log('알람이 중단됨, 재시작 시도');
+                                    audio.play().catch(e => console.error('알람 재시작 실패:', e));
+                                }
+                            }, 1000);
+                            
+                            // 인터벌 ID를 오디오 객체에 저장
+                            audio.checkInterval = checkAlarmInterval;
+                        }).catch(e => {
                             console.error('알람 재생 실패:', e);
                             // 두 번째 방법으로 시도
                             setTimeout(() => {
@@ -230,12 +245,6 @@ document.addEventListener('DOMContentLoaded', function() {
                         });
                     }
                 }, { once: true });
-                
-                // 오디오가 종료될 때 alarmIsPlaying 플래그 초기화
-                audio.addEventListener('ended', function() {
-                    console.log('알람 재생이 종료되었습니다');
-                    localStorage.removeItem('alarmIsPlaying');
-                });
                 
                 // 추가 이벤트 리스너
                 audio.addEventListener('error', function(e) {
@@ -248,7 +257,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 audio.src = window.customAlarmSound || './audio/ringtone-wow.mp3';
                 
                 // 백그라운드 재생 허용 속성 추가
-                audio.loop = true;
+                audio.loop = true; // 반복 재생 속성 활성화
                 audio.autoplay = true;
                 audio.muted = false;
                 audio.volume = 1.0;
@@ -275,6 +284,9 @@ document.addEventListener('DOMContentLoaded', function() {
                         // 알람음 중지
                         if (alarmAudio) {
                             alarmAudio.pause();
+                            if (alarmAudio.checkInterval) {
+                                clearInterval(alarmAudio.checkInterval);
+                            }
                             alarmAudio.remove(); // DOM에서 제거
                             alarmAudio = null;
                             // 알람 재생 중 플래그 초기화
@@ -284,19 +296,6 @@ document.addEventListener('DOMContentLoaded', function() {
                         resetTimer();
                     });
                 }
-                
-                // 30초 후 자동으로 알람 종료
-                setTimeout(() => {
-                    if (alarmAudio) {
-                        alarmAudio.pause();
-                        alarmAudio.remove(); // DOM에서 제거
-                        alarmAudio = null;
-                        // 알람 재생 중 플래그 초기화
-                        localStorage.removeItem('alarmIsPlaying');
-                    }
-                    timerAlarm.classList.remove('show');
-                    resetTimer();
-                }, 30000);
             } catch (e) {
                 console.error('타이머 완료 처리 중 오류:', e);
                 // 오류 발생 시 대체 방법으로 재생 시도
@@ -407,11 +406,6 @@ document.addEventListener('DOMContentLoaded', function() {
         if (testSoundBtn) {
             let isPlaying = false;  // 소리 재생 상태 추적
 
-            // 소리 재생이 끝났을 때 상태 초기화
-            testSoundBtn.addEventListener('sound-ended', function() {
-                isPlaying = false;
-            });
-
             testSoundBtn.addEventListener('click', function() {
                 if (isPlaying) {
                     // 재생 중이면 중지
@@ -423,6 +417,15 @@ document.addEventListener('DOMContentLoaded', function() {
                     playSound('timer');
                     this.textContent = '중지';
                     isPlaying = true;
+                    
+                    // 테스트용 알람은 5초 후 자동 종료 (실제 알람과는 다르게 동작하도록) - 요청에 따라 제거
+                    // setTimeout(() => {
+                    //     if (isPlaying) {
+                    //         stopSound();
+                    //         this.textContent = '소리 테스트';
+                    //         isPlaying = false;
+                    //     }
+                    // }, 5000);
                 }
             });
         }
@@ -845,29 +848,13 @@ function playSound(type) {
             fallbackPlaySound();
         });
         
-        // 오디오 종료 시 플래그 초기화
-        audio.addEventListener('ended', function() {
-            // loop가 true인 경우에도 이벤트가 발생할 수 있으므로 재생이 완전히 끝났는지 확인
-            if (audio.paused) {
-                console.log('알람 재생이 종료되었습니다');
-                localStorage.removeItem('alarmIsPlaying');
-                
-                // 테스트 버튼 이벤트 발생 (재생 종료 알림)
-                const testSoundBtn = document.getElementById('testSoundBtn');
-                if (testSoundBtn) {
-                    const event = new Event('sound-ended');
-                    testSoundBtn.dispatchEvent(event);
-                }
-            }
-        });
+        // 'ended' 이벤트 리스너 제거 - 알람이 계속 재생되도록 함
+        // audio.addEventListener('ended', function() {
+        //     console.log('알람 사운드 재생 종료, 반복 시작');
+        // });
         
         // 소스 설정
-        if (window.customAlarmSound) {
-            console.log('커스텀 알람 소리 사용:', window.customAlarmSound);
-            audio.src = window.customAlarmSound;
-        } else {
-            audio.src = './audio/ringtone-wow.mp3';
-        }
+        audio.src = window.customAlarmSound || './audio/ringtone-wow.mp3';
         
         // 백그라운드 재생에 필요한 속성 설정
         audio.loop = true;
@@ -894,6 +881,18 @@ function playSound(type) {
             playPromise.then(function() {
                 // 알람 재생 중 플래그 설정
                 localStorage.setItem('alarmIsPlaying', 'true');
+                
+                // 알람 계속 재생 확인을 위한 인터벌 설정
+                const checkAlarmInterval = setInterval(() => {
+                    if (audio.paused) {
+                        console.log('알람이 중단됨, 재시작 시도');
+                        audio.play().catch(e => console.error('알람 재시작 실패:', e));
+                    }
+                }, 1000);
+                
+                // 인터벌 ID를 오디오 객체에 저장
+                audio.checkInterval = checkAlarmInterval;
+                
             }).catch(function(error) {
                 console.error('기본 오디오 재생 실패:', error);
                 // 다른 방법 시도
@@ -926,7 +925,7 @@ function playSound(type) {
                 // AudioBufferSourceNode 생성
                 const source = audioContext.createBufferSource();
                 source.buffer = audioBuffer;
-                source.loop = true;
+                source.loop = true; // 반복 재생 활성화
                 
                 // 볼륨 조절 노드 추가
                 const gainNode = audioContext.createGain();
@@ -968,23 +967,29 @@ function playSound(type) {
                     audioElement.src = './audio/ringtone-wow.mp3';
                 }
                 
-                audioElement.loop = true;
+                audioElement.loop = true; // 반복 재생 활성화
                 audioElement.autoplay = true;
                 audioElement.muted = false;
                 audioElement.volume = 1.0;
                 document.body.appendChild(audioElement);
                 
-                // 종료 이벤트 리스너 추가
-                audioElement.addEventListener('ended', function() {
-                    // loop=true일 때는 실행되지 않아야 함
-                    if (audioElement.paused) {
-                        localStorage.removeItem('alarmIsPlaying');
-                    }
-                });
+                // 종료 이벤트 리스너 제거 - 알람이 계속 재생되도록 함
                 
                 audioElement.play().then(function() {
                     // 알람 재생 중 플래그 설정
                     localStorage.setItem('alarmIsPlaying', 'true');
+                    
+                    // 알람 계속 재생 확인을 위한 인터벌 설정
+                    const checkAlarmInterval = setInterval(() => {
+                        if (audioElement.paused) {
+                            console.log('알람이 중단됨, 재시작 시도');
+                            audioElement.play().catch(e => console.error('알람 재시작 실패:', e));
+                        }
+                    }, 1000);
+                    
+                    // 인터벌 ID를 오디오 객체에 저장
+                    audioElement.checkInterval = checkAlarmInterval;
+                    
                 }).catch(e => console.error('최종 재생 시도 실패:', e));
                 
                 alarmAudio = audioElement;
@@ -998,12 +1003,24 @@ function playSound(type) {
 // 알림음 중지 함수
 function stopSound() {
     if (alarmAudio) {
+        // 인터벌 정리
+        if (alarmAudio.checkInterval) {
+            clearInterval(alarmAudio.checkInterval);
+            alarmAudio.checkInterval = null;
+        }
+        
         if (alarmAudio.source && alarmAudio.stop) {
             // Web Audio API 방식으로 생성된 경우
             alarmAudio.stop();
         } else if (alarmAudio.pause) {
             // 기존 Audio 객체인 경우
             alarmAudio.pause();
+            // DOM에서 제거
+            if (alarmAudio.remove) {
+                alarmAudio.remove();
+            } else if (alarmAudio.parentNode) {
+                alarmAudio.parentNode.removeChild(alarmAudio);
+            }
         }
         
         // 알람 재생 중 플래그 초기화
