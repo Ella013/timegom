@@ -115,8 +115,8 @@ function updateClock() {
 // 아날로그 시계 업데이트 함수
 function updateAnalogClock() {
     try {
-        // 현재 시간을 직접 가져옴
-        const now = new Date();
+        // 디지털 시계와 동일한 시간 사용
+        const now = getKSTDate();
         const hours = now.getHours();
         const minutes = now.getMinutes();
         const seconds = now.getSeconds();
@@ -128,11 +128,18 @@ function updateAnalogClock() {
         const hour12 = hours % 12;
         
         // 각 바늘의 각도를 명시적으로 재계산
-        const hourAngle = hour12 * 30 + minutes * 0.5;
-        const minuteAngle = minutes * 6;
-        const secondAngle = seconds * 6;
+        // 시침: (시간 + 분의 비율) * 30도
+        // 분침: 분 * 6도
+        // 초침: 초 * 6도
+        const hourAngle = ((hour12 * 30) + (minutes / 2));  // 시침은 시간당 30도, 분당 0.5도
+        const minuteAngle = minutes * 6;  // 분침은 1분당 6도
+        const secondAngle = seconds * 6;  // 초침은 1초당 6도
         
-        console.log(`회전 각도 - 시침: ${hourAngle}도, 분침: ${minuteAngle}도, 초침: ${secondAngle}도`);
+        // 디버깅용 로그
+        console.log('시간 계산 상세:');
+        console.log(`시침: ${hour12}시 * 30도 + ${minutes}분/2 = ${hourAngle}도`);
+        console.log(`분침: ${minutes}분 * 6도 = ${minuteAngle}도`);
+        console.log(`초침: ${seconds}초 * 6도 = ${secondAngle}도`);
         
         // DOM 요소 찾기 (아날로그 시계 컨테이너 내부에서만 찾음)
         const analogClock = document.getElementById('analogClock');
@@ -141,24 +148,24 @@ function updateAnalogClock() {
             const minuteHand = analogClock.querySelector('.minute-hand');
             const secondHand = analogClock.querySelector('.second-hand');
             
-            // 바늘 회전 적용 (인라인 스타일을 명시적으로 적용)
+            // 바늘 회전 적용
             if (hourHand) {
-                hourHand.style.cssText = `transform: rotate(${hourAngle}deg); transform-origin: 0% 50%;`;
-                console.log('시침 스타일 적용:', hourHand.style.cssText);
+                hourHand.style.transform = `rotate(${hourAngle}deg)`;
+                console.log('시침 스타일 적용:', hourHand.style.transform);
             } else {
                 console.error('시침 요소를 찾을 수 없습니다.');
             }
             
             if (minuteHand) {
-                minuteHand.style.cssText = `transform: rotate(${minuteAngle}deg); transform-origin: 0% 50%;`;
-                console.log('분침 스타일 적용:', minuteHand.style.cssText);
+                minuteHand.style.transform = `rotate(${minuteAngle}deg)`;
+                console.log('분침 스타일 적용:', minuteHand.style.transform);
             } else {
                 console.error('분침 요소를 찾을 수 없습니다.');
             }
             
             if (secondHand) {
-                secondHand.style.cssText = `transform: rotate(${secondAngle}deg); transform-origin: 0% 50%;`;
-                console.log('초침 스타일 적용:', secondHand.style.cssText);
+                secondHand.style.transform = `rotate(${secondAngle}deg)`;
+                console.log('초침 스타일 적용:', secondHand.style.transform);
             } else {
                 console.error('초침 요소를 찾을 수 없습니다.');
             }
