@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>집중 타이머 (Pomodoro) - TimeGom</title>
-    <meta name="description" content="TimeGom의 집중 타이머로 25분 집중과 5분 휴식을 반복하며 효율적으로 작업하세요.">
-    <meta name="keywords" content="포모도로, 집중 타이머, 스터디 타이머, 생산성, 시간관리">
+    <title>Focus Timer (Pomodoro) - TimeGom</title>
+    <meta name="description" content="Use TimeGom's Focus Timer to work efficiently with 25-minute focus and 5-minute break intervals.">
+    <meta name="keywords" content="pomodoro, focus timer, study timer, productivity, time management">
     <link rel="stylesheet" href="styles.css">
     <link rel="icon" href="favicon.ico" type="image/x-icon">
     <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
@@ -17,13 +17,13 @@
 <body>
     <header>
         <div class="container">
-            <h1 class="logo"><img src="timegom Logo.png" alt="TimeGom 로고" width="60" height="60"> TimeGom</h1>
+            <h1 class="logo"><a href="index.html" style="text-decoration: none; color: inherit;"><img src="timegom Logo.png" alt="TimeGom Logo" width="60" height="60"> TimeGom</a></h1>
             <nav>
                 <ul>
-                    <li><a href="index.html"><i class="fas fa-clock"></i> 시계</a></li>
-                    <li><a href="timer.html"><i class="fas fa-hourglass-half"></i> 타이머</a></li>
-                    <li><a href="pomodoro.html" class="active"><i class="fas fa-brain"></i> 집중 타이머</a></li>
-                    <li><a href="stopwatch.html"><i class="fas fa-stopwatch"></i> 스톱워치</a></li>
+                    <li><a href="index.html"><i class="fas fa-clock"></i> Clock</a></li>
+                    <li><a href="timer.html"><i class="fas fa-hourglass-half"></i> Timer</a></li>
+                    <li><a href="pomodoro.html" class="active"><i class="fas fa-brain"></i> Focus Timer</a></li>
+                    <li><a href="stopwatch.html"><i class="fas fa-stopwatch"></i> Stopwatch</a></li>
                 </ul>
             </nav>
         </div>
@@ -31,12 +31,12 @@
 
     <main class="container">
         <section class="clock-section pomodoro-section">
-            <h2><i class="fas fa-brain"></i> 집중 타이머 (Pomodoro)</h2>
+            <h2><i class="fas fa-brain"></i> Focus Timer (Pomodoro)</h2>
             
             <div class="pomodoro-info">
                 <div class="status-display">
-                    <div class="status-badge" id="statusBadge">집중 시간</div>
-                    <div class="cycle-count">사이클: <span id="cycleCount">0</span>/4</div>
+                    <div class="status-badge" id="statusBadge">Focus Time</div>
+                    <div class="cycle-count">Cycle: <span id="cycleCount">0</span>/4</div>
                 </div>
             </div>
             
@@ -47,51 +47,51 @@
                         <circle class="progress-ring-circle" cx="150" cy="150" r="140" stroke="var(--primary-color)" stroke-width="8" fill="transparent"></circle>
                     </svg>
                     <div class="timer-content">
-                        <div class="timer-set-time"><span id="timerMode">집중 모드</span></div>
+                        <div class="timer-set-time"><span id="timerMode">Focus Mode</span></div>
                         <div class="timer-countdown" id="pomodoroTimer">25:00</div>
-                        <div class="timer-end-time">종료 <span id="endTime">--:--</span></div>
+                        <div class="timer-end-time">End <span id="endTime">--:--</span></div>
                     </div>
                     
                     <div id="timerAlarm" class="timer-alarm">
                         <div class="alarm-content">
                             <i class="fas fa-bell fa-3x alarm-icon"></i>
-                            <h2 id="alarmTitle">집중 시간 완료!</h2>
-                            <p id="alarmMessage">휴식 시간을 시작하세요.</p>
-                            <button id="alarmCloseBtn" class="alarm-btn">확인</button>
+                            <h2 id="alarmTitle">Focus Time Complete!</h2>
+                            <p id="alarmMessage">Start your break time.</p>
+                            <button id="alarmCloseBtn" class="alarm-btn">OK</button>
                         </div>
                     </div>
                 </div>
                 
                 <div class="pomodoro-settings">
                     <div class="setting-item">
-                        <label>집중 시간</label>
+                        <label>Focus Time</label>
                         <div class="setting-control">
                             <button class="setting-btn minus-btn" data-setting="focus">-</button>
-                            <span id="focusTime">25</span>분
+                            <span id="focusTime">25</span>min
                             <button class="setting-btn plus-btn" data-setting="focus">+</button>
                         </div>
                     </div>
                     <div class="setting-item">
-                        <label>휴식 시간</label>
+                        <label>Break Time</label>
                         <div class="setting-control">
                             <button class="setting-btn minus-btn" data-setting="break">-</button>
-                            <span id="breakTime">5</span>분
+                            <span id="breakTime">5</span>min
                             <button class="setting-btn plus-btn" data-setting="break">+</button>
                         </div>
                     </div>
                     <div class="setting-item">
-                        <label>긴 휴식 시간</label>
+                        <label>Long Break Time</label>
                         <div class="setting-control">
                             <button class="setting-btn minus-btn" data-setting="longBreak">-</button>
-                            <span id="longBreakTime">15</span>분
+                            <span id="longBreakTime">15</span>min
                             <button class="setting-btn plus-btn" data-setting="longBreak">+</button>
                         </div>
                     </div>
                     <div class="setting-item">
-                        <label>사이클 수</label>
+                        <label>Number of Cycles</label>
                         <div class="setting-control">
                             <button class="setting-btn minus-btn" data-setting="cycles">-</button>
-                            <span id="cyclesCount">4</span>회
+                            <span id="cyclesCount">4</span>cycles
                             <button class="setting-btn plus-btn" data-setting="cycles">+</button>
                         </div>
                     </div>
@@ -99,33 +99,33 @@
                 
                 <div class="control-buttons-container">
                     <div class="control-buttons">
-                        <button id="startBtn" class="circle-btn start-btn">시작</button>
-                        <button id="pauseBtn" class="circle-btn pause-btn" disabled>일시정지</button>
-                        <button id="resetBtn" class="circle-btn reset-btn">초기화</button>
-                        <button id="skipBtn" class="circle-btn skip-btn" disabled>건너뛰기</button>
+                        <button id="startBtn" class="circle-btn start-btn">Start</button>
+                        <button id="pauseBtn" class="circle-btn pause-btn" disabled>Pause</button>
+                        <button id="resetBtn" class="circle-btn reset-btn">Reset</button>
+                        <button id="skipBtn" class="circle-btn skip-btn" disabled>Skip</button>
                     </div>
                 </div>
             </div>
         </section>
 
         <section class="clock-info">
-            <h2><i class="fas fa-info-circle"></i> 집중 타이머(Pomodoro) 소개</h2>
-            <p>집중 타이머는 1980년대 프란체스코 시릴로(Francesco Cirillo)가 개발한 <strong>Pomodoro Technique</strong>을 기반으로 한 과학적 시간 관리 방법입니다. 이 기법은 인간의 집중력 패턴 연구를 바탕으로, 25분의 집중 작업과 5분의 휴식을 반복하여 최적의 생산성과 창의력을 끌어내는 방식입니다.</p>
-            <p>뇌과학 연구에 따르면, 우리 두뇌는 약 90-120분의 주기로 집중력이 상승했다가 저하되는 '울트라디안 리듬'을 가지고 있습니다. 포모도로 기법은 이러한 두뇌의 자연스러운 리듬을 활용하여, 집중과 휴식을 의도적으로 조절함으로써 피로감을 줄이고 장시간 생산성을 유지하도록 도와줍니다.</p>
-            <p>4번의 집중-휴식 사이클(약 2시간) 후에는 15-30분의 더 긴 휴식을 제공하여 두뇌의 회복과 정보 통합을 촉진합니다. 이 방식은 <strong>딥 워크(Deep Work)</strong>를 가능하게 하여 학습 효율, 업무 생산성, 창의적 사고력을 높이는 데 탁월한 효과가 있습니다.</p>
-            <p>TimeGom의 집중 타이머는 이러한 과학적 원리를 바탕으로 설계되었으며, 자동으로 집중 시간과 휴식 시간을 전환하고 알림을 통해 모드 변경을 알려줍니다. 집중 시간, 휴식 시간, 사이클 횟수를 자신의 작업 유형과 개인 리듬에 맞게 조절하여 최적의 생산성을 경험해보세요.</p>
-            <p>이 기법은 특히 <strong>공부, 코딩, 글쓰기, 디자인 작업, 업무 계획</strong> 등 고도의 집중력이 필요한 활동에 매우 효과적이며, 프로크래스티네이션(미루기 습관)을 극복하고 시간 관리 능력을 향상시키는 데 도움이 됩니다.</p>
+            <h2><i class="fas fa-info-circle"></i> About Focus Timer (Pomodoro)</h2>
+            <p>The Focus Timer is based on the <strong>Pomodoro Technique</strong> developed by Francesco Cirillo in the 1980s. This scientific time management method is designed around human concentration patterns, alternating between 25 minutes of focused work and 5 minutes of rest to optimize productivity and creativity.</p>
+            <p>According to brain science research, our brain follows an 'ultradian rhythm' where concentration levels rise and fall in 90-120 minute cycles. The Pomodoro technique utilizes this natural brain rhythm by intentionally regulating focus and rest periods, helping to reduce fatigue and maintain productivity over long periods.</p>
+            <p>After 4 focus-break cycles (about 2 hours), a longer break of 15-30 minutes is provided to promote brain recovery and information integration. This method enables <strong>Deep Work</strong> and has proven highly effective in improving learning efficiency, work productivity, and creative thinking.</p>
+            <p>TimeGom's Focus Timer is designed based on these scientific principles, automatically switching between focus and break times and notifying you of mode changes. Adjust the focus time, break time, and number of cycles to match your work style and personal rhythm for optimal productivity.</p>
+            <p>This technique is particularly effective for activities requiring high concentration such as <strong>studying, coding, writing, design work, and task planning</strong>. It helps overcome procrastination and improve time management skills.</p>
         </section>
 
         <section class="links-section">
-            <a href="index.html" class="button primary-button"><i class="fas fa-clock"></i> 시계로 이동</a>
-            <a href="timer.html" class="button secondary-button"><i class="fas fa-hourglass-half"></i> 타이머 시작하기</a>
+            <a href="index.html" class="button primary-button"><i class="fas fa-clock"></i> Go to Clock</a>
+            <a href="timer.html" class="button secondary-button"><i class="fas fa-hourglass-half"></i> Start Timer</a>
         </section>
     </main>
 
     <footer>
         <div class="container">
-            <p>&copy; 2023 TimeGom. 모든 권리 보유.</p>
+            <p>&copy; 2023 TimeGom. All rights reserved.</p>
         </div>
     </footer>
 

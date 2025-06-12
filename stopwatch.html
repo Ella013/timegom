@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>스톱워치 - TimeGom</title>
-    <meta name="description" content="TimeGom의 정확한 스톱워치로 시간을 측정하고 기록하세요.">
-    <meta name="keywords" content="스톱워치, 타이머, 시간측정, 랩타임, 기록측정">
+    <title>Stopwatch - TimeGom</title>
+    <meta name="description" content="Measure and record time with TimeGom's accurate stopwatch.">
+    <meta name="keywords" content="stopwatch, timer, time measurement, lap time, record measurement">
     <link rel="stylesheet" href="styles.css">
     <link rel="icon" href="favicon.ico" type="image/x-icon">
     <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
@@ -17,13 +17,13 @@
 <body>
     <header>
         <div class="container">
-            <h1 class="logo"><img src="timegom Logo.png" alt="TimeGom 로고" width="60" height="60"> TimeGom</h1>
+            <h1 class="logo"><a href="index.html" style="text-decoration: none; color: inherit;"><img src="timegom Logo.png" alt="TimeGom Logo" width="60" height="60"> TimeGom</a></h1>
             <nav>
                 <ul>
-                    <li><a href="index.html"><i class="fas fa-clock"></i> 시계</a></li>
-                    <li><a href="timer.html"><i class="fas fa-hourglass-half"></i> 타이머</a></li>
-                    <li><a href="pomodoro.html"><i class="fas fa-brain"></i> 집중 타이머</a></li>
-                    <li><a href="stopwatch.html" class="active"><i class="fas fa-stopwatch"></i> 스톱워치</a></li>
+                    <li><a href="index.html"><i class="fas fa-clock"></i> Clock</a></li>
+                    <li><a href="timer.html"><i class="fas fa-hourglass-half"></i> Timer</a></li>
+                    <li><a href="pomodoro.html"><i class="fas fa-brain"></i> Focus Timer</a></li>
+                    <li><a href="stopwatch.html" class="active"><i class="fas fa-stopwatch"></i> Stopwatch</a></li>
                 </ul>
             </nav>
         </div>
@@ -31,41 +31,41 @@
 
     <main class="container">
         <section class="clock-section stopwatch-section">
-            <h2><i class="fas fa-stopwatch"></i> 스톱워치</h2>
+            <h2><i class="fas fa-stopwatch"></i> Stopwatch</h2>
             
             <div class="clock-display" id="stopwatch">00:00:00</div>
             
             <div class="control-buttons">
-                <button id="startBtn" class="button primary-button">시작</button>
-                <button id="pauseBtn" class="button primary-button" disabled>일시정지</button>
-                <button id="lapBtn" class="button primary-button" disabled>기록</button>
-                <button id="resetBtn" class="button secondary-button" disabled>초기화</button>
+                <button id="startBtn" class="button primary-button">Start</button>
+                <button id="pauseBtn" class="button primary-button" disabled>Pause</button>
+                <button id="lapBtn" class="button primary-button" disabled>Lap</button>
+                <button id="resetBtn" class="button secondary-button" disabled>Reset</button>
             </div>
             
             <div class="lap-times" id="lapTimes">
-                <h3>기록</h3>
+                <h3>Lap Times</h3>
                 <ul id="lapsList">
-                    <!-- 여기에 기록들이 추가됩니다 -->
+                    <!-- Lap times will be added here -->
                 </ul>
             </div>
         </section>
 
         <section class="clock-info">
-            <h2><i class="fas fa-info-circle"></i> TimeGom 스톱워치 소개</h2>
-            <p>TimeGom 스톱워치는 빠르고 정확한 시간 측정이 가능한 온라인 스톱워치 서비스입니다. 랩타임 기록 기능을 통해 운동, 실험, 업무 등 다양한 상황에서 경과 시간을 손쉽게 측정하고 관리할 수 있습니다.</p>
-            <p>간단한 조작으로 시작, 일시정지, 기록, 초기화가 가능하며, PC와 모바일 환경 모두에 최적화되어 있습니다. 기록된 랩타임은 한눈에 확인할 수 있어 효율적인 시간 관리에 도움이 됩니다.</p>
-            <p>TimeGom은 직관적인 인터페이스와 깔끔한 디자인으로 사용자 경험을 최우선으로 생각합니다. 여러분의 소중한 순간을 정확하게 기록해보세요.</p>
+            <h2><i class="fas fa-info-circle"></i> About TimeGom Stopwatch</h2>
+            <p>TimeGom Stopwatch is an online stopwatch service that enables fast and accurate time measurement. Through the lap time recording function, you can easily measure and manage elapsed time in various situations such as exercise, experiments, and work.</p>
+            <p>Simple operations allow for start, pause, record, and reset, and it is optimized for both PC and mobile environments. Recorded lap times can be checked at a glance, helping with efficient time management.</p>
+            <p>TimeGom prioritizes user experience with an intuitive interface and clean design. Record your precious moments accurately.</p>
         </section>
 
         <section class="links-section">
-            <a href="index.html" class="button primary-button"><i class="fas fa-clock"></i> 시계로 이동</a>
-            <a href="timer.html" class="button secondary-button"><i class="fas fa-hourglass-half"></i> 타이머 시작하기</a>
+            <a href="index.html" class="button primary-button"><i class="fas fa-clock"></i> Go to Clock</a>
+            <a href="timer.html" class="button secondary-button"><i class="fas fa-hourglass-half"></i> Start Timer</a>
         </section>
     </main>
 
     <footer>
         <div class="container">
-            <p>&copy; 2023 TimeGom. 모든 권리 보유.</p>
+            <p>&copy; 2023 TimeGom. All rights reserved.</p>
         </div>
     </footer>
 

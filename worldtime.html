@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>World Time - TimeGom</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1 class="logo">
+                <a href="index.html">
+                    <img src="timegom Logo.png" alt="TimeGom Logo" width="60" height="60">
+                    TimeGom
+                </a>
+            </h1>
+            <nav>
+                <ul>
+                    <li><a href="index.html"><i class="fas fa-clock"></i> Clock</a></li>
+                    <li><a href="worldtime.html" class="active"><i class="fas fa-globe"></i> World Time</a></li>
+                    <li><a href="timer.html"><i class="fas fa-hourglass-half"></i> Timer</a></li>
+                    <li><a href="stopwatch.html"><i class="fas fa-stopwatch"></i> Stopwatch</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <div class="container">
+        <main>
+            <section class="world-time-section">
+                <h2><i class="fas fa-globe-americas"></i> World Time</h2>
+                
+                <div class="timezone-group asia">
+                    <h3><i class="fas fa-map-marker-alt"></i> Asia</h3>
+                    <div class="world-clock-grid">
+                        <div class="world-clock-item" id="seoul">
+                            <h4><i class="fas fa-city"></i> Seoul</h4>
+                            <div class="world-time"></div>
+                        </div>
+                        <div class="world-clock-item" id="tokyo">
+                            <h4><i class="fas fa-torii-gate"></i> Tokyo</h4>
+                            <div class="world-time"></div>
+                        </div>
+                        <div class="world-clock-item" id="hong-kong">
+                            <h4><i class="fas fa-archway"></i> Hong Kong</h4>
+                            <div class="world-time"></div>
+                        </div>
+                        <div class="world-clock-item" id="singapore">
+                            <h4><i class="fas fa-city"></i> Singapore</h4>
+                            <div class="world-time"></div>
+                        </div>
+                        <div class="world-clock-item" id="bangkok">
+                            <h4><i class="fas fa-torii-gate"></i> Bangkok</h4>
+                            <div class="world-time"></div>
+                        </div>
+                        <div class="world-clock-item" id="delhi">
+                            <h4><i class="fas fa-gopuram"></i> New Delhi</h4>
+                            <div class="world-time"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="timezone-group europe">
+                    <h3><i class="fas fa-map-marker-alt"></i> Europe</h3>
+                    <div class="world-clock-grid">
+                        <div class="world-clock-item" id="london">
+                            <h4><i class="fas fa-landmark"></i> London</h4>
+                            <div class="world-time"></div>
+                        </div>
+                        <div class="world-clock-item" id="paris">
+                            <h4><i class="fas fa-monument"></i> Paris</h4>
+                            <div class="world-time"></div>
+                        </div>
+                        <div class="world-clock-item" id="berlin">
+                            <h4><i class="fas fa-archway"></i> Berlin</h4>
+                            <div class="world-time"></div>
+                        </div>
+                        <div class="world-clock-item" id="rome">
+                            <h4><i class="fas fa-church"></i> Rome</h4>
+                            <div class="world-time"></div>
+                        </div>
+                        <div class="world-clock-item" id="moscow">
+                            <h4><i class="fas fa-church"></i> Moscow</h4>
+                            <div class="world-time"></div>
+                        </div>
+                        <div class="world-clock-item" id="istanbul">
+                            <h4><i class="fas fa-mosque"></i> Istanbul</h4>
+                            <div class="world-time"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="timezone-group americas">
+                    <h3><i class="fas fa-map-marker-alt"></i> Americas</h3>
+                    <div class="world-clock-grid">
+                        <div class="world-clock-item" id="new-york">
+                            <h4><i class="fas fa-building"></i> New York</h4>
+                            <div class="world-time"></div>
+                        </div>
+                        <div class="world-clock-item" id="los-angeles">
+                            <h4><i class="fas fa-film"></i> LA</h4>
+                            <div class="world-time"></div>
+                        </div>
+                        <div class="world-clock-item" id="chicago">
+                            <h4><i class="fas fa-wind"></i> Chicago</h4>
+                            <div class="world-time"></div>
+                        </div>
+                        <div class="world-clock-item" id="toronto">
+                            <h4><i class="fas fa-leaf"></i> Toronto</h4>
+                            <div class="world-time"></div>
+                        </div>
+                        <div class="world-clock-item" id="vancouver">
+                            <h4><i class="fas fa-mountain"></i> Vancouver</h4>
+                            <div class="world-time"></div>
+                        </div>
+                        <div class="world-clock-item" id="sao-paulo">
+                            <h4><i class="fas fa-cross"></i> São Paulo</h4>
+                            <div class="world-time"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="timezone-group others">
+                    <h3><i class="fas fa-map-marker-alt"></i> Middle East/Oceania</h3>
+                    <div class="world-clock-grid">
+                        <div class="world-clock-item" id="dubai">
+                            <h4><i class="fas fa-mosque"></i> Dubai</h4>
+                            <div class="world-time"></div>
+                        </div>
+                        <div class="world-clock-item" id="cairo">
+                            <h4><i class="fas fa-pyramid"></i> Cairo</h4>
+                            <div class="world-time"></div>
+                        </div>
+                        <div class="world-clock-item" id="sydney">
+                            <h4><i class="fas fa-monument"></i> Sydney</h4>
+                            <div class="world-time"></div>
+                        </div>
+                        <div class="world-clock-item" id="melbourne">
+                            <h4><i class="fas fa-city"></i> Melbourne</h4>
+                            <div class="world-time"></div>
+                        </div>
+                        <div class="world-clock-item" id="auckland">
+                            <h4><i class="fas fa-mountain"></i> Auckland</h4>
+                            <div class="world-time"></div>
+                        </div>
+                        <div class="world-clock-item" id="tel-aviv">
+                            <h4><i class="fas fa-star-of-david"></i> Tel Aviv</h4>
+                            <div class="world-time"></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="worldtime.js"></script>
+</body>
+</html> 

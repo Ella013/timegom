@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>스톱워치 - TimeGom</title>
+    <meta name="description" content="TimeGom의 정확한 스톱워치로 시간을 측정하고 기록하세요.">
+    <meta name="keywords" content="스톱워치, 타이머, 시간측정, 랩타임, 기록측정">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Noto+Sans+KR:wght@300;400;500;700&family=Roboto+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1 class="logo"><a href="index.html" style="text-decoration: none; color: inherit;"><img src="timegom Logo.png" alt="TimeGom 로고" width="60" height="60"> TimeGom</a></h1>
+            <nav>
+                <ul>
+                    <li><a href="index.html"><i class="fas fa-clock"></i> 시계</a></li>
+                    <li><a href="timer.html"><i class="fas fa-hourglass-half"></i> 타이머</a></li>
+                    <li><a href="pomodoro.html"><i class="fas fa-brain"></i> 집중 타이머</a></li>
+                    <li><a href="stopwatch.html" class="active"><i class="fas fa-stopwatch"></i> 스톱워치</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container">
+        <section class="clock-section stopwatch-section">
+            <h2><i class="fas fa-stopwatch"></i> 스톱워치</h2>
+            
+            <div class="clock-display" id="stopwatch">00:00:00</div>
+            
+            <div class="control-buttons">
+                <button id="startBtn" class="button primary-button">시작</button>
+                <button id="pauseBtn" class="button primary-button" disabled>일시정지</button>
+                <button id="lapBtn" class="button primary-button" disabled>기록</button>
+                <button id="resetBtn" class="button secondary-button" disabled>초기화</button>
+            </div>
+            
+            <div class="lap-times" id="lapTimes">
+                <h3>기록</h3>
+                <ul id="lapsList">
+                    <!-- 여기에 기록들이 추가됩니다 -->
+                </ul>
+            </div>
+        </section>
+
+        <section class="clock-info">
+            <h2><i class="fas fa-info-circle"></i> TimeGom 스톱워치 소개</h2>
+            <p>TimeGom 스톱워치는 빠르고 정확한 시간 측정이 가능한 온라인 스톱워치 서비스입니다. 랩타임 기록 기능을 통해 운동, 실험, 업무 등 다양한 상황에서 경과 시간을 손쉽게 측정하고 관리할 수 있습니다.</p>
+            <p>간단한 조작으로 시작, 일시정지, 기록, 초기화가 가능하며, PC와 모바일 환경 모두에 최적화되어 있습니다. 기록된 랩타임은 한눈에 확인할 수 있어 효율적인 시간 관리에 도움이 됩니다.</p>
+            <p>TimeGom은 직관적인 인터페이스와 깔끔한 디자인으로 사용자 경험을 최우선으로 생각합니다. 여러분의 소중한 순간을 정확하게 기록해보세요.</p>
+        </section>
+
+        <section class="links-section">
+            <a href="index.html" class="button primary-button"><i class="fas fa-clock"></i> 시계로 이동</a>
+            <a href="timer.html" class="button secondary-button"><i class="fas fa-hourglass-half"></i> 타이머 시작하기</a>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2023 TimeGom. 모든 권리 보유.</p>
+        </div>
+    </footer>
+
+    <script src="utils.js"></script>
+    <script src="script.js"></script>
+    <script src="stopwatch.js"></script>
+</body>
+</html> 

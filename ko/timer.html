@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>타이머 - TimeGom</title>
+    <meta name="description" content="TimeGom의 편리한 타이머 기능으로 시간을 효율적으로 관리하세요.">
+    <meta name="keywords" content="타이머, 카운트다운, 시간관리, 알람, 시계">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Noto+Sans+KR:wght@300;400;500;700&family=Roboto+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1 class="logo"><a href="index.html" style="text-decoration: none; color: inherit;"><img src="timegom Logo.png" alt="TimeGom 로고" width="60" height="60"> TimeGom</a></h1>
+            <nav>
+                <ul>
+                    <li><a href="index.html"><i class="fas fa-clock"></i> 시계</a></li>
+                    <li><a href="timer.html" class="active"><i class="fas fa-hourglass-half"></i> 타이머</a></li>
+                    <li><a href="pomodoro.html"><i class="fas fa-brain"></i> 집중 타이머</a></li>
+                    <li><a href="stopwatch.html"><i class="fas fa-stopwatch"></i> 스톱워치</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container">
+        <section class="clock-section timer-section">
+            <h2><i class="fas fa-hourglass-half"></i> 타이머</h2>
+            
+            <div class="circle-timer-container">
+                <div class="timer-input-modern">
+                    <div class="time-unit">
+                        <input type="number" id="hourInput" min="0" max="23" value="0">
+                        <span class="unit-label">시간</span>
+                    </div>
+                    <span class="colon"></span>
+                    <div class="time-unit">
+                        <input type="number" id="minuteInput" min="0" max="59" value="0">
+                        <span class="unit-label">분</span>
+                    </div>
+                    <span class="colon"></span>
+                    <div class="time-unit">
+                        <input type="number" id="secondInput" min="0" max="59" value="0">
+                        <span class="unit-label">초</span>
+                    </div>
+                </div>
+                
+                <div class="timer-preset-blocks">
+                    <button class="timer-preset-btn" data-hour="0" data-min="1" data-sec="0">+1분</button>
+                    <button class="timer-preset-btn" data-hour="0" data-min="3" data-sec="0">+3분</button>
+                    <button class="timer-preset-btn" data-hour="0" data-min="5" data-sec="0">+5분</button>
+                    <button class="timer-preset-btn" data-hour="0" data-min="10" data-sec="0">+10분</button>
+                </div>
+                
+                <div class="circle-timer">
+                    <svg class="progress-ring" width="300" height="300">
+                        <circle class="progress-ring-circle-bg" cx="150" cy="150" r="140" stroke="#eee" stroke-width="8" fill="transparent"></circle>
+                        <circle class="progress-ring-circle" cx="150" cy="150" r="140" stroke="var(--primary-color)" stroke-width="8" fill="transparent"></circle>
+                    </svg>
+                    <div class="timer-content">
+                        <div class="timer-set-time"><span id="setMinutes">0</span>분</div>
+                        <div class="timer-countdown" id="timer">00:00</div>
+                        <div class="timer-end-time">종료 <span id="endTime">--:--</span></div>
+                    </div>
+                    <div id="timerAlarm" class="timer-alarm">
+                        <div class="alarm-content">
+                            <i class="fas fa-bell fa-3x alarm-icon"></i>
+                            <h2>타이머 완료!</h2>
+                            <button id="alarmCloseBtn" class="alarm-btn">확인</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="control-buttons-container">
+                    <div class="control-buttons">
+                        <button id="startBtn" class="circle-btn start-btn">시작</button>
+                        <button id="pauseBtn" class="circle-btn pause-btn" disabled>일시정지</button>
+                        <button id="resetBtn" class="circle-btn reset-btn" disabled>초기화</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="clock-info">
+            <h2><i class="fas fa-info-circle"></i> TimeGom 타이머 소개</h2>
+            <p>TimeGom 타이머는 쉽고 직관적으로 시간을 설정하고 관리할 수 있는 온라인 타이머 서비스입니다. 분과 초 단위로 원하는 시간을 입력하여 효율적으로 카운트다운을 할 수 있습니다.</p>
+            <p>공부, 운동, 요리, 업무 등 다양한 상황에서 알람과 함께 시간을 체계적으로 관리하세요. 타이머는 PC와 모바일 모두에서 최적화되어 언제 어디서나 사용할 수 있습니다.</p>
+            <p>TimeGom은 깔끔한 디자인과 간편한 조작으로 사용자 경험을 최우선으로 생각합니다. 여러분의 소중한 시간을 더욱 가치 있게 만들어보세요.</p>
+        </section>
+
+        <section class="links-section">
+            <a href="index.html" class="button primary-button"><i class="fas fa-clock"></i> 시계로 이동</a>
+            <a href="pomodoro.html" class="button primary-button"><i class="fas fa-brain"></i> 집중 타이머 시작하기</a>
+            <a href="stopwatch.html" class="button secondary-button"><i class="fas fa-stopwatch"></i> 스톱워치 시작하기</a>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2023 TimeGom. 모든 권리 보유.</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+    <script src="timer.js"></script>
+</body>
+</html> 

@@ -44,10 +44,19 @@ header {
     height: 60px;
 }
 
-nav ul {
+/* Update header nav to include language selector */
+header nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 0.5rem;
+}
+
+header nav ul {
     display: flex;
     list-style: none;
-    margin-top: 0.5rem;
+    margin: 0;
+    padding: 0;
 }
 
 nav li {
@@ -413,142 +422,40 @@ footer {
         margin-bottom: 20px;
     }
     
-    /* 세계 시계 위치 조정 - absolute 제거 */
+    /* 세계 시계 위치 조정 */
     .world-clocks {
         position: absolute;
         left: 0;
         right: 0;
         bottom: 30px;
-        margin: 0 2.5rem;
+        margin: 0 1rem;
         padding-top: 20px;
     }
     
     .world-clock-grid {
         grid-template-columns: repeat(2, 1fr);
+        gap: 0.8rem;
     }
-    
-    .timer-input {
-        flex-direction: column;
-        align-items: center;
-        gap: 1rem;
+
+    .world-clock-item {
+        padding: 0.8rem;
     }
-    
-    .control-buttons {
-        flex-wrap: wrap;
-    }
-    
-    .button {
-        width: 100%;
-        text-align: center;
-    }
-    
-    /* 모바일에서 포모도로 타이머 최적화 */
-    .pomodoro-section .circle-timer-container {
-        max-width: 280px;
-    }
-    
-    .pomodoro-timer {
-        display: flex !important;
-        width: 100%;
-        justify-content: center;
-        align-items: center;
-        margin: 0 auto;
-    }
-    
-    .circle-timer {
-        position: relative;
-        width: 220px;
-        height: 220px;
-        margin: 0 auto;
-        border-width: 1px;
-    }
-    
-    .pomodoro-display {
-        font-size: 3.5rem !important;
-    }
-    
-    .timer-content {
-        padding: 0;
-    }
-    
-    .timer-running .circle-timer {
-        display: flex;
-    }
-    
-    .progress-ring {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        transform: rotate(-90deg);
-        overflow: visible;
-    }
-    
-    .progress-ring-circle {
-        cx: 110px;
-        cy: 110px;
-        r: 100px;
-        stroke-width: 8px;
-        stroke-dasharray: 628.3;
-        stroke-dashoffset: 0;
-    }
-    
-    .progress-ring-circle-bg {
-        cx: 110px;
-        cy: 110px;
-        r: 100px;
-        stroke-width: 8px;
-    }
-    
-    .pomodoro-section .control-buttons {
-        flex-wrap: nowrap;
-    }
-    
-    .circle-btn {
-        width: 55px;
-        height: 55px;
+
+    .world-clock-item h4 {
         font-size: 1rem;
-        padding: 0;
-        display: flex;
-        align-items: center;
-        justify-content: center;
+        margin-bottom: 0.5rem;
     }
-    
-    .setting-control {
-        gap: 4px;
-    }
-    
-    .setting-btn {
-        width: 22px;
-        height: 22px;
-    }
-    
-    .timer-mode {
+
+    .world-time {
         font-size: 1.2rem;
-        font-weight: 500;
-        color: var(--primary-color);
-        margin-bottom: 10px;
-    }
-    
-    #stopwatch {
-        font-size: 3rem;
-        margin: 10px auto;
-    }
-    
-    .ms {
-        font-size: 0.5em;
-        min-width: 45px;
-    }
-    
-    #pomodoroTimer {
-        font-size: 3.5rem;
+        width: auto;
     }
 }
 
 @media (max-width: 480px) {
     .world-clock-grid {
-        grid-template-columns: 1fr;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.6rem;
     }
     
     .button {
@@ -566,95 +473,21 @@ footer {
     
     /* 세계 시계 여백 조정 */
     .world-clocks {
-        margin: 0 1rem;
+        margin: 0 0.5rem;
         bottom: 20px;
     }
-    
-    /* 더 작은 화면에서 포모도로 타이머 최적화 */
-    .pomodoro-section .circle-timer-container {
-        max-width: 220px;
+
+    .world-clock-item {
+        padding: 0.6rem;
     }
-    
-    .pomodoro-timer {
-        margin: 0 auto;
-    }
-    
-    .circle-timer {
-        width: 190px;
-        height: 190px;
-    }
-    
-    .pomodoro-display {
-        font-size: 2.8rem !important;
-    }
-    
-    .setting-item {
-        padding: 2px 8px;
-        max-width: 240px;
-    }
-    
-    .setting-control {
-        font-size: 0.95rem;
-    }
-    
-    .circle-btn {
-        width: 50px;
-        height: 50px;
+
+    .world-clock-item h4 {
         font-size: 0.9rem;
+        margin-bottom: 0.3rem;
     }
-    
-    /* 일반 타이머 스타일 추가 개선 */
-    .timer-countdown {
-        font-size: 3.2rem;
-    }
-    
-    .timer-set-time, .timer-end-time {
-        font-size: 0.9rem;
-    }
-    
-    /* 스톱워치 추가 개선 */
-    #stopwatch {
-        font-size: 2rem;
-        margin: 8px auto;
-        letter-spacing: 0;
-    }
-    
-    .ms {
-        min-width: 35px;
-        font-size: 0.5em;
-    }
-    
-    /* 알람 컨텐츠 추가 조정 */
-    .alarm-content h2 {
-        font-size: 1.5rem;
-        margin: 0 0 15px 0;
-    }
-    
-    .alarm-btn {
-        padding: 8px 20px;
-        font-size: 1rem;
-    }
-    
-    /* 헤더와 로고 크기 조정 */
-    header {
-        padding: 10px 0;
-    }
-    
-    .logo {
-        max-width: 120px;
-    }
-    
-    nav a {
-        padding: 5px 10px;
-        font-size: 0.9rem;
-    }
-    
-    section {
-        padding: 1rem;
-    }
-    
-    #pomodoroTimer {
-        font-size: 3rem;
+
+    .world-time {
+        font-size: 1.1rem;
     }
 }
 
@@ -810,134 +643,69 @@ footer {
 }
 
 .analog-clock {
-    width: 280px;
-    height: 280px;
-    margin: 0 auto;
     position: relative;
-    border-radius: 50%;
-    background-color: #fff;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s ease;
-    border: 1px solid #000;
-}
-
-.analog-clock:hover {
-    transform: scale(1.02);
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+    width: 300px;
+    height: 300px;
+    margin: 20px auto;
 }
 
 .clock-face {
+    position: relative;
     width: 100%;
     height: 100%;
-    border-radius: 50%;
-    position: relative;
-    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
-/* 시계 눈금 */
-.clock-ticks {
+.clock-face-img {
     position: absolute;
     width: 100%;
     height: 100%;
-    left: 0;
-    top: 0;
     z-index: 1;
 }
 
-/* 시간 눈금 (더 굵은 눈금) */
-.hour-tick {
+.hour-hand,
+.minute-hand,
+.second-hand {
     position: absolute;
-    width: 3px;
-    height: 15px;
-    background-color: #000;
+    bottom: 50%;
     left: 50%;
-    margin-left: -1.5px;
-    top: 0;
-    transform-origin: 50% 140px;
-}
-
-/* 분 눈금 (더 얇은 눈금) */
-.minute-tick {
-    position: absolute;
-    width: 1px;
-    height: 8px;
-    background-color: #999;
-    left: 50%;
-    margin-left: -0.5px;
-    top: 0;
-    transform-origin: 50% 140px;
-}
-
-/* 시계 숫자 */
-.clock-number {
-    position: absolute;
-    font-size: 1.5rem;
-    font-weight: bold;
-    color: #000;
+    transform-origin: bottom;
     z-index: 2;
-    text-align: center;
-    width: 30px;
-    margin-left: -15px;
-    margin-top: -13px;
-}
-
-/* 시계 숫자 위치 - 눈금선 사이에 위치하도록 조정 */
-.number-12 { top: 7%; left: 50%; }
-.number-1 { top: 13%; left: 69%; }
-.number-2 { top: 29%; left: 84%; }
-.number-3 { top: 48%; left: 91%; margin-left: -15px; }
-.number-4 { top: 69%; left: 86%; }
-.number-5 { top: 83%; left: 71%; }
-.number-6 { top: 89%; left: 50%; }
-.number-7 { top: 83%; left: 29%; }
-.number-8 { top: 69%; left: 14%; }
-.number-9 { top: 48%; left: 9%; margin-left: -15px; }
-.number-10 { top: 29%; left: 16%; }
-.number-11 { top: 13%; left: 31%; }
-
-/* 시계 바늘 */
-.hour-hand, .minute-hand, .second-hand {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform-origin: 0% 50%;
-    z-index: 3;
-    background-color: #000;
 }
 
 .hour-hand {
-    width: 70px;
-    height: 4px;
-    border-radius: 4px;
-    margin-top: -2px;
-    transform-origin: 0% 50%;
+    width: 4px;
+    height: 75px;
+    background: #333;
+    margin-left: -2px;
 }
 
 .minute-hand {
-    width: 100px;
-    height: 3px;
-    border-radius: 3px;
-    margin-top: -1.5px;
+    width: 3px;
+    height: 95px;
+    background: #666;
+    margin-left: -1.5px;
 }
 
 .second-hand {
-    width: 110px;
-    height: 1px;
-    background-color: #000;
-    border-radius: 1px;
-    margin-top: -0.5px;
+    width: 2px;
+    height: 105px;
+    background: #f00;
+    margin-left: -1px;
 }
 
 .center-point {
+    position: absolute;
     width: 12px;
     height: 12px;
-    background-color: #000;
-    position: absolute;
+    background: #333;
+    border-radius: 50%;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    border-radius: 50%;
-    z-index: 4;
+    z-index: 3;
 }
 
 /* 아날로그 시계 날짜 관련 추가 스타일 */
@@ -1167,9 +935,15 @@ footer {
 .pomodoro-section {
     display: flex;
     flex-direction: column;
-    align-items: center;
+    align-items: flex-start;
     padding-top: 2rem;
     margin-top: 0;
+}
+
+.pomodoro-info {
+    width: 100%;
+    display: flex;
+    justify-content: center;
 }
 
 .pomodoro-section .circle-timer-container {
@@ -1233,6 +1007,7 @@ footer {
     justify-content: center;
     width: 100%;
     max-width: 350px;
+    align-items: center;
 }
 
 .status-badge {
@@ -1617,6 +1392,14 @@ footer {
     background-color: #f8f9fa;
     border-radius: 10px;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    position: absolute;
+    bottom: 30px;
+    left: 0;
+    right: 0;
+    width: 95%;
+    max-width: 95%;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .sound-upload-container h3 {
@@ -1658,18 +1441,36 @@ footer {
     font-style: italic;
 }
 
-.test-sound-btn {
-    background-color: #f0f0f0;
+.sound-control-buttons {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.test-sound-btn,
+.reset-sound-btn {
+    flex: 1;
+    height: 35px;
+    padding: 0 20px;
+    min-width: 100px;
+    width: 120px;
     border: 1px solid #ddd;
-    padding: 6px 12px;
-    border-radius: 5px;
+    border-radius: 4px;
     cursor: pointer;
-    font-size: 0.9rem;
+    font-size: 13px;
     transition: background-color 0.2s;
+    background-color: #f8f9fa;
+    color: #333;
 }
 
 .test-sound-btn:hover {
-    background-color: #e0e0e0;
+    background-color: #e9ecef;
+    border-color: #ced4da;
+}
+
+.reset-sound-btn:hover {
+    background-color: #e9ecef;
+    border-color: #ced4da;
 }
 
 .timer-set-time {
@@ -1812,4 +1613,442 @@ footer {
 
 #skipBtn {
   font-size: 0.8rem; /* 건너뛰기 버튼의 글자 크기 줄임 */
+}
+
+/* 스톱워치 랩타임 기록 스타일 */
+.lap-times {
+    margin-top: 2rem;
+    text-align: center;
+    width: 100%;
+    max-width: 500px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.lap-times h3 {
+    text-align: center;
+    margin-bottom: 1rem;
+}
+
+#lapsList {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+    align-items: center;
+}
+
+#lapsList li {
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    padding: 12px 18px;
+    width: 100%;
+    max-width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+    border-left: 3px solid var(--primary-color);
+    transition: transform 0.2s;
+}
+
+#lapsList li:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.lap-number {
+    font-weight: 600;
+    color: var(--primary-color);
+    min-width: 60px;
+    text-align: left;
+}
+
+.lap-time {
+    color: #555;
+}
+
+.total-time {
+    color: #888;
+    font-size: 0.9rem;
+}
+
+.reset-sound-btn {
+    background-color: #e74c3c;
+    color: white;
+    border: 1px solid #c0392b;
+    padding: 6px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: background-color 0.2s;
+    margin-left: 5px;
+}
+
+.reset-sound-btn:hover {
+    background-color: #c0392b;
+}
+
+/* Language Selector Styles */
+.language-selector {
+    position: relative;
+    display: flex;
+    align-items: center;
+    margin-left: auto;
+    z-index: 1001;
+}
+
+.selected-language {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 28px 6px 12px;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 20px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 13px;
+    color: #666;
+    cursor: pointer;
+    background: white;
+    position: relative;
+    min-width: 110px;
+    transition: all 0.2s ease;
+}
+
+.selected-language:hover {
+    background-color: rgba(0, 0, 0, 0.02);
+    border-color: rgba(0, 0, 0, 0.15);
+}
+
+.language-dropdown {
+    position: absolute;
+    top: calc(100% + 5px);
+    right: 0;
+    margin-top: 4px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    display: none;
+    min-width: 150px;
+    overflow: hidden;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.language-dropdown.show {
+    display: block;
+}
+
+.language-option {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 16px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    color: #666;
+}
+
+.language-option:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+}
+
+.fi {
+    width: 20px;
+    height: 15px;
+    border-radius: 2px;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+}
+
+.arrow-icon {
+    position: absolute;
+    right: 10px;
+    color: #999;
+    font-size: 12px;
+    pointer-events: none;
+}
+
+/* Firefox specific styles */
+@-moz-document url-prefix() {
+    .language-selector select {
+        background-color: transparent;
+        padding-right: 25px;
+    }
+    
+    .language-selector select option {
+        background-color: white;
+        padding: 8px 12px;
+    }
+}
+
+/* World Map Time Section */
+.world-map-time {
+    margin-top: 40px;
+    padding: 20px;
+    background: #fff;
+    border-radius: 15px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    min-height: 700px;
+    position: relative;
+    transition: min-height 0.3s ease;
+}
+
+.world-map-time.has-pinned {
+    min-height: 800px;
+}
+
+.world-map-time h2 {
+    color: #333;
+    margin-bottom: 20px;
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+
+.map-container {
+    position: relative;
+    width: 100%;
+    max-width: 1000px;
+    margin: 0 auto;
+    overflow: hidden;
+    border-radius: 10px;
+    height: 500px;
+}
+
+.world-map {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+.map-markers {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.map-marker {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    transform: translate(-50%, -50%);
+    cursor: pointer;
+}
+
+.marker-dot {
+    width: 10px;
+    height: 10px;
+    background: #ff4757;
+    border-radius: 50%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    transition: all 0.3s ease;
+}
+
+.map-marker:hover .marker-dot {
+    transform: translate(-50%, -50%) scale(1.5);
+    box-shadow: 0 0 10px rgba(255, 71, 87, 0.5);
+}
+
+.city-time-display {
+    margin-top: 20px;
+    padding: 20px;
+    background: #f8f9fa;
+    border-radius: 10px;
+    text-align: center;
+    font-size: 1.2rem;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+    width: 100%;
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.city-time-display .fi {
+    width: 24px;
+    height: 18px;
+    border-radius: 2px;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+}
+
+.city-time-display.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.city-icon {
+    margin-right: 10px;
+    font-size: 1.4rem;
+}
+
+.city-name {
+    font-size: 1.3rem;
+    font-weight: 500;
+}
+
+.city-time {
+    font-size: 1.4rem;
+    font-family: 'Roboto Mono', monospace;
+    font-weight: 500;
+}
+
+.time-difference {
+    font-size: 1rem;
+    color: #666;
+    margin-top: 8px;
+    font-weight: 500;
+}
+
+.reset-button {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: #f8f9fa;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 5px 10px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.reset-button:hover {
+    background: #e9ecef;
+    border-color: #dee2e6;
+}
+
+.reset-button i {
+    font-size: 0.8rem;
+}
+
+.close-pin {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    background: none;
+    border: none;
+    color: #999;
+    cursor: pointer;
+    padding: 5px;
+    font-size: 0.8rem;
+    transition: color 0.2s ease;
+}
+
+.close-pin:hover {
+    color: #666;
+}
+
+.pinned-cities {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+    justify-content: center;
+    width: 100%;
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.pinned-cities .city-time-display {
+    opacity: 1;
+    transform: none;
+    margin-top: 0;
+    position: relative;
+    flex: 1;
+    width: 50%;
+    max-width: none;
+    padding: 20px;
+}
+
+.city-time-display {
+    margin-top: 20px;
+    padding: 20px;
+    background: #f8f9fa;
+    border-radius: 10px;
+    text-align: center;
+    font-size: 1.2rem;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+    width: 100%;
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.city-time-display .city-name {
+    font-size: 1.3rem;
+    font-weight: 500;
+}
+
+.city-time-display .city-time {
+    font-size: 1.4rem;
+    font-family: 'Roboto Mono', monospace;
+    font-weight: 500;
+}
+
+.time-difference {
+    font-size: 1rem;
+    color: #666;
+    margin-top: 8px;
+    font-weight: 500;
+}
+
+.reset-button {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: #f8f9fa;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 5px 10px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.reset-button:hover {
+    background: #e9ecef;
+    border-color: #dee2e6;
+}
+
+.reset-button i {
+    font-size: 0.8rem;
+}
+
+.close-pin {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    background: none;
+    border: none;
+    color: #999;
+    cursor: pointer;
+    padding: 5px;
+    font-size: 0.8rem;
+    transition: color 0.2s ease;
+}
+
+.close-pin:hover {
+    color: #666;
 } 

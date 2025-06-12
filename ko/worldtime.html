@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>세계시간 - TimeGom</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1 class="logo">
+                <a href="index.html">
+                    <img src="timegom Logo.png" alt="TimeGom 로고" width="60" height="60">
+                    TimeGom
+                </a>
+            </h1>
+            <nav>
+                <ul>
+                    <li><a href="index.html"><i class="fas fa-clock"></i> 시계</a></li>
+                    <li><a href="worldtime.html" class="active"><i class="fas fa-globe"></i> 세계시간</a></li>
+                    <li><a href="timer.html"><i class="fas fa-hourglass-half"></i> 타이머</a></li>
+                    <li><a href="stopwatch.html"><i class="fas fa-stopwatch"></i> 스톱워치</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <div class="container">
+        <main>
+            <section class="world-time-section">
+                <h2><i class="fas fa-globe-americas"></i> 세계시간</h2>
+                
+                <div class="timezone-group asia">
+                    <h3><i class="fas fa-map-marker-alt"></i> 아시아</h3>
+                    <div class="world-clock-grid">
+                        <div class="world-clock-item" id="seoul">
+                            <h4><i class="fas fa-city"></i> 서울</h4>
+                            <div class="world-time"></div>
+                        </div>
+                        <div class="world-clock-item" id="tokyo">
+                            <h4><i class="fas fa-torii-gate"></i> 도쿄</h4>
+                            <div class="world-time"></div>
+                        </div>
+                        <div class="world-clock-item" id="hong-kong">
+                            <h4><i class="fas fa-archway"></i> 홍콩</h4>
+                            <div class="world-time"></div>
+                        </div>
+                        <div class="world-clock-item" id="singapore">
+                            <h4><i class="fas fa-city"></i> 싱가포르</h4>
+                            <div class="world-time"></div>
+                        </div>
+                        <div class="world-clock-item" id="bangkok">
+                            <h4><i class="fas fa-torii-gate"></i> 방콕</h4>
+                            <div class="world-time"></div>
+                        </div>
+                        <div class="world-clock-item" id="delhi">
+                            <h4><i class="fas fa-gopuram"></i> 뉴델리</h4>
+                            <div class="world-time"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="timezone-group europe">
+                    <h3><i class="fas fa-map-marker-alt"></i> 유럽</h3>
+                    <div class="world-clock-grid">
+                        <div class="world-clock-item" id="london">
+                            <h4><i class="fas fa-landmark"></i> 런던</h4>
+                            <div class="world-time"></div>
+                        </div>
+                        <div class="world-clock-item" id="paris">
+                            <h4><i class="fas fa-monument"></i> 파리</h4>
+                            <div class="world-time"></div>
+                        </div>
+                        <div class="world-clock-item" id="berlin">
+                            <h4><i class="fas fa-archway"></i> 베를린</h4>
+                            <div class="world-time"></div>
+                        </div>
+                        <div class="world-clock-item" id="rome">
+                            <h4><i class="fas fa-church"></i> 로마</h4>
+                            <div class="world-time"></div>
+                        </div>
+                        <div class="world-clock-item" id="moscow">
+                            <h4><i class="fas fa-church"></i> 모스크바</h4>
+                            <div class="world-time"></div>
+                        </div>
+                        <div class="world-clock-item" id="istanbul">
+                            <h4><i class="fas fa-mosque"></i> 이스탄불</h4>
+                            <div class="world-time"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="timezone-group americas">
+                    <h3><i class="fas fa-map-marker-alt"></i> 아메리카</h3>
+                    <div class="world-clock-grid">
+                        <div class="world-clock-item" id="new-york">
+                            <h4><i class="fas fa-building"></i> 뉴욕</h4>
+                            <div class="world-time"></div>
+                        </div>
+                        <div class="world-clock-item" id="los-angeles">
+                            <h4><i class="fas fa-film"></i> LA</h4>
+                            <div class="world-time"></div>
+                        </div>
+                        <div class="world-clock-item" id="chicago">
+                            <h4><i class="fas fa-wind"></i> 시카고</h4>
+                            <div class="world-time"></div>
+                        </div>
+                        <div class="world-clock-item" id="toronto">
+                            <h4><i class="fas fa-leaf"></i> 토론토</h4>
+                            <div class="world-time"></div>
+                        </div>
+                        <div class="world-clock-item" id="vancouver">
+                            <h4><i class="fas fa-mountain"></i> 밴쿠버</h4>
+                            <div class="world-time"></div>
+                        </div>
+                        <div class="world-clock-item" id="sao-paulo">
+                            <h4><i class="fas fa-cross"></i> 상파울루</h4>
+                            <div class="world-time"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="timezone-group others">
+                    <h3><i class="fas fa-map-marker-alt"></i> 중동/오세아니아</h3>
+                    <div class="world-clock-grid">
+                        <div class="world-clock-item" id="dubai">
+                            <h4><i class="fas fa-mosque"></i> 두바이</h4>
+                            <div class="world-time"></div>
+                        </div>
+                        <div class="world-clock-item" id="cairo">
+                            <h4><i class="fas fa-pyramid"></i> 카이로</h4>
+                            <div class="world-time"></div>
+                        </div>
+                        <div class="world-clock-item" id="sydney">
+                            <h4><i class="fas fa-monument"></i> 시드니</h4>
+                            <div class="world-time"></div>
+                        </div>
+                        <div class="world-clock-item" id="melbourne">
+                            <h4><i class="fas fa-city"></i> 멜버른</h4>
+                            <div class="world-time"></div>
+                        </div>
+                        <div class="world-clock-item" id="auckland">
+                            <h4><i class="fas fa-mountain"></i> 오클랜드</h4>
+                            <div class="world-time"></div>
+                        </div>
+                        <div class="world-clock-item" id="tel-aviv">
+                            <h4><i class="fas fa-star-of-david"></i> 텔아비브</h4>
+                            <div class="world-time"></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="worldtime.js"></script>
+</body>
+</html> 

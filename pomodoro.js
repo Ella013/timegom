@@ -1,10 +1,10 @@
-// 집중 타이머(Pomodoro) 기능
+// Focus Timer (Pomodoro) functionality
 document.addEventListener('DOMContentLoaded', function() {
-    // 오디오 컨텍스트 초기화 (페이지 로드 시 미리 생성)
+    // Initialize audio context (created at page load)
     initializeAudioContext();
     
     if (document.querySelector('.pomodoro-section')) {
-        // 요소 선택
+        // Element selection
         const timerDisplay = document.getElementById('pomodoroTimer');
         const timerMode = document.getElementById('timerMode');
         const statusBadge = document.getElementById('statusBadge');
@@ -20,24 +20,24 @@ document.addEventListener('DOMContentLoaded', function() {
         const resetBtn = document.getElementById('resetBtn');
         const skipBtn = document.getElementById('skipBtn');
         
-        // 설정 관련 요소
+        // Setting related elements
         const focusTimeDisplay = document.getElementById('focusTime');
         const breakTimeDisplay = document.getElementById('breakTime');
         const longBreakTimeDisplay = document.getElementById('longBreakTime');
         const cyclesCountDisplay = document.getElementById('cyclesCount');
         
-        // 원형 프로그레스 요소
+        // Circular progress element
         const progressRing = document.querySelector('.progress-ring-circle');
         const radius = progressRing ? progressRing.r.baseVal.value : 140;
         const circumference = 2 * Math.PI * radius;
         
-        // 초기 설정
+        // Initial setup
         if (progressRing) {
             progressRing.style.strokeDasharray = `${circumference} ${circumference}`;
             progressRing.style.strokeDashoffset = '0';
         }
         
-        // 상태 변수
+        // Status variables
         let currentMode = 'focus'; // focus, break, longBreak
         let isRunning = false;
         let isPaused = false;
@@ -46,7 +46,7 @@ document.addEventListener('DOMContentLoaded', function() {
         let remainingTime = 0;
         let totalDuration = 0;
         
-        // 설정 값 (분)
+        // Setting values (minutes)
         let settings = {
             focus: 25,
             break: 5,
@@ -54,80 +54,123 @@ document.addEventListener('DOMContentLoaded', function() {
             cycles: 4
         };
         
-        // 현재 사이클
+        // Current cycle
         let currentCycle = 0;
         
-        // 타이머 초기화
+        // Timer initialization
         updateTimerDisplay(settings.focus * 60 * 1000);
         
-        // 초기 상태에서도 모드와 시간 표시
+        // Show mode and time display in initial state
         const totalMinutes = settings.focus;
-        timerMode.textContent = `${totalMinutes}분`;
+        timerMode.textContent = `${totalMinutes} minutes`;
         
-        // 초기 상태에서 일시정지 버튼 활성화 및 보이게 설정
+        // Enable pause button and show in initial state
         pauseBtn.disabled = false;
         pauseBtn.style.display = 'inline-flex';
         
-        // 설정 버튼 이벤트 리스너
+        // Variables for continuous increase/decrease of buttons
+        let buttonIntervals = {};
+        let buttonTimeouts = {};
+        
+        // Setting button event listeners
         document.querySelectorAll('.setting-btn').forEach(btn => {
-            btn.addEventListener('click', function() {
-                if (isRunning) return; // 타이머 실행 중에는 설정 변경 불가
+            // Button pressed
+            btn.addEventListener('mousedown', function() {
+                if (isRunning) return; // Cannot change settings while running
                 
                 const action = this.classList.contains('plus-btn') ? 1 : -1;
                 const setting = this.dataset.setting;
                 
-                // 설정 값 변경
-                let value = settings[setting] + action;
+                // Button identifier
+                const btnId = setting + (action > 0 ? 'plus' : 'minus');
                 
-                // 범위 제한
-                switch(setting) {
-                    case 'focus':
-                        value = Math.max(1, Math.min(60, value)); // 1-60분
-                        break;
-                    case 'break':
-                        value = Math.max(1, Math.min(30, value)); // 1-30분
-                        break;
-                    case 'longBreak':
-                        value = Math.max(1, Math.min(60, value)); // 1-60분
-                        break;
-                    case 'cycles':
-                        value = Math.max(1, Math.min(10, value)); // 1-10회
-                        break;
-                }
+                // Apply immediately first change
+                updateSettingValue(setting, action);
                 
-                settings[setting] = value;
-                
-                // 화면 업데이트
-                if (setting === 'focus' && currentMode === 'focus') {
-                    updateTimerDisplay(settings.focus * 60 * 1000);
-                    focusTimeDisplay.textContent = settings.focus;
-                } else if (setting === 'break' && currentMode === 'break') {
-                    updateTimerDisplay(settings.break * 60 * 1000);
-                    breakTimeDisplay.textContent = settings.break;
-                } else if (setting === 'longBreak' && currentMode === 'longBreak') {
-                    updateTimerDisplay(settings.longBreak * 60 * 1000);
-                    longBreakTimeDisplay.textContent = settings.longBreak;
-                } else {
-                    // 현재 모드가 아닌 설정만 변경
-                    if (setting === 'focus') focusTimeDisplay.textContent = settings.focus;
-                    if (setting === 'break') breakTimeDisplay.textContent = settings.break;
-                    if (setting === 'longBreak') longBreakTimeDisplay.textContent = settings.longBreak;
-                }
-                
-                if (setting === 'cycles') {
-                    cyclesCountDisplay.textContent = settings.cycles;
-                    cycleCountDisplay.textContent = currentCycle;
-                    document.querySelector('.cycle-count').innerHTML = `사이클: <span id="cycleCount">${currentCycle}</span>/${settings.cycles}`;
-                }
+                // Keep pressing button for a while for a slight delay and then quickly increase/decrease
+                buttonTimeouts[btnId] = setTimeout(() => {
+                    buttonIntervals[btnId] = setInterval(() => {
+                        updateSettingValue(setting, action);
+                    }, 100); // Change every 0.1 seconds
+                }, 500); // Start continuous increase/decrease 0.5 seconds later
             });
+            
+            // Button released or mouse left button
+            const stopContinuousChange = function() {
+                const action = this.classList.contains('plus-btn') ? 1 : -1;
+                const setting = this.dataset.setting;
+                const btnId = setting + (action > 0 ? 'plus' : 'minus');
+                
+                // Clear timeout and interval
+                if (buttonTimeouts[btnId]) {
+                    clearTimeout(buttonTimeouts[btnId]);
+                    buttonTimeouts[btnId] = null;
+                }
+                
+                if (buttonIntervals[btnId]) {
+                    clearInterval(buttonIntervals[btnId]);
+                    buttonIntervals[btnId] = null;
+                }
+            };
+            
+            btn.addEventListener('mouseup', stopContinuousChange);
+            btn.addEventListener('mouseleave', stopContinuousChange);
+            btn.addEventListener('touchend', stopContinuousChange);
+            btn.addEventListener('touchcancel', stopContinuousChange);
         });
         
-        // 타이머 시작 버튼 이벤트 리스너
+        // Setting value update function
+        function updateSettingValue(setting, action) {
+            let value = settings[setting] + action;
+            
+            // Range restriction
+            switch(setting) {
+                case 'focus':
+                    value = Math.max(1, Math.min(60, value)); // 1-60 minutes
+                    break;
+                case 'break':
+                    value = Math.max(1, Math.min(30, value)); // 1-30 minutes
+                    break;
+                case 'longBreak':
+                    value = Math.max(1, Math.min(60, value)); // 1-60 minutes
+                    break;
+                case 'cycles':
+                    value = Math.max(1, Math.min(10, value)); // 1-10 times
+                    break;
+            }
+            
+            settings[setting] = value;
+            
+            // Screen update
+            if (setting === 'focus' && currentMode === 'focus') {
+                updateTimerDisplay(settings.focus * 60 * 1000);
+                focusTimeDisplay.textContent = settings.focus;
+            } else if (setting === 'break' && currentMode === 'break') {
+                updateTimerDisplay(settings.break * 60 * 1000);
+                breakTimeDisplay.textContent = settings.break;
+            } else if (setting === 'longBreak' && currentMode === 'longBreak') {
+                updateTimerDisplay(settings.longBreak * 60 * 1000);
+                longBreakTimeDisplay.textContent = settings.longBreak;
+            } else {
+                // Change only settings not current mode
+                if (setting === 'focus') focusTimeDisplay.textContent = settings.focus;
+                if (setting === 'break') breakTimeDisplay.textContent = settings.break;
+                if (setting === 'longBreak') longBreakTimeDisplay.textContent = settings.longBreak;
+            }
+            
+            if (setting === 'cycles') {
+                cyclesCountDisplay.textContent = settings.cycles;
+                cycleCountDisplay.textContent = currentCycle;
+                document.querySelector('.cycle-count').innerHTML = `Cycle: <span id="cycleCount">${currentCycle}</span>/${settings.cycles}`;
+            }
+        }
+        
+        // Timer start button event listener
         startBtn.addEventListener('click', function() {
             if (!isRunning) {
-                // 타이머 처음 시작 또는 재시작
+                // Timer first start or restart
                 if (!isPaused) {
-                    // 모드에 따른 시간 설정
+                    // Set time based on mode
                     switch(currentMode) {
                         case 'focus':
                             totalDuration = settings.focus * 60 * 1000;
@@ -141,16 +184,16 @@ document.addEventListener('DOMContentLoaded', function() {
                     }
                     remainingTime = totalDuration;
                 } else {
-                    // 일시정지 후 재시작
+                    // Restart after pause
                     totalDuration = remainingTime;
                 }
                 
                 endTime = Date.now() + remainingTime;
                 
-                // 종료 예정 시간 표시
+                // Show scheduled end time
                 updateEndTimeDisplay();
                 
-                // 버튼 상태 변경
+                // Button status change
                 startBtn.disabled = true;
                 pauseBtn.disabled = false;
                 resetBtn.disabled = false;
@@ -163,7 +206,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
         
-        // 일시정지 버튼 이벤트 리스너
+        // Pause button event listener
         pauseBtn.addEventListener('click', function() {
             if (isRunning) {
                 clearInterval(timerInterval);
@@ -171,216 +214,222 @@ document.addEventListener('DOMContentLoaded', function() {
                 isPaused = true;
                 remainingTime = endTime - Date.now();
                 
-                // 버튼 상태 변경
+                // Button status change
                 startBtn.disabled = false;
                 pauseBtn.disabled = true;
             }
         });
         
-        // 초기화 버튼 이벤트 리스너
+        // Reset button event listener
         resetBtn.addEventListener('click', function() {
             resetTimer();
         });
         
-        // 건너뛰기 버튼 이벤트 리스너
+        // Skip button event listener
         skipBtn.addEventListener('click', function() {
             if (isRunning) {
                 clearInterval(timerInterval);
             }
             
-            // 다음 모드로 변경
+            // Switch to next mode
             switchMode();
         });
         
-        // 알람 닫기 버튼 이벤트 리스너
+        // Alarm close button event listener
         if (alarmCloseBtn) {
             alarmCloseBtn.addEventListener('click', function() {
-                // 알람음 중지
+                // Stop sound
                 if (alarmAudio) {
                     alarmAudio.pause();
-                    alarmAudio.remove(); // DOM에서 제거
+                    alarmAudio.remove(); // Remove from DOM
                     alarmAudio = null;
                 }
                 
                 alarmContent.classList.remove('show');
                 
-                // 자동으로 다음 모드로 이동
+                // Automatically switch to next mode
                 switchMode();
                 
-                // 자동으로 타이머 시작
-                // 약간의 딜레이를 주어 UI 업데이트 후 타이머가 시작되도록 함
+                // Automatically start timer
+                // Give a slight delay to update UI before timer starts
                 setTimeout(() => {
                     startBtn.click();
                 }, 100);
             });
         }
         
-        // 페이지 가시성 변경 감지
+        // Page visibility change detection
         document.addEventListener('visibilitychange', handleVisibilityChange);
         
-        // 사용자의 첫 인터랙션으로 오디오 컨텍스트 활성화
+        // User's first interaction to activate audio context
         document.body.addEventListener('click', function() {
             if (audioContext && audioContext.state === 'suspended') {
                 audioContext.resume();
             }
         }, { once: true });
         
-        // 타이머 시작 함수
+        // Timer start function
         function startTimer() {
-            // 타이머 시작 시 프로그레스 링을 완전히 채운 상태로 시작
+            // Timer start with progress ring fully filled
             if (progressRing) {
                 progressRing.style.strokeDashoffset = '0';
             }
             
-            // 시작 시 timerMode에 남은 시간 표시
+            // Start time display in timerMode
             const totalMinutes = Math.floor(totalDuration / 60000);
-            timerMode.textContent = `${totalMinutes}분`;
+            timerMode.textContent = `${totalMinutes} minutes`;
             
-            // 매 프레임마다 타이머를 업데이트하기 위한 requestAnimationFrame 사용
+            // Use requestAnimationFrame for updating timer every frame
             function updateTimer(timestamp) {
                 if (!isRunning || isPaused) return;
                 
                 const now = Date.now();
                 remainingTime = Math.max(0, endTime - now);
                 
-                // 초 단위로 변환
+                // Convert to seconds
                 const currentSecond = Math.ceil(remainingTime / 1000);
                 
-                // 타이머 표시 업데이트
+                // Update timer display
                 const minutes = Math.floor(currentSecond / 60);
                 const seconds = currentSecond % 60;
                 timerDisplay.textContent = `${padZero(minutes)}:${padZero(seconds)}`;
                 
-                // 프로그레스 링 업데이트 - 시간이 줄어들수록 원형이 줄어드는 효과
+                // Update progress ring - effect of shrinking circle as time decreases
                 if (progressRing) {
                     const progress = remainingTime / totalDuration;
                     const dashOffset = circumference * (1 - progress);
                     progressRing.style.strokeDashoffset = dashOffset;
                 }
                 
-                // 남은 시간이 0이면 타이머 완료 처리
+                // Timer complete if remaining time is 0
                 if (remainingTime <= 0) {
                     isRunning = false;
                     timerDisplay.textContent = '00:00';
                     
-                    // 타이머가 0에 도달하면 원형 선 완전히 비움
+                    // Progress ring completely empty when timer reaches 0
                     if (progressRing) {
                         progressRing.style.strokeDashoffset = circumference;
                     }
                     
-                    // 완료 처리
+                    // Complete processing
                     timerComplete();
                     return;
                 }
                 
-                // 다음 프레임 요청
+                // Next frame request
                 requestAnimationFrame(updateTimer);
             }
             
-            // 첫 프레임 시작
+            // First frame start
             requestAnimationFrame(updateTimer);
         }
         
-        // 타이머 완료 함수
+        // Timer complete function
         function timerComplete() {
-            // 오디오 요소를 직접 페이지에 추가
-            const audio = document.createElement('audio');
-            audio.src = window.customAlarmSound || './audio/ringtone-wow.mp3';
-            audio.loop = true;
-            document.body.appendChild(audio);
+            isRunning = false;
+            isPaused = false;
             
-            // 소리 재생 시도
-            audio.play().catch(e => console.error('알람 재생 실패:', e));
+            // Play sound and show notification
+            playSound('timer');
             
-            // 알람 전역 변수에 저장
-            alarmAudio = audio;
-            
-            // 모드에 따른 알람 메시지 설정
             let title, message;
-            if (currentMode === 'focus') {
-                alarmTitle.textContent = '집중 시간 완료!';
-                alarmMessage.textContent = '휴식 시간을 시작하세요.';
-                title = '집중 시간 완료!';
-                message = '휴식 시간을 시작하세요.';
-            } else if (currentMode === 'break' || currentMode === 'longBreak') {
-                alarmTitle.textContent = '휴식 시간 완료!';
-                alarmMessage.textContent = '다시 집중할 시간입니다.';
-                title = '휴식 시간 완료!';
-                message = '다시 집중할 시간입니다.';
+            switch(currentMode) {
+                case 'focus':
+                    title = 'Focus Time Complete!';
+                    message = 'Time for a break.';
+                    break;
+                case 'break':
+                    title = 'Break Time Complete!';
+                    message = 'Ready to focus again?';
+                    break;
+                case 'longBreak':
+                    title = 'Long Break Complete!';
+                    message = 'Ready for a new session?';
+                    break;
             }
             
-            // 알람 메시지 표시 (페이지 내 알림)
+            alarmTitle.textContent = title;
+            alarmMessage.textContent = message;
             alarmContent.classList.add('show');
             
-            // 웹 알림 표시 기능 제거 (브라우저 알림 비활성화)
+            showWebNotification(title, message);
+            
+            // Reset buttons
+            startBtn.disabled = false;
+            pauseBtn.disabled = true;
+            resetBtn.disabled = false;
+            skipBtn.disabled = true;
+            
+            // Switch to next mode
+            switchMode();
         }
         
-        // 타이머 초기화 함수
+        // Timer initialization function
         function resetTimer() {
             clearInterval(timerInterval);
             isRunning = false;
             isPaused = false;
             
-            // 사이클 초기화
+            // Cycle initialization
             currentCycle = 0;
             cycleCountDisplay.textContent = currentCycle;
-            document.querySelector('.cycle-count').innerHTML = `사이클: <span id="cycleCount">${currentCycle}</span>/${settings.cycles}`;
+            document.querySelector('.cycle-count').innerHTML = `Cycle: <span id="cycleCount">${currentCycle}</span>/${settings.cycles}`;
             
-            // 모드를 항상 focus로 초기화
+            // Always initialize mode to focus
             currentMode = 'focus';
             setModeUI(currentMode);
             
-            // 집중 시간으로 설정
+            // Set time to focus time
             let minutes = settings.focus;
             
-            // 타이머 표시 업데이트
+            // Update timer display
             updateTimerDisplay(minutes * 60 * 1000);
             
-            // 원형 프로그레스 초기화 - 완전히 채워진 상태로 표시
+            // Circular progress initialization - fully filled state
             if (progressRing) {
                 progressRing.style.strokeDashoffset = '0';
             }
             
-            // 종료 시간 초기화
+            // End time initialization
             endTimeDisplay.textContent = '--:--';
             
-            // 버튼 상태 초기화
+            // Button status initialization
             startBtn.disabled = false;
             pauseBtn.disabled = false;
             resetBtn.disabled = false;
             skipBtn.disabled = true;
         }
         
-        // 모드 전환 함수
+        // Mode switching function
         function switchMode() {
-            // 모드 전환 (focus -> break -> focus -> break -> ... -> longBreak)
+            // Mode switching (focus -> break -> focus -> break -> ... -> longBreak)
             if (currentMode === 'focus') {
                 currentCycle++;
-                // 설정된 사이클 수에 도달하면 긴 휴식으로, 아니면 짧은 휴식으로
+                // If reached the set cycle count, go to long break, otherwise go to short break
                 if (currentCycle >= settings.cycles) {
                     currentMode = 'longBreak';
                 } else {
                     currentMode = 'break';
                 }
             } else {
-                // 휴식 후에는 항상 focus 모드로
+                // Always go to focus mode after break
                 currentMode = 'focus';
             }
             
-            // 사이클 완료 후 카운트 초기화
+            // Cycle complete reset
             if (currentMode === 'focus' && currentCycle >= settings.cycles) {
                 currentCycle = 0;
             }
             
-            // 모드 UI 업데이트
+            // Mode UI update
             setModeUI(currentMode);
             cycleCountDisplay.textContent = currentCycle;
             
-            // 타이머 초기화
+            // Timer initialization
             isRunning = false;
             isPaused = false;
             
-            // 모드에 따른 시간 설정
+            // Set time based on mode
             let minutes = 0;
             switch(currentMode) {
                 case 'focus':
@@ -394,206 +443,163 @@ document.addEventListener('DOMContentLoaded', function() {
                     break;
             }
             
-            // 타이머 표시 업데이트
+            // Update timer display
             updateTimerDisplay(minutes * 60 * 1000);
             
-            // 원형 프로그레스 초기화 - 완전히 채워진 상태로 시작
+            // Circular progress initialization - fully filled state
             if (progressRing) {
                 progressRing.style.strokeDashoffset = '0';
             }
             
-            // 버튼 상태 초기화
+            // Button status initialization
             startBtn.disabled = false;
             pauseBtn.disabled = false;
             resetBtn.disabled = false;
             skipBtn.disabled = true;
         }
         
-        // 타이머 표시 업데이트
+        // Timer display update
         function updateTimerDisplay(ms) {
             const minutes = Math.floor(ms / 60000);
             const seconds = Math.floor((ms % 60000) / 1000);
             timerDisplay.textContent = `${padZero(minutes)}:${padZero(seconds)}`;
         }
         
-        // 종료 시간 표시 업데이트
+        // End time display update
         function updateEndTimeDisplay() {
             const endTimeObj = new Date(endTime);
             const hours = endTimeObj.getHours();
             const minutes = endTimeObj.getMinutes();
-            const ampm = hours < 12 ? '오전' : '오후';
+            const ampm = hours < 12 ? 'AM' : 'PM';
             const displayHours = hours % 12 || 12;
             endTimeDisplay.textContent = `${ampm} ${displayHours}:${padZero(minutes)}`;
         }
         
-        // 모드에 따른 UI 변경
+        // Mode-based UI change
         function setModeUI(mode) {
             const timerContainer = document.querySelector('.pomodoro-timer');
             
-            // 기존 모드 클래스 제거
+            // Remove existing mode classes
             timerContainer.classList.remove('focus-mode', 'break-mode', 'long-break-mode');
             
-            // 새 모드 클래스 추가
+            // Add new mode class
             switch(mode) {
                 case 'focus':
                     timerContainer.classList.add('focus-mode');
-                    timerMode.textContent = '집중 모드';
-                    statusBadge.textContent = '집중 시간';
+                    timerMode.textContent = 'Focus Mode';
+                    statusBadge.textContent = 'Focus Time';
                     break;
                 case 'break':
                     timerContainer.classList.add('break-mode');
-                    timerMode.textContent = '휴식 모드';
-                    statusBadge.textContent = '짧은 휴식';
+                    timerMode.textContent = 'Break Mode';
+                    statusBadge.textContent = 'Break Time';
                     break;
                 case 'longBreak':
                     timerContainer.classList.add('long-break-mode');
-                    timerMode.textContent = '긴 휴식 모드';
-                    statusBadge.textContent = '긴 휴식';
+                    timerMode.textContent = 'Long Break Mode';
+                    statusBadge.textContent = 'Long Break';
                     break;
             }
         }
     }
 });
 
-// 글로벌 오디오 객체
+// Global audio object
 let alarmAudio = null;
 let audioContext = null;
 let audioBuffer = null;
 let isAudioInitialized = false;
 
-// 오디오 컨텍스트 초기화 함수
+// Audio context initialization function
 function initializeAudioContext() {
-    // AudioContext 생성
     try {
         window.AudioContext = window.AudioContext || window.webkitAudioContext;
         audioContext = new AudioContext();
         
-        // 기본 알람 사운드 미리 로드
         fetch('./audio/ringtone-wow.mp3')
             .then(response => response.arrayBuffer())
             .then(arrayBuffer => audioContext.decodeAudioData(arrayBuffer))
             .then(decodedData => {
                 audioBuffer = decodedData;
                 isAudioInitialized = true;
-                console.log('오디오 초기화 완료');
+                console.log('Audio initialization complete');
             })
-            .catch(error => console.error('오디오 초기화 실패:', error));
+            .catch(error => console.error('Audio initialization failed:', error));
     } catch (e) {
-        console.error('Web Audio API를 지원하지 않는 브라우저입니다:', e);
+        console.error('This browser does not support Web Audio API:', e);
     }
 }
 
-// 페이지 가시성 변경 시 처리
+// Page visibility change handling
 function handleVisibilityChange() {
     if (!document.hidden && audioContext && audioContext.state === 'suspended') {
-        // 페이지가 다시 보이게 되면 오디오 컨텍스트 재개
+        // Resume audio context if page becomes visible
         audioContext.resume().then(() => {
             console.log('AudioContext resumed');
         });
     }
 }
 
-// 알림음 재생 함수
+// Sound playing function
 function playSound(type) {
-    // 현재 모드 및 메시지 정보 가져오기
-    const getNotificationInfo = () => {
-        // 모듈 외부에서 currentMode에 접근할 수 없으므로 DOM 상태로 유추
-        const isFocusMode = document.querySelector('.focus-mode') !== null;
-        const isBreakMode = document.querySelector('.break-mode') !== null;
-        const isLongBreakMode = document.querySelector('.long-break-mode') !== null;
-        
-        let title, message;
-        if (isFocusMode) {
-            title = '집중 시간 완료!';
-            message = '휴식 시간을 시작하세요.';
-        } else if (isBreakMode || isLongBreakMode) {
-            title = '휴식 시간 완료!';
-            message = '다시 집중할 시간입니다.';
-        } else {
-            title = '타이머 완료!';
-            message = '다음 단계로 진행하세요.';
-        }
-        
-        return { title, message };
-    };
-
-    // 웹 알림 먼저 표시 (권한이 있는 경우)
-    if (document.hidden) {
-        const { title, message } = getNotificationInfo();
-        showWebNotification(title, message);
-    }
-    
     try {
-        // 기존 재생 중인 알람이 있다면 중지
         stopSound();
         
-        // Web Audio API를 사용한 소리 재생 (브라우저 제한을 우회하는 방법)
         if (audioContext && isAudioInitialized) {
-            // AudioContext가 suspended 상태라면 resume 시도
             if (audioContext.state === 'suspended') {
                 audioContext.resume();
             }
             
-            // 사용자 지정 알람이 있는지 확인
             if (window.customAlarmSound) {
-                // 사용자 지정 알람음 사용
                 const audioElement = new Audio(window.customAlarmSound);
-                audioElement.loop = true; // 반복 재생 설정
+                audioElement.loop = true;
                 
-                // MediaElementAudioSourceNode 생성
                 const source = audioContext.createMediaElementSource(audioElement);
                 source.connect(audioContext.destination);
                 
-                // 재생 시작
                 audioElement.play().catch(error => {
-                    console.error('사용자 지정 알람음 재생 실패:', error);
-                    // 실패 시 기본 알람음으로 대체
+                    console.error('User-specified sound playback failed:', error);
                     playDefaultSound();
                 });
                 
-                // 나중에 중지할 수 있도록 참조 저장
                 alarmAudio = audioElement;
             } else {
-                // 기본 알람음 재생
                 playDefaultSound();
             }
         } else {
-            // Web Audio API를 사용할 수 없는 경우 기존 방식으로 시도
             fallbackPlaySound();
         }
     } catch(e) {
-        console.error('알림음 재생 실패:', e);
-        // 오류 발생 시 기존 방식으로 시도
+        console.error('Sound playback failed:', e);
         fallbackPlaySound();
         
-        // 웹 알림 표시 (소리가 재생되지 않을 경우)
         if (document.hidden) {
             const { title, message } = getNotificationInfo();
             showWebNotification(title, message);
         }
     }
     
-    // 기본 알람음 재생 함수 (Web Audio API 사용)
+    // Default sound playing function (using Web Audio API)
     function playDefaultSound() {
         if (!audioBuffer) return;
         
-        // AudioBufferSourceNode 생성
+        // Create AudioBufferSourceNode
         const source = audioContext.createBufferSource();
         source.buffer = audioBuffer;
-        source.loop = true; // 반복 재생 설정
+        source.loop = true; // Repeat play setting
         
-        // 볼륨 조절 노드 추가
+        // Add gain node for volume control
         const gainNode = audioContext.createGain();
-        gainNode.gain.value = 1; // 최대 볼륨
+        gainNode.gain.value = 1; // Maximum volume
         
-        // 오디오 그래프 연결
+        // Connect audio graph
         source.connect(gainNode);
         gainNode.connect(audioContext.destination);
         
-        // 재생 시작
+        // Start playing
         source.start(0);
         
-        // 나중에 중지할 수 있도록 참조 저장
+        // Save for later stop
         alarmAudio = {
             source: source,
             gainNode: gainNode,
@@ -601,13 +607,13 @@ function playSound(type) {
                 try {
                     source.stop(0);
                 } catch(e) {
-                    console.log('이미 중지된 소스:', e);
+                    console.log('Already stopped source:', e);
                 }
             }
         };
     }
     
-    // 기존 방식의 소리 재생 (폴백)
+    // Old method sound playing (fallback)
     function fallbackPlaySound() {
         let audioSrc = './audio/ringtone-wow.mp3';
         
@@ -616,14 +622,14 @@ function playSound(type) {
         }
         
         const audio = new Audio(audioSrc);
-        audio.loop = true; // 반복 재생 설정
+        audio.loop = true; // Repeat play setting
         
-        // 재생 시도
+        // Try playing
         const playPromise = audio.play();
         
         if (playPromise !== undefined) {
             playPromise.catch(error => {
-                console.error('기존 방식 소리 재생 실패:', error);
+                console.error('Old method sound playback failed:', error);
             });
         }
         
@@ -631,29 +637,29 @@ function playSound(type) {
     }
 }
 
-// 알림음 중지 함수
+// Sound stop function
 function stopSound() {
     if (alarmAudio) {
         if (alarmAudio.source && alarmAudio.stop) {
-            // Web Audio API 방식으로 생성된 경우
+            // If using Web Audio API
             alarmAudio.stop();
         } else if (alarmAudio.pause) {
-            // 기존 Audio 객체인 경우
+            // If using old Audio object
             alarmAudio.pause();
         }
         alarmAudio = null;
     }
 }
 
-// 웹 알림 표시 함수
+// Web notification showing function
 function showWebNotification(title, message) {
-    // 브라우저에서 알림 지원 확인
+    // Check browser notification support
     if (!("Notification" in window)) {
-        console.warn("이 브라우저는 알림을 지원하지 않습니다.");
+        console.warn("This browser does not support notifications.");
         return;
     }
     
-    // 알림 권한 요청
+    // Request notification permission
     if (Notification.permission === "granted") {
         createNotification();
     } else if (Notification.permission !== "denied") {
@@ -664,7 +670,7 @@ function showWebNotification(title, message) {
         });
     }
     
-    // 알림 생성 함수
+    // Notification creation function
     function createNotification() {
         const notification = new Notification(title, {
             body: message,
@@ -672,20 +678,20 @@ function showWebNotification(title, message) {
             vibrate: [200, 100, 200]
         });
         
-        // 알림 클릭 시 해당 탭으로 포커스
+        // Notification clicked to focus tab
         notification.onclick = function() {
             window.focus();
             notification.close();
         };
         
-        // 4초 후 자동으로 알림 닫기
+        // Close notification automatically after 4 seconds
         setTimeout(() => {
             notification.close();
         }, 4000);
     }
 }
 
-// 숫자 패딩 함수 (한 자리 숫자 앞에 0 추가)
+// Number padding function (add 0 in front of single digit)
 function padZero(num) {
     return num.toString().padStart(2, '0');
 } 

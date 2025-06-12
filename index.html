@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>시계 - TimeGom</title>
-    <meta name="description" content="TimeGom - 정확한 현재 시간과 세계 시간을 확인하고 타이머, 스톱워치 기능을 이용할 수 있는 시계 서비스입니다.">
-    <meta name="keywords" content="시계, 세계시간, 타이머, 스톱워치, 알람, 디지털시계, 아날로그시계">
+    <title>Clock - TimeGom</title>
+    <meta name="description" content="TimeGom - A clock service where you can check accurate current time, world time, and use timer and stopwatch functions.">
+    <meta name="keywords" content="clock, world time, timer, stopwatch, alarm, digital clock, analog clock">
     <link rel="stylesheet" href="styles.css">
     <link rel="icon" href="favicon.ico" type="image/x-icon">
     <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
@@ -13,116 +13,71 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Noto+Sans+KR:wght@300;400;500;700&family=Roboto+Mono:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flag-icons@7/css/flag-icons.min.css">
+    <script src="script.js"></script>
 </head>
 <body>
     <header>
         <div class="container">
-            <h1 class="logo"><img src="timegom Logo.png" alt="TimeGom 로고" width="60" height="60"> TimeGom</h1>
+            <h1 class="logo"><a href="index.html" style="text-decoration: none; color: inherit;"><img src="timegom Logo.png" alt="TimeGom Logo" width="60" height="60"> TimeGom</a></h1>
             <nav>
                 <ul>
-                    <li><a href="index.html" class="active"><i class="fas fa-clock"></i> 시계</a></li>
-                    <li><a href="timer.html"><i class="fas fa-hourglass-half"></i> 타이머</a></li>
-                    <li><a href="pomodoro.html"><i class="fas fa-brain"></i> 집중 타이머</a></li>
-                    <li><a href="stopwatch.html"><i class="fas fa-stopwatch"></i> 스톱워치</a></li>
+                    <li><a href="index.html" class="active"><i class="fas fa-clock"></i> Clock</a></li>
+                    <li><a href="timer.html"><i class="fas fa-hourglass-half"></i> Timer</a></li>
+                    <li><a href="pomodoro.html"><i class="fas fa-brain"></i> Focus Timer</a></li>
+                    <li><a href="stopwatch.html"><i class="fas fa-stopwatch"></i> Stopwatch</a></li>
                 </ul>
+                <div class="language-selector">
+                    <div class="selected-language" onclick="toggleLanguageDropdown()">
+                        <span class="fi fi-gb" id="selectedFlag"></span>
+                        <span class="selected-text">English</span>
+                        <i class="fas fa-chevron-down arrow-icon"></i>
+                    </div>
+                    <div class="language-dropdown" id="languageDropdown">
+                        <div class="language-option" onclick="changeLanguage('gb')">
+                            <span class="fi fi-gb"></span>
+                            <span>English</span>
+                        </div>
+                        <div class="language-option" onclick="changeLanguage('es')">
+                            <span class="fi fi-es"></span>
+                            <span>Español</span>
+                        </div>
+                        <div class="language-option" onclick="changeLanguage('fr')">
+                            <span class="fi fi-fr"></span>
+                            <span>Français</span>
+                        </div>
+                        <div class="language-option" onclick="changeLanguage('kr')">
+                            <span class="fi fi-kr"></span>
+                            <span>한국어</span>
+                        </div>
+                        <div class="language-option" onclick="changeLanguage('jp')">
+                            <span class="fi fi-jp"></span>
+                            <span>日本語</span>
+                        </div>
+                    </div>
+                </div>
             </nav>
         </div>
     </header>
 
     <main class="container">
         <section class="clock-section">
-            <h2><i class="fas fa-globe"></i> 현재 시간</h2>
+            <h2><i class="fas fa-globe"></i> Current Time</h2>
             
             <div class="clock-toggle">
-                <button id="digitalToggle" class="toggle-btn active"><i class="fas fa-calculator"></i> 디지털</button>
-                <button id="analogToggle" class="toggle-btn"><i class="fas fa-clock"></i> 아날로그</button>
+                <button id="digitalToggle" class="toggle-btn active"><i class="fas fa-calculator"></i> Digital</button>
+                <button id="analogToggle" class="toggle-btn"><i class="fas fa-clock"></i> Analog</button>
             </div>
             
             <div class="clock-display" id="clock">
                 <div id="time">00:00:00</div>
-                <div id="date">0000년 00월 00일 요일</div>
+                <div id="date">Month 00, 0000, Day</div>
             </div>
             
             <div class="analog-clock-container" id="analogClock" style="display: none;">
                 <div class="analog-clock">
                     <div class="clock-face">
-                        <div class="clock-ticks">
-                            <!-- 시간 눈금 (12개) -->
-                            <div class="hour-tick" style="transform: rotate(0deg);"></div>
-                            <div class="hour-tick" style="transform: rotate(30deg);"></div>
-                            <div class="hour-tick" style="transform: rotate(60deg);"></div>
-                            <div class="hour-tick" style="transform: rotate(90deg);"></div>
-                            <div class="hour-tick" style="transform: rotate(120deg);"></div>
-                            <div class="hour-tick" style="transform: rotate(150deg);"></div>
-                            <div class="hour-tick" style="transform: rotate(180deg);"></div>
-                            <div class="hour-tick" style="transform: rotate(210deg);"></div>
-                            <div class="hour-tick" style="transform: rotate(240deg);"></div>
-                            <div class="hour-tick" style="transform: rotate(270deg);"></div>
-                            <div class="hour-tick" style="transform: rotate(300deg);"></div>
-                            <div class="hour-tick" style="transform: rotate(330deg);"></div>
-                            
-                            <!-- 분 눈금 (60개 중 48개만 추가 - 시간 눈금과 중복되는 위치 제외) -->
-                            <div class="minute-tick" style="transform: rotate(6deg);"></div>
-                            <div class="minute-tick" style="transform: rotate(12deg);"></div>
-                            <div class="minute-tick" style="transform: rotate(18deg);"></div>
-                            <div class="minute-tick" style="transform: rotate(24deg);"></div>
-                            <div class="minute-tick" style="transform: rotate(36deg);"></div>
-                            <div class="minute-tick" style="transform: rotate(42deg);"></div>
-                            <div class="minute-tick" style="transform: rotate(48deg);"></div>
-                            <div class="minute-tick" style="transform: rotate(54deg);"></div>
-                            <div class="minute-tick" style="transform: rotate(66deg);"></div>
-                            <div class="minute-tick" style="transform: rotate(72deg);"></div>
-                            <div class="minute-tick" style="transform: rotate(78deg);"></div>
-                            <div class="minute-tick" style="transform: rotate(84deg);"></div>
-                            <div class="minute-tick" style="transform: rotate(96deg);"></div>
-                            <div class="minute-tick" style="transform: rotate(102deg);"></div>
-                            <div class="minute-tick" style="transform: rotate(108deg);"></div>
-                            <div class="minute-tick" style="transform: rotate(114deg);"></div>
-                            <div class="minute-tick" style="transform: rotate(126deg);"></div>
-                            <div class="minute-tick" style="transform: rotate(132deg);"></div>
-                            <div class="minute-tick" style="transform: rotate(138deg);"></div>
-                            <div class="minute-tick" style="transform: rotate(144deg);"></div>
-                            <div class="minute-tick" style="transform: rotate(156deg);"></div>
-                            <div class="minute-tick" style="transform: rotate(162deg);"></div>
-                            <div class="minute-tick" style="transform: rotate(168deg);"></div>
-                            <div class="minute-tick" style="transform: rotate(174deg);"></div>
-                            <div class="minute-tick" style="transform: rotate(186deg);"></div>
-                            <div class="minute-tick" style="transform: rotate(192deg);"></div>
-                            <div class="minute-tick" style="transform: rotate(198deg);"></div>
-                            <div class="minute-tick" style="transform: rotate(204deg);"></div>
-                            <div class="minute-tick" style="transform: rotate(216deg);"></div>
-                            <div class="minute-tick" style="transform: rotate(222deg);"></div>
-                            <div class="minute-tick" style="transform: rotate(228deg);"></div>
-                            <div class="minute-tick" style="transform: rotate(234deg);"></div>
-                            <div class="minute-tick" style="transform: rotate(246deg);"></div>
-                            <div class="minute-tick" style="transform: rotate(252deg);"></div>
-                            <div class="minute-tick" style="transform: rotate(258deg);"></div>
-                            <div class="minute-tick" style="transform: rotate(264deg);"></div>
-                            <div class="minute-tick" style="transform: rotate(276deg);"></div>
-                            <div class="minute-tick" style="transform: rotate(282deg);"></div>
-                            <div class="minute-tick" style="transform: rotate(288deg);"></div>
-                            <div class="minute-tick" style="transform: rotate(294deg);"></div>
-                            <div class="minute-tick" style="transform: rotate(306deg);"></div>
-                            <div class="minute-tick" style="transform: rotate(312deg);"></div>
-                            <div class="minute-tick" style="transform: rotate(318deg);"></div>
-                            <div class="minute-tick" style="transform: rotate(324deg);"></div>
-                            <div class="minute-tick" style="transform: rotate(336deg);"></div>
-                            <div class="minute-tick" style="transform: rotate(342deg);"></div>
-                            <div class="minute-tick" style="transform: rotate(348deg);"></div>
-                            <div class="minute-tick" style="transform: rotate(354deg);"></div>
-                        </div>
-                        <div class="clock-number number-12">12</div>
-                        <div class="clock-number number-1">1</div>
-                        <div class="clock-number number-2">2</div>
-                        <div class="clock-number number-3">3</div>
-                        <div class="clock-number number-4">4</div>
-                        <div class="clock-number number-5">5</div>
-                        <div class="clock-number number-6">6</div>
-                        <div class="clock-number number-7">7</div>
-                        <div class="clock-number number-8">8</div>
-                        <div class="clock-number number-9">9</div>
-                        <div class="clock-number number-10">10</div>
-                        <div class="clock-number number-11">11</div>
+                        <img src="images/clock-face.png" alt="Clock Face" class="clock-face-img">
                         <div class="hour-hand"></div>
                         <div class="minute-hand"></div>
                         <div class="second-hand"></div>
@@ -130,118 +85,200 @@
                     </div>
                 </div>
                 <div class="analog-date">
-                    <div id="analog-date">0000년 00월 00일 요일</div>
+                    <div id="analog-date">Month 00, 0000, Day</div>
                 </div>
             </div>
             
             <div class="world-clocks">
-                <h3><i class="fas fa-map-marker-alt"></i> 세계 시간</h3>
+                <h3><i class="fas fa-map-marker-alt"></i> World Time</h3>
                 <div class="world-clock-grid">
                     <div class="world-clock-item" id="newyork">
-                        <h4><i class="fas fa-building"></i> 뉴욕</h4>
+                        <h4><i class="fas fa-building"></i> New York</h4>
                         <div class="world-time">00:00:00</div>
                     </div>
                     <div class="world-clock-item" id="london">
-                        <h4><i class="fas fa-landmark"></i> 런던</h4>
+                        <h4><i class="fas fa-landmark"></i> London</h4>
                         <div class="world-time">00:00:00</div>
                     </div>
                     <div class="world-clock-item" id="paris">
-                        <h4><i class="fas fa-utensils"></i> 파리</h4>
+                        <h4><i class="fas fa-utensils"></i> Paris</h4>
                         <div class="world-time">00:00:00</div>
                     </div>
                     <div class="world-clock-item" id="tokyo">
-                        <h4><i class="fas fa-torii-gate"></i> 도쿄</h4>
+                        <h4><i class="fas fa-torii-gate"></i> Tokyo</h4>
                         <div class="world-time">00:00:00</div>
                     </div>
                 </div>
             </div>
         </section>
 
+        <section class="world-map-time">
+            <h2><i class="fas fa-map-world"></i> Interactive World Time Map</h2>
+            <button class="reset-button">
+                <i class="fas fa-redo-alt"></i> Reset
+            </button>
+            <div class="map-container">
+                <img src="images/world-map.png" alt="World Map" id="worldMap" class="world-map">
+                <div class="map-markers">
+                    <div class="map-marker" data-city="New York" data-timezone="America/New_York" style="left: 25%; top: 40%;">
+                        <div class="marker-dot"></div>
+                    </div>
+                    <div class="map-marker" data-city="Los Angeles" data-timezone="America/Los_Angeles" style="left: 18%; top: 42%;">
+                        <div class="marker-dot"></div>
+                    </div>
+                    <div class="map-marker" data-city="Toronto" data-timezone="America/Toronto" style="left: 27%; top: 37%;">
+                        <div class="marker-dot"></div>
+                    </div>
+                    <div class="map-marker" data-city="Mexico City" data-timezone="America/Mexico_City" style="left: 23%; top: 48%;">
+                        <div class="marker-dot"></div>
+                    </div>
+                    <div class="map-marker" data-city="São Paulo" data-timezone="America/Sao_Paulo" style="left: 35%; top: 65%;">
+                        <div class="marker-dot"></div>
+                    </div>
+                    <div class="map-marker" data-city="London" data-timezone="Europe/London" style="left: 47%; top: 35%;">
+                        <div class="marker-dot"></div>
+                    </div>
+                    <div class="map-marker" data-city="Paris" data-timezone="Europe/Paris" style="left: 48.5%; top: 37%;">
+                        <div class="marker-dot"></div>
+                    </div>
+                    <div class="map-marker" data-city="Berlin" data-timezone="Europe/Berlin" style="left: 50%; top: 35%;">
+                        <div class="marker-dot"></div>
+                    </div>
+                    <div class="map-marker" data-city="Rome" data-timezone="Europe/Rome" style="left: 51%; top: 40%;">
+                        <div class="marker-dot"></div>
+                    </div>
+                    <div class="map-marker" data-city="Moscow" data-timezone="Europe/Moscow" style="left: 57%; top: 33%;">
+                        <div class="marker-dot"></div>
+                    </div>
+                    <div class="map-marker" data-city="Dubai" data-timezone="Asia/Dubai" style="left: 60%; top: 45%;">
+                        <div class="marker-dot"></div>
+                    </div>
+                    <div class="map-marker" data-city="Mumbai" data-timezone="Asia/Kolkata" style="left: 65%; top: 48%;">
+                        <div class="marker-dot"></div>
+                    </div>
+                    <div class="map-marker" data-city="Bangkok" data-timezone="Asia/Bangkok" style="left: 73%; top: 50%;">
+                        <div class="marker-dot"></div>
+                    </div>
+                    <div class="map-marker" data-city="Singapore" data-timezone="Asia/Singapore" style="left: 75%; top: 55%;">
+                        <div class="marker-dot"></div>
+                    </div>
+                    <div class="map-marker" data-city="Beijing" data-timezone="Asia/Shanghai" style="left: 75%; top: 42%;">
+                        <div class="marker-dot"></div>
+                    </div>
+                    <div class="map-marker" data-city="Shanghai" data-timezone="Asia/Shanghai" style="left: 77%; top: 45%;">
+                        <div class="marker-dot"></div>
+                    </div>
+                    <div class="map-marker" data-city="Tokyo" data-timezone="Asia/Tokyo" style="left: 82%; top: 42%;">
+                        <div class="marker-dot"></div>
+                    </div>
+                    <div class="map-marker" data-city="Seoul" data-timezone="Asia/Seoul" style="left: 80%; top: 40%;">
+                        <div class="marker-dot"></div>
+                    </div>
+                    <div class="map-marker" data-city="Sydney" data-timezone="Australia/Sydney" style="left: 87%; top: 70%;">
+                        <div class="marker-dot"></div>
+                    </div>
+                    <div class="map-marker" data-city="Auckland" data-timezone="Pacific/Auckland" style="left: 95%; top: 75%;">
+                        <div class="marker-dot"></div>
+                    </div>
+                </div>
+                <div id="mouseTooltip" class="mouse-tooltip"></div>
+            </div>
+            <div id="cityTimeDisplay" class="city-time-display">
+                <span class="city-icon"></span>
+                <span class="city-name"></span>
+                <span class="fi"></span>
+                <span class="city-time"></span>
+            </div>
+            <div id="pinnedCities" class="pinned-cities">
+                <!-- Pinned cities will be added here dynamically -->
+            </div>
+        </section>
+
         <section class="clock-info">
-            <h2><i class="fas fa-info-circle"></i> TimeGom 시계 소개</h2>
-            <p>TimeGom은 정확한 시간 정보를 제공하는 온라인 시계 서비스입니다. 디지털 시계와 아날로그 시계 모두 지원하며, 세계 여러 도시의 현재 시간을 한눈에 확인할 수 있습니다.</p>
-            <p>시간대별로 뉴욕, 런던, 파리, 도쿄의 현재 시간을 제공하여 전 세계 친구나 동료와의 원활한 소통에 도움을 드립니다. 또한 타이머와 스톱워치 기능도 함께 이용하실 수 있어 시간 관리에 유용합니다.</p>
-            <p>TimeGom은 직관적인 인터페이스와 깔끔한 디자인으로 사용자 경험을 최우선으로 생각합니다. 언제 어디서나 정확한 시간을 확인하고 관리하세요.</p>
+            <h2><i class="fas fa-info-circle"></i> About TimeGom Clock</h2>
+            <p>TimeGom is an online clock service that provides accurate time information. It supports both digital and analog clocks, and you can check the current time of various cities around the world at a glance.</p>
+            <p>We provide current time for New York, London, Paris, and Tokyo by time zone to help you communicate smoothly with friends and colleagues worldwide. You can also use timer and stopwatch functions for effective time management.</p>
+            <p>TimeGom prioritizes user experience with an intuitive interface and clean design. Check and manage accurate time anytime, anywhere.</p>
         </section>
 
         <section class="links-section">
-            <a href="timer.html" class="button primary-button"><i class="fas fa-hourglass-half"></i> 타이머 시작하기</a>
-            <a href="stopwatch.html" class="button secondary-button"><i class="fas fa-stopwatch"></i> 스톱워치 시작하기</a>
-            <a href="pomodoro.html" class="button primary-button"><i class="fas fa-brain"></i> 집중 타이머 시작하기</a>
+            <a href="timer.html" class="button primary-button"><i class="fas fa-hourglass-half"></i> Start Timer</a>
+            <a href="stopwatch.html" class="button secondary-button"><i class="fas fa-stopwatch"></i> Start Stopwatch</a>
+            <a href="pomodoro.html" class="button primary-button"><i class="fas fa-brain"></i> Start Focus Timer</a>
         </section>
     </main>
 
     <footer>
         <div class="container">
-            <p>&copy; 2023 TimeGom. 모든 권리 보유.</p>
+            <p>&copy; 2023 TimeGom. All rights reserved.</p>
         </div>
     </footer>
 
     <script src="utils.js"></script>
     <script src="clock.js"></script>
     <script>
-        // 시계 작동 강제 시작
+        // Force clock to start working
         document.addEventListener('DOMContentLoaded', function() {
-            console.log('DOM이 로드됨');
+            console.log('DOM loaded');
             
-            // 아날로그 모드 전환 시 즉시 업데이트 되도록 함
+            // Update analog clock immediately when switching modes
             const analogToggle = document.getElementById('analogToggle');
             if (analogToggle) {
                 analogToggle.addEventListener('click', function() {
-                    // 0.5초 후에 아날로그 시계 강제 업데이트 (화면 전환 후)
+                    // Force analog clock update 0.5 seconds after mode switch
                     setTimeout(function() {
                         if (typeof updateAnalogClock === 'function') {
                             updateAnalogClock();
-                            console.log('아날로그 시계 강제 업데이트');
+                            console.log('Forced analog clock update');
                         }
                     }, 500);
                 });
             }
             
-            // 페이지가 로드되자마자 시계 시작
+            // Start clock as soon as page loads
             if (typeof updateClock === 'function') {
                 updateClock();
-                console.log('디지털 시계 첫 실행');
+                console.log('Digital clock first run');
                 
-                // 인터벌 설정 (이전 인터벌 제거 후 새로 설정)
+                // Set interval (remove previous interval if exists)
                 if (typeof clockInterval !== 'undefined') {
                     clearInterval(clockInterval);
                 }
                 clockInterval = setInterval(updateClock, 1000);
-                console.log('디지털 시계 인터벌 설정됨');
+                console.log('Digital clock interval set');
             }
             
             if (typeof updateAnalogClock === 'function') {
                 updateAnalogClock();
-                console.log('아날로그 시계 첫 실행');
+                console.log('Analog clock first run');
                 
-                // 인터벌 설정 (이전 인터벌 제거 후 새로 설정)
+                // Set interval (remove previous interval if exists)
                 if (typeof analogClockInterval !== 'undefined') {
                     clearInterval(analogClockInterval);
                 }
                 analogClockInterval = setInterval(updateAnalogClock, 1000);
-                console.log('아날로그 시계 인터벌 설정됨');
+                console.log('Analog clock interval set');
             }
         });
         
-        // 추가 안전 장치 - 페이지 완전 로드 후에도 실행
+        // Additional safety - run after page is completely loaded
         window.onload = function() {
-            console.log('페이지 완전 로드됨 (window.onload)');
+            console.log('Page completely loaded (window.onload)');
             
-            // 시계 인터벌 확인 및 재설정
+            // Check and reset clock intervals
             setTimeout(function() {
                 if (typeof updateAnalogClock === 'function') {
                     updateAnalogClock();
-                    console.log('아날로그 시계 최종 강제 업데이트');
+                    console.log('Final forced analog clock update');
                 }
                 
                 if (typeof updateAnalogClock === 'function' && (typeof analogClockInterval === 'undefined' || analogClockInterval === null)) {
-                    console.log('아날로그 시계 인터벌 재설정 (안전장치)');
+                    console.log('Analog clock interval reset (safety measure)');
                     analogClockInterval = setInterval(updateAnalogClock, 1000);
                 }
                 
                 if (typeof updateClock === 'function' && (typeof clockInterval === 'undefined' || clockInterval === null)) {
-                    console.log('디지털 시계 인터벌 재설정 (안전장치)');
+                    console.log('Digital clock interval reset (safety measure)');
                     clockInterval = setInterval(updateClock, 1000);
                 }
             }, 1000);
